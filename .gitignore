@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+*.log
+logs/*.log
+backup/*.zip
+data/exports/*.xlsx
+.streamlit/secrets.toml
+credentials.json
