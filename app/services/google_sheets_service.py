@@ -38,3 +38,18 @@ def open_spreadsheet() -> gspread.Spreadsheet:
     """Open the main EVUS_ThiDua Google Spreadsheet."""
     client = get_gspread_client()
     return client.open_by_key(SPREADSHEET_ID)
+def get_worksheet(sheet_name: str) -> gspread.Worksheet:
+    """Return a worksheet by name."""
+    spreadsheet = open_spreadsheet()
+    return spreadsheet.worksheet(sheet_name)
+
+
+def read_sheet_records(sheet_name: str) -> list[dict]:
+    """Read all rows from a worksheet as a list of dictionaries."""
+    worksheet = get_worksheet(sheet_name)
+    return worksheet.get_all_records()
+
+
+def read_dm_giaovien() -> list[dict]:
+    """Read teacher master data."""
+    return read_sheet_records("DM_GiaoVien")
