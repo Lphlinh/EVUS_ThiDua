@@ -7,10 +7,8 @@
 - [ ] Đăng nhập
 
 ## M02
-- [x] Thiết kế luồng đăng nhập
-- [ ] Tạo dịch vụ đọc Google Sheets
-- [ ] Tạo cơ chế hash và kiểm tra mật khẩu
-- [ ] Đăng nhập bằng DM_GiaoVien
+- [ ] Thiết kế luồng đăng nhập
+- [x] Tạo dịch vụ đọc Google Sheets (đã tạo, chờ PASS kiểm thử)
 - [ ] Đọc danh mục giáo viên DM_GiaoVien
 - [ ] Đọc danh mục tiêu chí DM_TieuChi
 - [ ] Form chấm điểm
@@ -36,3 +34,10 @@
 - [ ] Xuất Excel năm học
 - [ ] Báo cáo theo giáo viên
 - [ ] Báo cáo theo tổ chuyên môn
+
+
+### M02 - Ưu tiên
+- [ ] Cập nhật tài liệu dự án
+- [ ] Di chuyển .venv sang ổ local
+- [ ] Kiểm thử google_sheets_service.py
+- [ ] Commit và Push sau khi PASS

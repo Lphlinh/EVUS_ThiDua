@@ -113,15 +113,8 @@
 - Nếu thay đổi nhiều file hoặc nội dung dài, AI phải xuất ZIP đúng cấu trúc dự án.
 - AI không được nói đã cập nhật khi chưa tạo file/ZIP tương ứng để người dùng áp dụng.
 
-## 2026-07-03 - M02: Quyết định đăng nhập
-- Bắt đầu M02 với trọng tâm đầu tiên là chức năng đăng nhập.
-- Đã xem xét phương án tạo worksheet DM_TaiKhoan nhưng quyết định không sử dụng để tránh trùng dữ liệu với DM_GiaoVien.
-- Thống nhất thông tin đăng nhập và phân quyền được lưu trực tiếp trong DM_GiaoVien.
-- DM_GiaoVien đã bổ sung các cột phục vụ đăng nhập:
-  - MatKhauHash
-  - LanDangNhapCuoi
-  - DoiMatKhauLanDau
-- Thống nhất không lưu mật khẩu gốc (plain text) trong Google Sheets hoặc mã nguồn.
-- Mật khẩu chỉ được lưu dưới dạng hash do chương trình sinh.
-- Các quyền truy cập tiếp tục dựa trên cột Vai trò trong DM_GiaoVien.
-- Quyết định này giúp không phát sinh bảng tài khoản riêng, hạn chế trùng dữ liệu và thuận lợi nếu sau này chuyển sang đăng nhập Google/Microsoft.
+
+## 2026-07-03 (M02)
+- Bắt đầu M02 theo quy trình đọc 4 tài liệu dự án.
+- Thống nhất ưu tiên xử lý môi trường phát triển trước khi viết thêm chức năng.
+- Ghi nhận kế hoạch di chuyển .venv sang ổ đĩa local để khắc phục hiện tượng chậm khi đặt trong Google Drive.
