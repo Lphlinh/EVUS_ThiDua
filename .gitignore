@@ -11,3 +11,11 @@ backup/*.zip
 data/exports/*.xlsx
 .streamlit/secrets.toml
 credentials.json
+# Google Service Account
+config/service_account.json
+
+# Backup
+backup/
+
+# Temporary Git folders
+.git (1)/
