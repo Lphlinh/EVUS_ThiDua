@@ -4,16 +4,19 @@
 - [x] Khởi tạo dự án
 - [x] Kết nối GitHub
 - [x] Kết nối Google Sheets
-- [ ] Đăng nhập
+- [x] Baseline + push GitHub
 
 ## M02
-- [ ] Thiết kế luồng đăng nhập
-- [x] Tạo dịch vụ đọc Google Sheets (đã tạo, chờ PASS kiểm thử)
-- [ ] Đọc danh mục giáo viên DM_GiaoVien
-- [ ] Đọc danh mục tiêu chí DM_TieuChi
+- [x] Tạo dịch vụ đọc Google Sheets
+- [x] Đọc danh mục giáo viên `DM_GiaoVien`
+- [x] Thiết kế luồng đăng nhập cơ bản
+- [x] Đăng nhập bằng dữ liệu `DM_GiaoVien`
+- [x] Đọc danh mục tiêu chí `DM_TieuChi`
+- [ ] Chuẩn hóa dữ liệu `DM_TieuChi` từ mẫu phiếu tháng
+- [ ] Tạo phiếu `TH_ThiDua`
+- [ ] Sinh chi tiết `CT_ThiDua`
 - [ ] Form chấm điểm
-- [ ] Tạo phiếu TH_ThiDua
-- [ ] Lưu chi tiết CT_ThiDua
+- [ ] Lưu chi tiết `CT_ThiDua`
 - [ ] Tính tổng điểm
 - [ ] Khóa phiếu sau khi giáo viên hoàn thành
 - [ ] Cho giáo viên xem lại phiếu đã khóa
@@ -23,7 +26,7 @@
 - [ ] Màn hình BGH
 - [ ] BGH xem phiếu theo tháng
 - [ ] BGH chỉnh sửa điểm thi đua
-- [ ] Ghi Audit_Log khi BGH chỉnh sửa
+- [ ] Ghi `Audit_Log` khi BGH chỉnh sửa
 - [ ] Chốt tháng
 - [ ] Tổng hợp tháng
 - [ ] Xuất Excel toàn trường theo tháng
@@ -34,10 +37,3 @@
 - [ ] Xuất Excel năm học
 - [ ] Báo cáo theo giáo viên
 - [ ] Báo cáo theo tổ chuyên môn
-
-
-### M02 - Ưu tiên
-- [ ] Cập nhật tài liệu dự án
-- [ ] Di chuyển .venv sang ổ local
-- [ ] Kiểm thử google_sheets_service.py
-- [ ] Commit và Push sau khi PASS
