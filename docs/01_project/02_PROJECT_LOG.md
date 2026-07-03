@@ -41,3 +41,87 @@
   - Khi AI chỉnh sửa tài liệu dự án, AI phải xuất file ZIP chứa đúng cấu trúc thư mục tương ứng trong project.
   - Người dùng giải nén ZIP vào đúng thư mục gốc dự án để ghi đè/cập nhật tài liệu.
   - Không tự sửa trực tiếp file trong project khi chưa có xác nhận.
+- Thống nhất quy ước lưu tài liệu:
+  - Repository Git chỉ lưu source code, file cấu hình, tài liệu Markdown chính thức và tài nguyên cần thiết cho chương trình.
+  - File ZIP, DOCX, PDF, bản trung gian và bản sao lưu lưu trong backup/.
+  - Có thể phân nhóm backup/Business/, backup/Docs_Update/ hoặc nhóm khác khi cần.
+- Thống nhất cấu trúc mã nguồn chuẩn trong app/:
+  - auth/: đăng nhập, xác thực, phân quyền.
+  - components/: thành phần giao diện dùng chung.
+  - models/: mô hình dữ liệu.
+  - pages/: các màn hình Streamlit.
+  - services/: Google Sheets, PDF, Excel và nghiệp vụ liên quan.
+  - utils/: hàm tiện ích không chứa nghiệp vụ chính.
+- Đã tạo commit baseline:
+  - Commit: 1af9e39
+  - Message: Baseline: Initialize EVUS_ThiDua project
+- Đã tạo repository GitHub:
+  - https://github.com/Lphlinh/EVUS_ThiDua.git
+- Đã push nhánh main lên GitHub thành công.
+- Đã cập nhật .gitignore để loại trừ dữ liệu nhạy cảm và thư mục backup.
+- Đã commit và push cập nhật tài liệu/rules:
+  - Commit: d6a516b
+  - Message: docs: update project rules and project log
+- Đã tạo Google Spreadsheet dữ liệu chính:
+  - Tên: EVUS_ThiDua_Data
+  - Spreadsheet ID: 14QZmgiaZZnhhd_j0v-imBQu258FXm3MB4acjv1razd0
+- Đã tạo Google Cloud Project mới ngoài Organization để cho phép tạo JSON key cho Service Account.
+- Đã bật Google Sheets API và Google Drive API.
+- Đã tạo Service Account:
+  - evus-thidua@evus-thidua.iam.gserviceaccount.com
+- Đã chia sẻ Google Sheet cho Service Account với quyền Editor.
+- Đã kiểm tra kết nối Google Sheets bằng gspread thành công, trả về tên spreadsheet: EVUS_ThiDua_Data.
+- Ghi nhận sự cố bảo mật: nội dung service_account.json đã bị hiển thị trong trao đổi. Quyết định xử lý:
+  - Xóa JSON key cũ trên Google Cloud.
+  - Tạo JSON key mới.
+  - Ghi đè config/service_account.json.
+  - Kiểm thử lại kết nối Google Sheets.
+
+## Quyết định dữ liệu đã thống nhất
+- Danh sách worksheet chuẩn:
+  - DM_GiaoVien
+  - DM_TieuChi
+  - TH_ThiDua
+  - CT_ThiDua
+  - TongHop_ThiDua
+  - Audit_Log
+  - System_Config
+- Dùng mô hình Header-Detail:
+  - TH_ThiDua: 1 dòng = 1 phiếu tháng của 1 giáo viên.
+  - CT_ThiDua: 1 dòng = 1 tiêu chí trong 1 phiếu.
+- TongHop_ThiDua không nhập tay; chỉ do hệ thống sinh hoặc cập nhật tự động từ dữ liệu gốc.
+- Không lưu họ tên, tổ, email, chức vụ trong bảng nghiệp vụ TH_ThiDua và CT_ThiDua; chỉ lưu Mã GV. Thông tin hiển thị lấy từ DM_GiaoVien.
+- Primary Key:
+  - DM_GiaoVien: Mã GV.
+  - DM_TieuChi: Mã TC.
+  - TH_ThiDua.ID = Năm học + "_" + Tháng + "_" + Mã GV. Ví dụ: 2026-2027_09_GV001.
+  - CT_ThiDua.ID = ID Phiếu + "_" + Mã TC. Ví dụ: 2026-2027_09_GV001_TC01.
+  - Audit_Log.ID dùng UUID hoặc timestamp do chương trình sinh.
+- TH_ThiDua có 2 khóa nghiệp vụ:
+  - Khóa GV: giáo viên không được sửa khi TRUE.
+  - Khóa BGH: BGH không được sửa khi TRUE.
+- Audit_Log chỉ ghi thao tác quan trọng, không ghi thao tác xem dữ liệu.
+- System_Config lưu trạng thái phiếu, vai trò, năm học hiện hành, tháng chấm hiện hành, hạn nộp và danh mục xếp loại.
+- DM_TieuChi lưu giới hạn Min-Max, trọng số, có tính vào tổng hay không, loại tiêu chí AUTO/MANUAL/HYBRID và quy tắc gợi ý.
+
+## Quy tắc làm việc bổ sung đã thống nhất
+- AI được chủ động áp dụng các giải pháp kỹ thuật tốt nếu an toàn và không ảnh hưởng kiến trúc, dữ liệu hoặc nghiệp vụ.
+- AI chỉ dừng để trao đổi khi vấn đề có ảnh hưởng đến kiến trúc, dữ liệu, nghiệp vụ, bảo mật hoặc khả năng bảo trì lâu dài.
+- Các bước kỹ thuật trung gian trình bày ngắn gọn.
+- Khi yêu cầu người dùng thao tác, phải ghi rõ thao tác cụ thể; cuối bước có thể chỉ ghi: Gõ 1 để tiếp tục.
+- Khi tạo file mới, phải ghi rõ đường dẫn đầy đủ và tên file.
+- Nếu thay đổi nhiều file hoặc nội dung dài, AI phải xuất ZIP đúng cấu trúc dự án.
+- AI không được nói đã cập nhật khi chưa tạo file/ZIP tương ứng để người dùng áp dụng.
+
+## 2026-07-03 - M02: Quyết định đăng nhập
+- Bắt đầu M02 với trọng tâm đầu tiên là chức năng đăng nhập.
+- Đã xem xét phương án tạo worksheet DM_TaiKhoan nhưng quyết định không sử dụng để tránh trùng dữ liệu với DM_GiaoVien.
+- Thống nhất thông tin đăng nhập và phân quyền được lưu trực tiếp trong DM_GiaoVien.
+- DM_GiaoVien đã bổ sung các cột phục vụ đăng nhập:
+  - MatKhauHash
+  - LanDangNhapCuoi
+  - DoiMatKhauLanDau
+- Thống nhất không lưu mật khẩu gốc (plain text) trong Google Sheets hoặc mã nguồn.
+- Mật khẩu chỉ được lưu dưới dạng hash do chương trình sinh.
+- Các quyền truy cập tiếp tục dựa trên cột Vai trò trong DM_GiaoVien.
+- Quyết định này giúp không phát sinh bảng tài khoản riêng, hạn chế trùng dữ liệu và thuận lợi nếu sau này chuyển sang đăng nhập Google/Microsoft.
