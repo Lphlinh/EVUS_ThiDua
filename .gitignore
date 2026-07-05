@@ -19,3 +19,5 @@ backup/
 
 # Temporary Git folders
 .git (1)/
+# Reference Excel files in ProjectTree
+docs/01_project/99_ProjectTree/*.xlsx
