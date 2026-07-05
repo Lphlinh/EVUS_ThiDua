@@ -53,3 +53,16 @@ def get_teacher_by_username(username: str) -> dict | None:
             return teacher
 
     return None
+
+def get_teacher_by_magv(ma_gv: str) -> dict | None:
+    """Find one teacher by MaGV from DM_GiaoVien."""
+    normalized_ma_gv = str(ma_gv).strip().lower()
+    if not normalized_ma_gv:
+        return None
+
+    for teacher in get_all_teachers():
+        if str(teacher.get("ma_gv", "")).strip().lower() == normalized_ma_gv:
+            return teacher
+
+    return None
+

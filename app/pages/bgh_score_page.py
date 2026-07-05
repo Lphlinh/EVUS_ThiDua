@@ -1,0 +1,553 @@
+"""BGH score review/edit page for M03.2.
+
+This page only handles BGH workflow: choose month, choose teacher form,
+then delegate the actual score form rendering to score_form_component.
+"""
+
+from __future__ import annotations
+
+from typing import Any
+
+import streamlit as st
+
+from app.components.score_form_component import FORM_ACTION_SAVE, FORM_MODE_BGH, render_score_form
+from app.services.criteria_service import get_all_criteria
+from app.services.google_sheets_service import read_sheet_records
+from app.services.teacher_service import get_all_teachers
+from app.services.thi_dua_service import (
+    build_monthly_excel_export,
+    finalize_month,
+    summarize_month,
+    repair_th_ids_for_month,
+    get_chi_tiet_phieu,
+    get_current_scoring_month,
+    save_bgh_scores,
+)
+
+SHEET_TH = "TH_ThiDua"
+
+STATUS_TEXT = {
+    1: "Chưa tạo",
+    2: "Đang chấm",
+    3: "Đã nộp",
+    4: "BGH đã chỉnh sửa",
+    5: "Đã chốt",
+}
+
+TH_ALIASES = {
+    "ID": ("ID", "id"),
+    "NamHoc": ("NamHoc", "Năm học", "nam_hoc", "namhoc"),
+    "Thang": ("Thang", "Tháng", "thang"),
+    "MaGV": ("MaGV", "Mã GV", "ma_gv", "magv"),
+    "TrangThai": ("TrangThai", "Trạng thái phiếu", "Trạng thái", "trang_thai", "trangthai"),
+    "TongDiem": ("TongDiem", "Tổng điểm", "tong_diem", "tongdiem"),
+    "NgayNop": ("NgayNop", "Ngày nộp", "ngay_nop", "ngaynop"),
+    "LanNop": ("LanNop", "Lần nộp", "lan_nop", "lannop"),
+    "LanMoKhoa": ("LanMoKhoa", "Lần mở khóa", "lan_mo_khoa", "lanmokhoa"),
+    "KhoaGV": ("KhoaGV", "Khóa GV", "khoa_gv", "khoagv"),
+    "KhoaBGH": ("KhoaBGH", "Khóa BGH", "khoa_bgh", "khoabgh"),
+    "NgayCapNhat": ("NgayCapNhat", "Thời gian cập nhật", "Ngày cập nhật", "ngay_cap_nhat"),
+}
+
+CT_ALIASES = {
+    "ID": ("ID", "id"),
+    "IDPhieu": ("IDPhieu", "ID Phiếu", "id_phieu", "idphieu"),
+    "MaTC": ("MaTC", "Mã TC", "ma_tc", "MaTieuChi", "Mã tiêu chí", "ma_tieu_chi"),
+    "DiemGV": ("DiemGV", "Điểm GV", "Điểm giáo viên", "Điểm GV chấm", "Tự chấm", "diem_gv", "diemgv"),
+    "DiemBGH": ("DiemBGH", "Điểm BGH", "Điểm BGH chỉnh", "diem_bgh", "diembgh"),
+}
+
+
+def render_bgh_score_page() -> None:
+    """Render BGH monthly score review/edit workflow."""
+    user = _get_logged_in_user()
+    if not user:
+        st.warning("Cần đăng nhập trước khi xem màn hình Ban Giám hiệu.")
+        return
+
+    if not _is_bgh_user(user):
+        st.error("Tài khoản hiện tại không có quyền truy cập màn hình Ban Giám hiệu.")
+        return
+
+    st.title("Ban Giám hiệu - Chỉnh điểm thi đua")
+    st.caption(f"Vai trò: BGH | Kỳ đánh giá: {get_current_scoring_month()}")
+
+    default_month = get_current_scoring_month()
+    thang = st.text_input("Tháng chấm", value=default_month, help="Định dạng MM/YYYY, ví dụ 06/2026.")
+    normalized_month = _normalize_month_key(thang)
+
+    try:
+        repair_result = repair_th_ids_for_month(normalized_month)
+        if repair_result.get("repaired_count", 0):
+            st.warning(
+                f"Đã phát hiện và sửa {repair_result.get('repaired_count')} khóa ID phiếu không hợp lệ trong TH_ThiDua."
+            )
+    except ValueError as exc:
+        st.error(str(exc))
+        return
+
+    phieu_list = _get_phieu_list_by_month(normalized_month)
+    teacher_map = _get_teacher_map()
+
+    finalize_status = st.session_state.pop("m03_finalize_status", "")
+    if finalize_status:
+        st.success(finalize_status)
+
+    summary_status = st.session_state.pop("m03_summary_status", "")
+    if summary_status:
+        st.success(summary_status)
+
+    if not phieu_list:
+        st.info(f"Chưa có phiếu thi đua cho tháng {normalized_month or thang}.")
+        return
+
+    st.subheader(f"Danh sách phiếu tháng {normalized_month}")
+    st.dataframe(
+        [_build_list_row(phieu, teacher_map) for phieu in phieu_list],
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    _render_finalize_month_panel(normalized_month, phieu_list, teacher_map)
+    _render_summarize_month_panel(normalized_month, phieu_list)
+    _render_export_month_excel_panel(normalized_month)
+
+    options = {
+        _format_select_label(phieu, teacher_map): str(phieu.get("ID", "")).strip()
+        for phieu in phieu_list
+        if str(phieu.get("ID", "")).strip()
+    }
+    if not options:
+        st.error("Không đọc được ID phiếu trong TH_ThiDua.")
+        return
+
+    selected_label = st.selectbox("Chọn phiếu để xem / chỉnh sửa", list(options.keys()))
+    selected_id = options[selected_label]
+
+    if st.button("Xem / Chỉnh phiếu", type="primary", use_container_width=False):
+        st.session_state["m03_bgh_selected_phieu_id"] = selected_id
+        st.rerun()
+
+    selected_phieu_id = st.session_state.get("m03_bgh_selected_phieu_id")
+    if selected_phieu_id:
+        selected_phieu = next((item for item in phieu_list if str(item.get("ID", "")).strip() == selected_phieu_id), None)
+        if not selected_phieu:
+            st.warning("Phiếu đã chọn không còn trong danh sách tháng hiện tại.")
+            return
+        _render_selected_phieu(selected_phieu, teacher_map)
+
+
+
+def _render_finalize_month_panel(thang: str, phieu_list: list[dict], teacher_map: dict[str, dict]) -> None:
+    """Render BGH month-finalization panel with unsubmitted warning."""
+    normalized_month = _normalize_month_key(thang)
+    eligible = [
+        phieu for phieu in phieu_list
+        if _safe_int(phieu.get("TrangThai"), default=0) in {3, 4}
+    ]
+    finalized = [
+        phieu for phieu in phieu_list
+        if _safe_int(phieu.get("TrangThai"), default=0) == 5
+    ]
+    unsubmitted = [
+        phieu for phieu in phieu_list
+        if _safe_int(phieu.get("TrangThai"), default=0) not in {3, 4, 5}
+    ]
+
+    phieu_teacher_codes = {
+        str(phieu.get("MaGV", "")).strip()
+        for phieu in phieu_list
+        if str(phieu.get("MaGV", "")).strip()
+    }
+    no_form_teachers = [
+        teacher for ma_gv, teacher in teacher_map.items()
+        if ma_gv not in phieu_teacher_codes and not _is_bgh_user(teacher)
+    ]
+
+    st.divider()
+    st.subheader("Chốt tháng")
+    st.caption(
+        "Chỉ chốt các phiếu đã nộp hoặc đã được BGH chỉnh sửa. "
+        "Phiếu chưa nộp hoặc giáo viên chưa có phiếu sẽ không bị ép chốt."
+    )
+
+    col_ready, col_finalized, col_pending = st.columns(3)
+    with col_ready:
+        st.metric("Có thể chốt", len(eligible))
+    with col_finalized:
+        st.metric("Đã chốt", len(finalized))
+    with col_pending:
+        st.metric("Chưa nộp/chưa có phiếu", len(unsubmitted) + len(no_form_teachers))
+
+    if unsubmitted or no_form_teachers:
+        st.warning("Còn giáo viên chưa nộp phiếu hoặc chưa có phiếu trong tháng này.")
+        with st.expander("Xem danh sách chưa nộp/chưa có phiếu", expanded=False):
+            for phieu in unsubmitted:
+                ma_gv = str(phieu.get("MaGV", "")).strip()
+                teacher = teacher_map.get(ma_gv, {})
+                name = teacher.get("ho_ten") or ma_gv or "Không rõ"
+                st.write(f"- {ma_gv} - {name}: {_status_text(phieu.get('TrangThai'))}")
+            for teacher in no_form_teachers:
+                ma_gv = str(teacher.get("ma_gv", "")).strip()
+                name = teacher.get("ho_ten") or ma_gv or "Không rõ"
+                st.write(f"- {ma_gv} - {name}: Chưa có phiếu")
+
+    if not eligible:
+        st.info("Không có phiếu trạng thái Đã nộp hoặc BGH đã chỉnh sửa để chốt trong tháng này.")
+        return
+
+    confirm_key = f"m03_confirm_finalize_{normalized_month}"
+    if st.button("Chốt tháng", type="primary", use_container_width=False):
+        st.session_state[confirm_key] = True
+        st.rerun()
+
+    if not st.session_state.get(confirm_key):
+        return
+
+    st.error(
+        f"Xác nhận chốt tháng {normalized_month}. Sau khi chốt, giáo viên và BGH chỉ được xem, không được chỉnh sửa các phiếu đã chốt."
+    )
+    confirm_col, cancel_col, _ = st.columns([1.1, 1.1, 4])
+    with confirm_col:
+        if st.button("Xác nhận chốt tháng", type="primary", use_container_width=True):
+            try:
+                actor = _resolve_actor_code(_get_logged_in_user() or {})
+                result = finalize_month(normalized_month, actor)
+                st.session_state["m03_finalize_status"] = (
+                    f"Đã chốt tháng {result.get('thang')}. "
+                    f"Số phiếu chốt: {result.get('finalized_count', 0)}. "
+                    f"Số phiếu chưa nộp/bỏ qua: {result.get('unsubmitted_count', 0)}."
+                )
+                st.session_state[confirm_key] = False
+                st.session_state.pop("m03_bgh_selected_phieu_id", None)
+                st.rerun()
+            except ValueError as exc:
+                st.error(str(exc))
+    with cancel_col:
+        if st.button("Hủy chốt tháng", use_container_width=True):
+            st.session_state[confirm_key] = False
+            st.rerun()
+
+
+def _render_summarize_month_panel(thang: str, phieu_list: list[dict]) -> None:
+    """Render monthly summary action after finalization."""
+    normalized_month = _normalize_month_key(thang)
+    finalized = [
+        phieu for phieu in phieu_list
+        if _safe_int(phieu.get("TrangThai"), default=0) == 5
+    ]
+
+    st.divider()
+    st.subheader("Tổng hợp tháng")
+    st.caption("Chỉ tổng hợp các phiếu đã chốt. Chạy lại sẽ cập nhật dòng đã có, không tạo trùng.")
+
+    if not finalized:
+        st.info("Chưa có phiếu đã chốt để tổng hợp trong tháng này.")
+        return
+
+    st.metric("Số phiếu đã chốt có thể tổng hợp", len(finalized))
+    if st.button("Tổng hợp tháng", type="primary", use_container_width=False):
+        try:
+            actor = _resolve_actor_code(_get_logged_in_user() or {})
+            result = summarize_month(normalized_month, actor)
+            st.session_state["m03_summary_status"] = (
+                f"Đã tổng hợp tháng {result.get('thang')}. "
+                f"Số dòng: {result.get('summary_count', 0)}. "
+                f"Thêm mới: {result.get('created_count', 0)}. "
+                f"Cập nhật: {result.get('updated_count', 0)}."
+            )
+            st.rerun()
+        except ValueError as exc:
+            st.error(str(exc))
+
+
+
+def _render_export_month_excel_panel(thang: str) -> None:
+    """Render monthly Excel export action from TongHop_ThiDua."""
+    normalized_month = _normalize_month_key(thang)
+    st.divider()
+    st.subheader("Xuất Excel tháng")
+    st.caption("Xuất bảng tổng hợp thi đua toàn trường từ TongHop_ThiDua. Cần tổng hợp tháng trước khi xuất.")
+
+    try:
+        filename, file_bytes, row_count = build_monthly_excel_export(normalized_month)
+    except ValueError as exc:
+        st.info(str(exc))
+        return
+
+    st.metric("Số dòng sẽ xuất", row_count)
+    st.download_button(
+        "Tải Excel tổng hợp tháng",
+        data=file_bytes,
+        file_name=filename,
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        type="primary",
+        use_container_width=False,
+    )
+
+def _render_selected_phieu(phieu: dict, teacher_map: dict[str, dict]) -> None:
+    id_phieu = str(phieu.get("ID", "")).strip()
+    ma_gv = str(phieu.get("MaGV", "")).strip()
+    teacher = teacher_map.get(ma_gv, {})
+
+    st.divider()
+    st.subheader("Chi tiết phiếu")
+
+    details = get_chi_tiet_phieu(id_phieu)
+    criteria = get_all_criteria()
+    official_total = _calculate_total_score(details)
+
+    col_teacher, col_status, col_total = st.columns(3)
+    with col_teacher:
+        st.metric("Giáo viên", teacher.get("ho_ten") or ma_gv or "Không rõ")
+    with col_status:
+        st.metric("Trạng thái", _status_text(phieu.get("TrangThai")))
+    with col_total:
+        st.metric("Tổng điểm", _format_number(official_total))
+
+    st.caption(
+        f"ID phiếu: {id_phieu} | Mã GV: {ma_gv} | Ngày nộp: {phieu.get('NgayNop', '') or 'Chưa nộp'} | "
+        f"Lần nộp: {phieu.get('LanNop', '') or 0} | Lần mở khóa: {phieu.get('LanMoKhoa', '') or 0}"
+    )
+
+    if not details:
+        st.warning("Không tìm thấy CT_ThiDua của phiếu này.")
+        return
+
+    readonly = _safe_int(phieu.get("TrangThai"), default=0) == 5 or _parse_bool(phieu.get("KhoaBGH"))
+    save_status = st.session_state.pop("m03_bgh_save_status", "")
+    if save_status:
+        st.success(save_status)
+
+    changed_rows, current_total, action, input_errors = render_score_form(
+        criteria,
+        details,
+        readonly=readonly,
+        mode=FORM_MODE_BGH,
+    )
+
+    if readonly:
+        st.info("Phiếu đã chốt hoặc đã khóa BGH. Ban Giám hiệu chỉ được xem, không được chỉnh sửa.")
+        return
+
+    if action == FORM_ACTION_SAVE:
+        if input_errors:
+            st.error("Chưa thể lưu vì còn điểm BGH vượt thang điểm đánh giá.")
+            return
+        if not changed_rows:
+            st.warning("Không có dòng chi tiết để lưu. Vui lòng kiểm tra CT_ThiDua của phiếu.")
+            return
+        try:
+            actor = _resolve_actor_code(_get_logged_in_user() or {})
+            total = save_bgh_scores(id_phieu, changed_rows, actor)
+            st.session_state["m03_bgh_save_status"] = f"Đã lưu điểm BGH. Tổng điểm hiện hành: {_format_number(total)}"
+            st.rerun()
+        except ValueError as exc:
+            st.error(str(exc))
+
+
+def _resolve_actor_code(user: dict) -> str:
+    return str(
+        user.get("ma_gv")
+        or user.get("Mã GV")
+        or user.get("ten_dang_nhap")
+        or user.get("Tên đăng nhập")
+        or "BGH"
+    ).strip()
+
+
+def _get_phieu_list_by_month(thang: str) -> list[dict]:
+    target_month = _normalize_month_key(thang)
+    selected_by_id: dict[str, dict] = {}
+    for record in read_sheet_records(SHEET_TH):
+        phieu = _canonicalize_th_record(record)
+        if _normalize_month_key(phieu.get("Thang")) != target_month:
+            continue
+        id_phieu = str(phieu.get("ID", "")).strip()
+        expected_id = _build_expected_phieu_id(phieu, target_month)
+        if expected_id and id_phieu != expected_id:
+            id_phieu = expected_id
+            phieu["ID"] = id_phieu
+        if not id_phieu:
+            continue
+        current = selected_by_id.get(id_phieu)
+        if current is None or _phieu_priority(phieu) >= _phieu_priority(current):
+            selected_by_id[id_phieu] = phieu
+    return sorted(selected_by_id.values(), key=lambda item: str(item.get("MaGV", "")))
+
+
+def _phieu_priority(phieu: dict) -> tuple[int, str, str]:
+    has_total = int(_safe_float(phieu.get("TongDiem")) != 0)
+    return (has_total, str(phieu.get("NgayNop", "")).strip(), str(phieu.get("NgayCapNhat", "")).strip())
+
+
+def _get_teacher_map() -> dict[str, dict]:
+    teachers = get_all_teachers()
+    return {str(teacher.get("ma_gv", "")).strip(): teacher for teacher in teachers if str(teacher.get("ma_gv", "")).strip()}
+
+
+def _build_list_row(phieu: dict, teacher_map: dict[str, dict]) -> dict[str, Any]:
+    ma_gv = str(phieu.get("MaGV", "")).strip()
+    teacher = teacher_map.get(ma_gv, {})
+    return {
+        "Mã GV": ma_gv,
+        "Họ và tên": teacher.get("ho_ten", ""),
+        "Tổ chuyên môn": teacher.get("to_chuyen_mon", ""),
+        "Trạng thái": _status_text(phieu.get("TrangThai")),
+        "Tổng điểm": phieu.get("TongDiem", ""),
+        "Ngày nộp": phieu.get("NgayNop", ""),
+        "Lần nộp": phieu.get("LanNop", ""),
+        "ID phiếu": phieu.get("ID", ""),
+    }
+
+
+def _format_select_label(phieu: dict, teacher_map: dict[str, dict]) -> str:
+    ma_gv = str(phieu.get("MaGV", "")).strip()
+    teacher_name = teacher_map.get(ma_gv, {}).get("ho_ten", "")
+    total = phieu.get("TongDiem", "") or "0"
+    status = _status_text(phieu.get("TrangThai"))
+    if teacher_name:
+        return f"{ma_gv} - {teacher_name} | {status} | {total} điểm"
+    return f"{ma_gv} | {status} | {total} điểm"
+
+
+def _get_logged_in_user() -> dict | None:
+    for key in ("teacher", "user", "current_user", "auth_user"):
+        value = st.session_state.get(key)
+        if isinstance(value, dict):
+            return value
+    return None
+
+
+def _is_bgh_user(user: dict) -> bool:
+    role = _normalize_key(user.get("vai_tro") or user.get("Vai trò") or user.get("role") or "")
+    return role in {"bgh", "ban_giam_hieu", "admin", "quan_tri", "quan_tri_vien"}
+
+
+def _canonicalize_th_record(record: dict) -> dict:
+    canonical = {name: _get_text(record, *aliases) for name, aliases in TH_ALIASES.items()}
+
+    status = _safe_int(canonical.get("TrangThai"), default=0)
+    locked = _parse_bool(canonical.get("KhoaGV"))
+    ngay_nop = str(canonical.get("NgayNop", "")).strip()
+    if status not in {3, 5} and (locked or ngay_nop):
+        canonical["TrangThai"] = "3"
+
+    return canonical
+
+
+def _canonicalize_ct_record(record: dict) -> dict:
+    return {canonical: _get_text(record, *aliases) for canonical, aliases in CT_ALIASES.items()}
+
+
+def _status_text(value: object) -> str:
+    status = _safe_int(value, default=0)
+    return STATUS_TEXT.get(status, str(value or ""))
+
+
+def _calculate_total_score(details: list[dict]) -> float:
+    total = 0.0
+    seen: set[str] = set()
+    for raw_detail in details:
+        detail = _canonicalize_ct_record(raw_detail)
+        row_id = str(detail.get("ID") or f"{detail.get('IDPhieu', '')}_{detail.get('MaTC', '')}").strip()
+        if row_id and row_id in seen:
+            continue
+        if row_id:
+            seen.add(row_id)
+        total += _official_score(detail)
+    return total
+
+
+def _official_score(detail: dict) -> float:
+    diem_bgh = str(detail.get("DiemBGH", "")).strip()
+    if diem_bgh:
+        return _safe_float(diem_bgh)
+    return _safe_float(detail.get("DiemGV"))
+
+
+def _get_text(record: dict, *keys: str) -> str:
+    normalized = {_normalize_key(key): value for key, value in record.items()}
+    for key in keys:
+        value = record.get(key)
+        if value is not None and str(value).strip() != "":
+            return str(value).strip()
+        normalized_value = normalized.get(_normalize_key(key))
+        if normalized_value is not None and str(normalized_value).strip() != "":
+            return str(normalized_value).strip()
+    return ""
+
+
+
+def _build_expected_phieu_id(phieu: dict, normalized_month: str) -> str:
+    nam_hoc = str(phieu.get("NamHoc", "")).strip()
+    ma_gv = str(phieu.get("MaGV", "")).strip()
+    if not nam_hoc or not normalized_month or not ma_gv:
+        return ""
+    safe_thang = str(normalized_month).replace("/", "")
+    return f"{nam_hoc}_{safe_thang}_{ma_gv}"
+
+
+def _normalize_month_key(value: object) -> str:
+    text = str(value or "").strip().replace("'", "")
+    if not text:
+        return ""
+
+    parts = text.split("/")
+    if len(parts) == 2:
+        month, year = parts[0].strip(), parts[1].strip()
+        try:
+            return f"{int(float(month)):02d}/{int(float(year)):04d}"
+        except ValueError:
+            return text
+
+    compact = "".join(ch for ch in text if ch.isdigit())
+    if len(compact) == 6:
+        return f"{compact[:2]}/{compact[2:]}"
+    return text
+
+
+def _normalize_key(value: object) -> str:
+    text = str(value).strip().lower()
+    replacements = {
+        "ã": "a", "à": "a", "á": "a", "ả": "a", "ạ": "a", "ă": "a", "ằ": "a", "ắ": "a", "ẳ": "a", "ặ": "a", "â": "a", "ầ": "a", "ấ": "a", "ẩ": "a", "ậ": "a",
+        "đ": "d", "è": "e", "é": "e", "ẻ": "e", "ẹ": "e", "ê": "e", "ề": "e", "ế": "e", "ể": "e", "ệ": "e",
+        "ì": "i", "í": "i", "ỉ": "i", "ị": "i", "ò": "o", "ó": "o", "ỏ": "o", "ọ": "o", "ô": "o", "ồ": "o", "ố": "o", "ổ": "o", "ộ": "o", "ơ": "o", "ờ": "o", "ớ": "o", "ở": "o", "ợ": "o",
+        "ù": "u", "ú": "u", "ủ": "u", "ụ": "u", "ư": "u", "ừ": "u", "ứ": "u", "ử": "u", "ự": "u", "ỳ": "y", "ý": "y", "ỷ": "y", "ỵ": "y",
+    }
+    for src, dst in replacements.items():
+        text = text.replace(src, dst)
+    return "_".join(text.replace("(", " ").replace(")", " ").replace("/", " ").split())
+
+
+def _safe_int(value: object, default: int = 0) -> int:
+    text = str(value or "").strip()
+    if not text:
+        return default
+    try:
+        return int(float(text.replace(",", ".")))
+    except ValueError:
+        return default
+
+
+def _safe_float(value: object) -> float:
+    text = str(value or "").strip()
+    if not text:
+        return 0.0
+    try:
+        return float(text.replace(",", "."))
+    except ValueError:
+        return 0.0
+
+
+def _format_number(value: object) -> str:
+    number = _safe_float(value)
+    if number.is_integer():
+        return str(int(number))
+    return f"{number:.2f}".rstrip("0").rstrip(".")
+
+
+def _parse_bool(value: object) -> bool:
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in {"true", "1", "yes", "y", "x", "co", "có"}
