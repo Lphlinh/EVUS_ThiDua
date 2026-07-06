@@ -98,22 +98,62 @@ class CachedWorksheet:
         return result
 
 def get_gspread_client() -> gspread.Client:
-    """Return an authorized gspread client, cached for the Streamlit process."""
+    """Return an authorized gspread client, cached for the Streamlit process.
+
+    Local development uses ``config/service_account.json``.
+    Streamlit Community Cloud uses ``st.secrets["gcp_service_account"]``.
+    """
     global _CLIENT_CACHE
     if _CLIENT_CACHE is not None:
         return _CLIENT_CACHE
 
-    if not SERVICE_ACCOUNT_FILE.exists():
-        raise FileNotFoundError(
-            f"Service account file not found: {SERVICE_ACCOUNT_FILE}"
-        )
-
-    credentials = Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE,
-        scopes=SCOPES,
-    )
+    credentials = _build_google_credentials()
     _CLIENT_CACHE = gspread.authorize(credentials)
     return _CLIENT_CACHE
+
+
+def _build_google_credentials() -> Credentials:
+    """Build Google credentials from Streamlit secrets or the local JSON file."""
+    service_account_info = _get_streamlit_service_account_info()
+    if service_account_info:
+        return Credentials.from_service_account_info(
+            service_account_info,
+            scopes=SCOPES,
+        )
+
+    if SERVICE_ACCOUNT_FILE.exists():
+        return Credentials.from_service_account_file(
+            SERVICE_ACCOUNT_FILE,
+            scopes=SCOPES,
+        )
+
+    raise FileNotFoundError(
+        "Không tìm thấy cấu hình Google Service Account. "
+        f"Local cần file {SERVICE_ACCOUNT_FILE}; Streamlit Cloud cần cấu hình "
+        "Secrets với khóa [gcp_service_account]."
+    )
+
+
+def _get_streamlit_service_account_info() -> dict[str, Any] | None:
+    """Return service account info from Streamlit secrets when available."""
+    try:
+        import streamlit as st
+    except Exception:
+        return None
+
+    try:
+        raw_info = st.secrets.get("gcp_service_account")
+    except Exception:
+        return None
+
+    if not raw_info:
+        return None
+
+    info = dict(raw_info)
+    private_key = info.get("private_key")
+    if isinstance(private_key, str):
+        info["private_key"] = private_key.replace("\\n", "\n")
+    return info
 
 
 def open_spreadsheet() -> gspread.Spreadsheet:
