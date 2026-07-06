@@ -649,3 +649,66 @@
   - `EVUS_ThiDua_M03_4_v6_repair_TH_ID.zip`;
   - `EVUS_ThiDua_M03_5_Export_Excel_Month_v2_button_color.zip`.
 
+## 2026-07-06 - Pilot v1.0-beta: Chuẩn bị triển khai thực tế
+
+### Quyết định vận hành
+
+- Thống nhất tạm dừng phát triển M04.
+- Triển khai hệ thống cho giáo viên và Ban Giám hiệu sử dụng thực tế ít nhất 02 tháng.
+- Trong giai đoạn Pilot chỉ xử lý:
+  - lỗi phát sinh;
+  - tối ưu hiệu năng;
+  - cải thiện giao diện;
+  - hoàn thiện thông báo và bẫy lỗi.
+- Chưa phát triển thêm chức năng mới ngoài phạm vi vận hành thực tế.
+
+### Chuẩn hóa đăng nhập
+
+- Thống nhất tài khoản đăng nhập chung theo vai trò:
+  - Giáo viên: `GV`.
+  - Ban Giám hiệu: `BGH`.
+- Giáo viên đăng nhập bằng:
+  - Tài khoản: `GV`;
+  - Mật khẩu ban đầu: `Mã GV`.
+- Ban Giám hiệu đăng nhập bằng:
+  - Tài khoản: `BGH`;
+  - Mật khẩu ban đầu: `BGH123abc456`.
+- Màn hình đăng nhập đổi từ ô nhập tự do sang chọn vai trò:
+  - `Giáo viên`;
+  - `Ban Giám hiệu`.
+- Tài khoản hiển thị cố định theo lựa chọn, giúp giảm lỗi gõ sai `GV` hoặc `BGH`.
+
+### Quản trị hệ thống cho BGH
+
+- Bổ sung khu vực `Quản trị hệ thống` ở góc trên bên phải màn hình BGH.
+- Bổ sung cấu hình thời hạn tự chấm:
+  - mặc định hết ngày 05 hằng tháng;
+  - BGH có thể điều chỉnh ngày cuối tự chấm;
+  - cấu hình lưu trong `System_Config`.
+- Bổ sung chức năng `Khởi tạo mật khẩu cho tài khoản mới`:
+  - chỉ xử lý các tài khoản chưa có `MatKhauHash`;
+  - không ghi đè mật khẩu đã có;
+  - GV mới có mật khẩu ban đầu là `Mã GV`;
+  - BGH có mật khẩu ban đầu là `BGH123abc456`;
+  - ghi `Audit_Log` khi thực hiện.
+- Loại bỏ nút `Đặt lại mật khẩu ban đầu` vì có nguy cơ reset toàn bộ mật khẩu ngoài ý muốn.
+
+### Tài liệu và phát hành
+
+- Tạo tài liệu hướng dẫn sử dụng nhanh cho giáo viên và Ban Giám hiệu.
+- Thống nhất đóng gói/lưu trữ bản dự án v1.0-beta trước khi trường dùng thật.
+- Thống nhất tạo mốc phát hành trên GitHub để trường tải và triển khai.
+
+### Kiểm thử PASS
+
+- BGH đăng nhập bằng tài khoản `BGH`.
+- Giáo viên đăng nhập bằng tài khoản `GV` và mật khẩu là `Mã GV`.
+- BGH lưu được ngày cuối tự chấm.
+- Giáo viên có thể tự chấm khi thời hạn được BGH mở rộng.
+- Chức năng khởi tạo mật khẩu cho tài khoản mới chỉ băm tài khoản chưa có hash.
+- Giao diện `Quản trị hệ thống` được bố trí lại và tiêu đề màu đỏ.
+
+### Trạng thái
+
+- Hệ thống đủ điều kiện triển khai Pilot v1.0-beta cho trường sử dụng thực tế.
+- Sau giai đoạn Pilot mới tổng hợp góp ý và quyết định các hạng mục tiếp theo trước khi phát triển M04.

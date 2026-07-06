@@ -12,6 +12,11 @@ import streamlit as st
 
 from app.components.score_form_component import FORM_ACTION_SAVE, FORM_MODE_BGH, render_score_form
 from app.services.criteria_service import get_all_criteria
+from app.services.account_service import normalize_missing_password_hashes
+from app.services.config_service import (
+    get_teacher_scoring_deadline_day,
+    set_teacher_scoring_deadline_day,
+)
 from app.services.google_sheets_service import read_sheet_records
 from app.services.teacher_service import get_all_teachers
 from app.services.thi_dua_service import (
@@ -73,7 +78,11 @@ def render_bgh_score_page() -> None:
     st.caption(f"Vai trò: BGH | Kỳ đánh giá: {get_current_scoring_month()}")
 
     default_month = get_current_scoring_month()
-    thang = st.text_input("Tháng chấm", value=default_month, help="Định dạng MM/YYYY, ví dụ 06/2026.")
+    col_workflow, col_admin = st.columns([3.2, 1.6])
+    with col_workflow:
+        thang = st.text_input("Tháng chấm", value=default_month, help="Định dạng MM/YYYY, ví dụ 06/2026.")
+    with col_admin:
+        _render_system_admin_panel(compact=True)
     normalized_month = _normalize_month_key(thang)
 
     try:
@@ -284,6 +293,102 @@ def _render_export_month_excel_panel(thang: str) -> None:
         type="primary",
         use_container_width=False,
     )
+
+
+def _render_system_admin_panel(compact: bool = False) -> None:
+    """Render BGH-only system administration tools near the top-right area."""
+    if not compact:
+        st.divider()
+        st.markdown(
+            '<div style="color:#ff4b4b; font-weight:800; font-size:1.5rem; margin-bottom:0.35rem;">Quản trị hệ thống</div>',
+            unsafe_allow_html=True,
+        )
+        st.caption(
+            "Các thao tác dưới đây chỉ phục vụ vận hành hệ thống. "
+            "Không dùng để chấm điểm hay xử lý phiếu thi đua."
+        )
+    else:
+        st.markdown(
+            '<div style="color:#ff4b4b; font-weight:800; font-size:1.05rem; margin-bottom:0.15rem;">Quản trị hệ thống</div>',
+            unsafe_allow_html=True,
+        )
+        st.caption("Cấu hình vận hành và tài khoản.")
+
+    with st.expander("Cấu hình thời hạn tự chấm", expanded=False):
+        _render_scoring_deadline_panel()
+
+    with st.expander("Tài khoản và mật khẩu", expanded=False):
+        _render_account_password_panel()
+
+
+def _render_scoring_deadline_panel() -> None:
+    """Render BGH system configuration for teacher self-scoring deadline."""
+    st.markdown("**Cấu hình thời hạn tự chấm**")
+    st.caption(
+        "BGH chọn ngày cuối cùng giáo viên được tự tạo và tự chấm phiếu trong tháng. "
+        "Nếu chưa cấu hình, hệ thống mặc định hết ngày 5."
+    )
+
+    deadline_status = st.session_state.pop("m03_deadline_config_status", "")
+    if deadline_status:
+        st.success(deadline_status)
+
+    try:
+        current_deadline = get_teacher_scoring_deadline_day()
+    except ValueError as exc:
+        st.error(str(exc))
+        return
+
+    col_day, col_button, _ = st.columns([1.2, 1.5, 4])
+    with col_day:
+        selected_day = st.number_input(
+            "Ngày cuối tự chấm",
+            min_value=1,
+            max_value=31,
+            value=int(current_deadline),
+            step=1,
+            help="Ví dụ 5 nghĩa là giáo viên được tự chấm từ ngày 1 đến hết ngày 5.",
+        )
+    with col_button:
+        st.write("")
+        if st.button("Lưu thời hạn tự chấm", type="primary", use_container_width=True):
+            try:
+                actor = _resolve_actor_code(_get_logged_in_user() or {})
+                set_teacher_scoring_deadline_day(int(selected_day), actor)
+                st.session_state["m03_deadline_config_status"] = (
+                    f"Đã cập nhật thời hạn tự chấm đến hết ngày {int(selected_day)} mỗi tháng."
+                )
+                st.rerun()
+            except ValueError as exc:
+                st.error(str(exc))
+
+
+def _render_account_password_panel() -> None:
+    """Render safe BGH account password initialization tool."""
+    st.markdown("**Khởi tạo mật khẩu**")
+    st.caption(
+        "Dùng sau khi bổ sung giáo viên trong DM_GiaoVien. "
+        "Chỉ tạo MatKhauHash cho tài khoản đang hoạt động và chưa có mật khẩu; không ghi đè tài khoản đã có mật khẩu. "
+        "Tài khoản đăng nhập chỉ dùng GV hoặc BGH. Giáo viên dùng mật khẩu là Mã GV; BGH dùng mật khẩu riêng."
+    )
+
+    account_status = st.session_state.pop("m03_account_password_status", "")
+    if account_status:
+        st.success(account_status)
+
+    col_missing, _ = st.columns([1.6, 4])
+    with col_missing:
+        if st.button("Khởi tạo mật khẩu cho tài khoản mới", type="primary", use_container_width=True):
+            try:
+                actor = _resolve_actor_code(_get_logged_in_user() or {})
+                result = normalize_missing_password_hashes(actor)
+                st.session_state["m03_account_password_status"] = (
+                    f"Đã khởi tạo hash mật khẩu cho {result.get('updated_count', 0)} tài khoản mới. "
+                    f"Bỏ qua tài khoản đã có hash: {result.get('skipped_has_hash', 0)}."
+                )
+                st.rerun()
+            except ValueError as exc:
+                st.error(str(exc))
 
 def _render_selected_phieu(phieu: dict, teacher_map: dict[str, dict]) -> None:
     id_phieu = str(phieu.get("ID", "")).strip()

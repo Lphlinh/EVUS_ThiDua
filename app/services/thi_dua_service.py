@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 from typing import Any
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from gspread.exceptions import WorksheetNotFound
 
 from app.models.thi_dua_detail import ThiDuaDetail
 from app.models.thi_dua_header import ThiDuaHeader
+from app.services.config_service import get_teacher_scoring_deadline_day
 from app.services.audit_service import (
     ACTION_SUBMIT_PHIEU,
     ACTION_BGH_UPDATE_SCORE,
@@ -1327,8 +1330,14 @@ def submit_phieu(id_phieu: str, ma_gv: str, changed_rows: list[dict] | None = No
     return refreshed
 
 def is_teacher_allowed_to_create() -> bool:
-    """Return True if teacher can self-create a form today."""
-    return is_scoring_window_open()
+    """Return True if teacher can self-create a form today.
+
+    The deadline day is controlled by BGH in System_Config. If the setting is
+    missing, the default remains day 5 to preserve the original business rule.
+    """
+    deadline_day = get_teacher_scoring_deadline_day()
+    today = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh")).day
+    return today <= deadline_day
 
 
 def is_teacher_allowed_to_edit(phieu: dict) -> bool:

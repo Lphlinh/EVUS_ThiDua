@@ -91,6 +91,28 @@
 - [x] Xuất Excel tháng.
 - [x] Kiểm thử Excel lấy dữ liệu từ `TongHop_ThiDua`, không đọc lại `CT_ThiDua`.
 
+
+## Pilot v1.0-beta
+- [x] Thống nhất triển khai thực tế ít nhất 02 tháng trước khi phát triển M04.
+- [x] Chuẩn hóa đăng nhập theo vai trò: `GV` và `BGH`.
+- [x] Giáo viên đăng nhập bằng `GV` + `Mã GV`.
+- [x] Ban Giám hiệu đăng nhập bằng `BGH` + mật khẩu ban đầu `BGH123abc456`.
+- [x] Chuyển ô nhập tài khoản sang chọn `Giáo viên` / `Ban Giám hiệu`.
+- [x] Bổ sung khu vực `Quản trị hệ thống` cho BGH.
+- [x] Bổ sung cấu hình ngày cuối tự chấm.
+- [x] Bổ sung chức năng khởi tạo mật khẩu cho tài khoản mới.
+- [x] Loại bỏ nút đặt lại mật khẩu toàn bộ.
+- [x] Tạo tài liệu hướng dẫn sử dụng nhanh.
+- [ ] Tạo Git tag `v1.0-beta`.
+- [ ] Gửi link GitHub/Release cho trường.
+
+### Pilot - Theo dõi vận hành
+- [ ] Ghi nhận phản ánh thực tế từ giáo viên.
+- [ ] Ghi nhận phản ánh thực tế từ Ban Giám hiệu.
+- [ ] Phân loại phản ánh: bug / giao diện / nghiệp vụ / hiệu năng.
+- [ ] Gom bản vá theo phiên bản nhỏ `v1.0.1`, `v1.0.2`, ... nếu cần.
+- [ ] Sau ít nhất 02 tháng, tổng kết Pilot trước khi quyết định M04.
+
 ## M04
 - [ ] Tổng hợp năm học
 - [ ] Xếp loại năm học
