@@ -6,7 +6,7 @@ from typing import Any
 
 import bcrypt
 
-from app.services.teacher_service import get_all_teachers, get_teacher_by_username
+from app.services.teacher_service import get_all_teachers, get_teacher_by_magv, get_teacher_by_username
 
 DEFAULT_BGH_PASSWORD = "BGH123abc456"
 
@@ -27,11 +27,7 @@ def authenticate(username: str, password: str) -> dict | None:
         return None
 
     if login_name in {"gv", "giao_vien", "giao_vien_"}:
-        return _authenticate_by_role_and_default_password(
-            target_roles={"giao_vien", "gv", "teacher"},
-            password=password_text,
-            bgh_mode=False,
-        )
+        return _authenticate_teacher_by_default_password(password_text)
 
     if login_name in {"bgh", "ban_giam_hieu", "admin", "quan_tri", "quan_tri_vien"}:
         return _authenticate_by_role_and_default_password(
@@ -40,7 +36,7 @@ def authenticate(username: str, password: str) -> dict | None:
             bgh_mode=True,
         )
 
-    # Fallback for legacy per-user username login.
+    # Dự phòng cho cách đăng nhập cũ bằng tên tài khoản riêng.
     teacher = get_teacher_by_username(username)
     if teacher is None or not teacher.get("dang_hoat_dong"):
         return None
@@ -53,6 +49,28 @@ def authenticate(username: str, password: str) -> dict | None:
         return None
 
     return teacher
+
+
+def _authenticate_teacher_by_default_password(password: str) -> dict | None:
+    """Xác thực giáo viên theo quy tắc chính thức: mật khẩu bằng MaGV.
+
+    Luồng đăng nhập chung của giáo viên không cần kiểm tra bcrypt cho từng dòng.
+    Tìm trực tiếp theo MaGV giúp tránh chậm khi DM_GiaoVien có nhiều tài khoản
+    đã có MatKhauHash.
+    """
+    teacher = get_teacher_by_magv(password)
+    if teacher is None or not teacher.get("dang_hoat_dong"):
+        return None
+
+    role = _normalize_key(teacher.get("vai_tro"))
+    if role not in {"giao_vien", "gv", "teacher"}:
+        return None
+
+    ma_gv = str(teacher.get("ma_gv", "")).strip()
+    if ma_gv and str(password or "").strip().lower() == ma_gv.lower():
+        return teacher
+
+    return None
 
 
 def _authenticate_by_role_and_default_password(

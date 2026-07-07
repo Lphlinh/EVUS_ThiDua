@@ -38,7 +38,7 @@ FORM_CSS = """
 .ev-score-header {
     position: -webkit-sticky;
     position: sticky;
-    top: 3.25rem;
+    top: 0;
     z-index: 1000;
     display: grid;
     grid-template-columns: 5% 53% 12% 10% 20%;
@@ -111,12 +111,91 @@ div[data-testid="stNumberInput"] input {
     min-height: 2.05rem;
     text-align: center;
 }
-section.main div.block-container, div[data-testid="stVerticalBlock"] {
-    overflow: visible !important;
-}
+/* Không ép overflow toàn trang; bảng GV dùng vùng cuộn Streamlit thuần. */
 div[data-testid="stTextInput"] input {
     min-height: 2.05rem;
 }
+
+.ev-action-header-table {
+    display: grid;
+    grid-template-columns: 5% 53% 12% 10% 20%;
+    background: #d8e4bc;
+    border-top: 1px solid #222;
+    border-left: 1px solid #222;
+    margin-top: 0.75rem;
+    font-weight: 700;
+    color: #111;
+}
+.ev-action-header-table > div {
+    border-right: 1px solid #222;
+    border-bottom: 1px solid #222;
+    padding: 0.75rem 0.45rem;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    line-height: 1.25;
+}
+.ev-action-header-table small {
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+.ev-action-block-note {
+    font-size: 0.78rem;
+    color: rgba(80, 80, 80, 0.72);
+    margin-top: 0.35rem;
+}
+.ev-action-confirm-note {
+    margin: 0.35rem 0 0.25rem 0;
+    padding: 0.42rem 0.55rem;
+    border: 1px solid #f59e0b;
+    background: #fff7ed;
+    color: #92400e;
+    border-radius: 0.35rem;
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+.ev-action-warning-box {
+    margin: 0.35rem 0 0.35rem 0;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #fca5a5;
+    background: #fef2f2;
+    color: #991b1b;
+    border-radius: 0.35rem;
+    font-size: 0.8rem;
+    line-height: 1.35;
+}
+.ev-action-warning-item {
+    margin-top: 0.16rem;
+}
+
+.ev-score-scroll-box {
+    max-height: 56vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid rgba(128, 128, 128, 0.32);
+    border-radius: 0.45rem;
+    padding: 0.45rem 0.55rem;
+    margin-top: 0.45rem;
+    background: #ffffff;
+}
+.ev-score-scroll-box::-webkit-scrollbar {
+    width: 0.65rem;
+}
+.ev-score-scroll-box::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.55);
+    border-radius: 999px;
+}
+.ev-score-scroll-anchor {
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
 @media (max-width: 900px) {
     .ev-score-header, .ev-score-totalbar { grid-template-columns: 7% 45% 14% 14% 20%; font-size: 0.82rem; }
     .ev-cell { font-size: 0.82rem; }
@@ -128,6 +207,8 @@ div[data-testid="stTextInput"] input {
 FORM_ACTION_NONE = "none"
 FORM_ACTION_SAVE = "save"
 FORM_ACTION_SUBMIT = "submit"
+FORM_ACTION_CONFIRM_SUBMIT = "confirm_submit"
+FORM_ACTION_CANCEL_SUBMIT = "cancel_submit"
 FORM_MODE_TEACHER = "teacher"
 FORM_MODE_BGH = "bgh"
 MAX_TOTAL_SCORE = 100.0
@@ -155,13 +236,10 @@ def _render_teacher_score_form(
     details: list[dict],
     readonly: bool = False,
 ) -> tuple[list[dict], float, str, list[str]]:
-    """Render Excel-like scoring form.
+    """Render Excel-like scoring form for teacher.
 
-    Returns:
-        changed_rows: rows changed in memory.
-        total: current official total from submitted form/session values.
-        action: none/save/submit.
-        errors: validation errors detected on input range.
+    Khối thao tác và tiêu đề bảng được tách khỏi nội dung phiếu điểm.
+    Phần này chỉ thay đổi giao diện, không thay đổi nghiệp vụ lưu/nộp.
     """
     st.markdown(FORM_CSS, unsafe_allow_html=True)
     normalized_criteria = [_normalize_criterion(row) for row in criteria]
@@ -170,17 +248,68 @@ def _render_teacher_score_form(
 
     prepared_rows = _prepare_rows(normalized_criteria, detail_by_ma_tc)
     parent_totals = _build_parent_totals(prepared_rows)
-    _render_sticky_header()
 
     changed_rows: list[dict] = []
     errors: list[str] = []
     action = FORM_ACTION_NONE
 
-    with st.form("m02_score_form", clear_on_submit=False):
-        total = 0.0
-        group_index = 0
-        item_index = 0
+    # KHỐI 1: thao tác + tiêu đề cột. Không render nội dung điểm ở đây.
+    with st.container(border=True):
+        is_confirming_submit = bool(st.session_state.get("m02_confirm_submit"))
+        if is_confirming_submit:
+            save_col, submit_col, confirm_col, cancel_col, _ = st.columns([1.0, 1.15, 0.95, 0.65, 1.0])
+        else:
+            save_col, submit_col, _ = st.columns([1.1, 1.3, 1.2])
+            confirm_col = cancel_col = None
 
+        save_is_active = st.session_state.get("m02_last_action") == FORM_ACTION_SAVE
+        save_button_type = "primary" if save_is_active else "secondary"
+        submit_button_type = "secondary" if save_is_active else "primary"
+
+        with save_col:
+            save_clicked = st.button("Lưu", type=save_button_type, use_container_width=True, disabled=readonly, key="m02_save_button_top")
+        with submit_col:
+            submit_clicked = st.button("Xác nhận nộp phiếu", type=submit_button_type, use_container_width=True, disabled=readonly, key="m02_submit_button_top")
+
+        confirm_clicked = False
+        cancel_clicked = False
+        if is_confirming_submit and confirm_col is not None and cancel_col is not None:
+            with confirm_col:
+                confirm_clicked = st.button("Đồng ý nộp", type="primary", use_container_width=True, disabled=readonly, key="m02_confirm_submit_button_top")
+            with cancel_col:
+                cancel_clicked = st.button("Hủy", use_container_width=True, disabled=readonly, key="m02_cancel_submit_button_top")
+            st.markdown(
+                '<div class="ev-action-confirm-note"><b>Xác nhận nộp phiếu:</b> Sau khi nộp, phiếu sẽ khóa phần chỉnh sửa của giáo viên.</div>',
+                unsafe_allow_html=True,
+            )
+
+        warning_messages = st.session_state.get("m02_submit_warning_messages") or []
+        if warning_messages:
+            st.markdown('<div class="ev-action-warning-box"><b>Tiêu chí cần kiểm tra/ghi chú:</b>', unsafe_allow_html=True)
+            for message in warning_messages:
+                st.markdown(f'<div class="ev-action-warning-item">- {_html_escape(message)}</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        if save_clicked:
+            st.session_state["m02_last_action"] = FORM_ACTION_SAVE
+            action = FORM_ACTION_SAVE
+        elif submit_clicked:
+            st.session_state["m02_last_action"] = FORM_ACTION_SUBMIT
+            action = FORM_ACTION_SUBMIT
+        elif confirm_clicked:
+            action = FORM_ACTION_CONFIRM_SUBMIT
+        elif cancel_clicked:
+            action = FORM_ACTION_CANCEL_SUBMIT
+
+        _render_teacher_fixed_header()
+
+    # KHỐI 2: nội dung phiếu điểm trong vùng cuộn Streamlit thuần.
+    # Không dùng JavaScript/DOM để tránh treo trắng khi Lưu hoặc Nộp.
+    total = 0.0
+    group_index = 0
+    item_index = 0
+
+    with st.container(height=520, border=True):
         for row in prepared_rows:
             loai = row["loai"]
             if loai == "GROUP":
@@ -229,13 +358,9 @@ def _render_teacher_score_form(
                     f"Tiêu chí {display_tt}: điểm tự chấm {diem_gv:g} lớn hơn thang điểm {row['diem_mac_dinh']:g}."
                 )
 
-            official_score = _to_float(row["diem_bgh"]) if row["diem_bgh"] else float(diem_gv)
-            total += official_score
+            total += _resolve_official_score_for_display(row, float(diem_gv))
 
             if not readonly:
-                # Trả về toàn bộ dòng ITEM hiện hành, không chỉ dòng thay đổi.
-                # Cách này bảo đảm nút Lưu luôn ghi đúng trạng thái người dùng đang thấy,
-                # tránh lỗi so sánh sai do kiểu dữ liệu/định dạng Google Sheets.
                 changed_rows.append(
                     {
                         "ID": row["detail"].get("ID", ""),
@@ -254,32 +379,15 @@ def _render_teacher_score_form(
                     unsafe_allow_html=True,
                 )
 
-        if errors:
-            for error in errors:
-                st.markdown(f'<div class="ev-score-warning">{_html_escape(error)}</div>', unsafe_allow_html=True)
 
-        total = _cap_total(total)
-        _render_live_total(total)
-        _attach_live_total_and_sticky_header()
+    if errors:
+        for error in errors:
+            st.markdown(f'<div class="ev-score-warning">{_html_escape(error)}</div>', unsafe_allow_html=True)
 
-        save_col, submit_col, _ = st.columns([1.1, 1.3, 1.2])
-        save_is_active = st.session_state.get("m02_last_action") == FORM_ACTION_SAVE
-        save_button_type = "primary" if save_is_active else "secondary"
-        submit_button_type = "secondary" if save_is_active else "primary"
-        with save_col:
-            save_clicked = st.form_submit_button("Lưu", type=save_button_type, use_container_width=True, disabled=readonly)
-        with submit_col:
-            submit_clicked = st.form_submit_button("Xác nhận nộp phiếu", type=submit_button_type, use_container_width=True, disabled=readonly)
-
-        if save_clicked:
-            st.session_state["m02_last_action"] = FORM_ACTION_SAVE
-            action = FORM_ACTION_SAVE
-        elif submit_clicked:
-            st.session_state["m02_last_action"] = FORM_ACTION_SUBMIT
-            action = FORM_ACTION_SUBMIT
+    total = _cap_total(total)
+    _render_live_total(total)
 
     return changed_rows, total, action, errors
-
 
 
 def _render_bgh_score_form(
@@ -306,80 +414,85 @@ def _render_bgh_score_form(
         group_index = 0
         item_index = 0
 
-        for row in prepared_rows:
-            loai = row["loai"]
-            if loai == "GROUP":
-                group_index += 1
-                item_index = 0
-                totals = parent_totals.get(row["ma_tc"], {})
-                _render_bgh_static_row(
-                    f"{_to_roman(group_index)}.",
-                    row["ten_tc"],
-                    _format_score(_to_float(totals.get("max", 0))),
-                    _format_score(_to_float(totals.get("teacher", 0))),
-                    _format_score(_to_float(totals.get("teacher", 0))),
-                    "group",
+        # Bảng 2: chỉ chứa các dòng tiêu chí và có vùng cuộn riêng.
+        # Header 7 cột đã được render ở trên bằng _render_bgh_sticky_header().
+        # Không thay đổi logic nhập/lưu điểm BGH.
+        with st.container(height=430, border=True):
+            for row in prepared_rows:
+                loai = row["loai"]
+                if loai == "GROUP":
+                    group_index += 1
+                    item_index = 0
+                    totals = parent_totals.get(row["ma_tc"], {})
+                    _render_bgh_static_row(
+                        f"{_to_roman(group_index)}.",
+                        row["ten_tc"],
+                        _format_score(_to_float(totals.get("max", 0))),
+                        _format_score(_to_float(totals.get("teacher", 0))),
+                        _format_score(_to_float(totals.get("teacher", 0))),
+                        "group",
+                    )
+                    continue
+
+                if loai == "SECTION":
+                    totals = parent_totals.get(row["ma_tc"], {})
+                    _render_bgh_static_row(
+                        row["display_code"],
+                        row["ten_tc"],
+                        _format_score(_to_float(totals.get("max", 0))),
+                        _format_score(_to_float(totals.get("teacher", 0))),
+                        _format_score(_to_float(totals.get("teacher", 0))),
+                        "section",
+                    )
+                    continue
+
+                if loai != "ITEM":
+                    continue
+
+                item_index += 1
+                display_tt = row["display_code"] or (f"{group_index}.{item_index}" if group_index else str(item_index))
+                row_kind = "item-even" if item_index % 2 == 0 else "item-odd"
+                diem_bgh, ghi_chu_bgh = _render_bgh_item_row(
+                    display_tt=display_tt,
+                    ten_tc=row["ten_tc"],
+                    diem_mac_dinh=row["diem_mac_dinh"],
+                    current_diem_gv=row["current_diem_gv"],
+                    current_ghi_chu_gv=row["current_ghi_chu_gv"],
+                    current_diem_bgh=row["diem_bgh"],
+                    current_ghi_chu_bgh=row["ghi_chu_bgh"],
+                    key_base=row["key_base"],
+                    readonly=readonly,
+                    row_kind=row_kind,
                 )
-                continue
 
-            if loai == "SECTION":
-                totals = parent_totals.get(row["ma_tc"], {})
-                _render_bgh_static_row(
-                    row["display_code"],
-                    row["ten_tc"],
-                    _format_score(_to_float(totals.get("max", 0))),
-                    _format_score(_to_float(totals.get("teacher", 0))),
-                    _format_score(_to_float(totals.get("teacher", 0))),
-                    "section",
-                )
-                continue
+                if diem_bgh > row["diem_mac_dinh"]:
+                    errors.append(
+                        f"Tiêu chí {display_tt}: điểm BGH {diem_bgh:g} lớn hơn thang điểm {row['diem_mac_dinh']:g}."
+                    )
 
-            if loai != "ITEM":
-                continue
+                total += float(diem_bgh)
 
-            item_index += 1
-            display_tt = row["display_code"] or (f"{group_index}.{item_index}" if group_index else str(item_index))
-            row_kind = "item-even" if item_index % 2 == 0 else "item-odd"
-            diem_bgh, ghi_chu_bgh = _render_bgh_item_row(
-                display_tt=display_tt,
-                ten_tc=row["ten_tc"],
-                diem_mac_dinh=row["diem_mac_dinh"],
-                current_diem_gv=row["current_diem_gv"],
-                current_ghi_chu_gv=row["current_ghi_chu_gv"],
-                current_diem_bgh=row["diem_bgh"],
-                current_ghi_chu_bgh=row["ghi_chu_bgh"],
-                key_base=row["key_base"],
-                readonly=readonly,
-                row_kind=row_kind,
-            )
-
-            if diem_bgh > row["diem_mac_dinh"]:
-                errors.append(
-                    f"Tiêu chí {display_tt}: điểm BGH {diem_bgh:g} lớn hơn thang điểm {row['diem_mac_dinh']:g}."
-                )
-
-            total += float(diem_bgh)
-
-            if not readonly:
-                changed_rows.append(
-                    {
-                        "ID": row["detail"].get("ID", ""),
-                        "IDPhieu": row["detail"].get("IDPhieu", ""),
-                        "MaTC": row["ma_tc"],
-                        "DiemGV": float(row["current_diem_gv"]),
-                        "DiemBGH": float(diem_bgh),
-                        "GhiChuBGH": str(ghi_chu_bgh).strip(),
-                    }
-                )
+                if not readonly:
+                    changed_rows.append(
+                        {
+                            "ID": row["detail"].get("ID", ""),
+                            "IDPhieu": row["detail"].get("IDPhieu", ""),
+                            "MaTC": row["ma_tc"],
+                            "DiemGV": float(row["current_diem_gv"]),
+                            "DiemBGH": float(diem_bgh),
+                            "GhiChuBGH": str(ghi_chu_bgh).strip(),
+                        }
+                    )
 
         if errors:
             for error in errors:
                 st.markdown(f'<div class="ev-score-warning">{_html_escape(error)}</div>', unsafe_allow_html=True)
 
         total = _cap_total(total)
-        _render_live_total(total)
-        _attach_live_total_and_sticky_header()
 
+        # BGH chỉ dùng một tổng điểm chính thức ở đầu phiếu.
+        # Không hiển thị thêm tổng điểm tạm ở cuối form để tránh hiểu nhầm.
+        st.markdown('<div id="evus-bgh-actions-anchor"></div>', unsafe_allow_html=True)
         save_col, _ = st.columns([1.2, 3.8])
         with save_col:
             save_clicked = st.form_submit_button("Lưu điểm BGH", type="primary", use_container_width=True, disabled=readonly)
@@ -474,15 +587,34 @@ def _render_bgh_item_row(
         )
     return float(diem_bgh), str(ghi_chu_bgh)
 
+def _scroll_to_bgh_actions() -> None:
+    """Cuộn nhẹ đến nút lưu BGH khi khu vực thao tác nằm dưới cuối bảng."""
+    components.html(
+        """
+        <script>
+        (function() {
+          const root = window.parent.document;
+          const anchor = root.getElementById('evus-bgh-actions-anchor');
+          if (!anchor) return;
+          setTimeout(function() {
+            anchor.scrollIntoView({block: 'center', behavior: 'smooth'});
+          }, 80);
+        })();
+        </script>
+        """,
+        height=0,
+    )
+
+
 def _cap_total(total: float) -> float:
     return min(float(total or 0), MAX_TOTAL_SCORE)
 
 
-def _render_live_total(total: float) -> None:
+def _render_live_total(total: float, label: str = "Tổng điểm hiện hành") -> None:
     html = f"""
         <div class="ev-live-total-wrap">
             <div class="ev-live-total-box">
-                <div>Tổng điểm hiện hành</div>
+                <div>{_html_escape(label)}</div>
                 <strong id="m02-current-total">{_format_score(total)}</strong>
             </div>
         </div>
@@ -537,9 +669,6 @@ def _attach_live_total_and_sticky_header() -> None:
               input.addEventListener('keyup', updateTotal);
               input.addEventListener('click', updateTotal);
             });
-            root.querySelectorAll('section.main div.block-container, div[data-testid="stVerticalBlock"]').forEach((node) => {
-              node.style.overflow = 'visible';
-            });
             updateTotal();
           };
 
@@ -572,6 +701,27 @@ def _render_total_bar(total: float) -> None:
         unsafe_allow_html=True,
     )
 
+
+
+def _render_teacher_fixed_header() -> None:
+    """Render a separate 1-row, 5-column header for the teacher action block.
+
+    This header is not reused from the score table body. It is intentionally
+    rendered as a standalone HTML grid so the action block can stay independent
+    from the scoring rows.
+    """
+    st.markdown(
+        """
+        <div class="ev-action-header-table">
+            <div>TT</div>
+            <div>Tiêu chí xét thi đua</div>
+            <div>Thang điểm<br>đánh giá<br>(100)</div>
+            <div>Tự<br>chấm</div>
+            <div>Ghi chú<br><small>Dùng khi tự chấm khác điểm mặc định</small></div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 def _render_sticky_header() -> None:
     st.markdown(
@@ -723,6 +873,25 @@ def _normalize_detail(record: dict[str, Any]) -> dict[str, Any]:
         "NguoiCapNhat": _get_text(record, "NguoiCapNhat", "Người cập nhật", "nguoi_cap_nhat"),
     }
 
+def _resolve_official_score_for_display(row: dict[str, Any], teacher_score: float) -> float:
+    """Resolve displayed official score.
+
+    Some older rows may store DiemBGH as 0 instead of blank.
+    By business rule, DiemBGH is only official when BGH actually adjusted it.
+    If DiemBGH is 0 but there is no BGH note and teacher score is not 0,
+    treat it as blank to avoid showing total 0 on submitted teacher forms.
+    """
+    raw_bgh = str(row.get("diem_bgh", "")).strip()
+    if raw_bgh == "":
+        return float(teacher_score)
+
+    bgh_score = _to_float(raw_bgh)
+    bgh_note = str(row.get("ghi_chu_bgh", "")).strip()
+    if bgh_score == 0 and float(teacher_score) != 0 and not bgh_note:
+        return float(teacher_score)
+    return float(bgh_score)
+
+
 def _calculate_total_from_state(rows: list[dict[str, Any]]) -> float:
     total = 0.0
     for row in rows:
@@ -730,8 +899,7 @@ def _calculate_total_from_state(rows: list[dict[str, Any]]) -> float:
             continue
         state_key = f"diem_gv_{row['key_base']}"
         value = st.session_state.get(state_key, row["current_diem_gv"])
-        diem_bgh = row["diem_bgh"]
-        total += _to_float(diem_bgh) if diem_bgh else _to_float(value)
+        total += _resolve_official_score_for_display(row, _to_float(value))
     return total
 
 

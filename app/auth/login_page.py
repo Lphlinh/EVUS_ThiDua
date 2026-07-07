@@ -5,6 +5,7 @@ from __future__ import annotations
 import streamlit as st
 
 from app.services.auth_service import authenticate
+from app.services.google_sheets_service import warm_up_google_sheets
 
 
 LOGIN_CSS = """
@@ -89,6 +90,7 @@ def render_login_page() -> None:
                 st.error("Tài khoản hoặc mật khẩu không đúng.")
                 return
 
+            warm_up_google_sheets()
             st.session_state["teacher"] = teacher
             st.session_state["user"] = teacher
             st.rerun()

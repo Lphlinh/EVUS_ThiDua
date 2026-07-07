@@ -712,3 +712,161 @@
 
 - Hệ thống đủ điều kiện triển khai Pilot v1.0-beta cho trường sử dụng thực tế.
 - Sau giai đoạn Pilot mới tổng hợp góp ý và quyết định các hạng mục tiếp theo trước khi phát triển M04.
+
+## 2026-07-06 - Chuẩn hóa quy trình sửa lỗi theo bản đồ phụ thuộc mã nguồn
+
+- Hoàn thành rà soát toàn bộ các file Python của dự án.
+- Tạo và đưa vào dự án hai tài liệu nền:
+  - `docs/03_Design/PY_RELATION_MAP.md`
+  - `docs/03_Design/evus_py_dependency_map.json`
+- Thống nhất sử dụng hai tài liệu này làm cơ sở xác định phạm vi ảnh hưởng trước khi sửa mã nguồn.
+- Từ thời điểm này:
+  - không sửa theo từng lỗi riêng lẻ khi chưa xác định quan hệ phụ thuộc;
+  - phải xác định các hàm, màn hình, service và bảng Google Sheets liên quan;
+  - phải kiểm thử hồi quy theo đúng phạm vi ảnh hưởng trước khi commit.
+- Nếu một hàm được cả Giáo viên và Ban Giám hiệu dùng chung, bắt buộc kiểm thử cả hai vai trò trước khi commit.
+- Mục tiêu:
+  - giảm lỗi phát sinh chéo;
+  - tăng khả năng bảo trì;
+  - ổn định giai đoạn Pilot.
+
+## 2026-07-07 - Pilot hardening: Tối ưu hiệu năng luồng Giáo viên
+
+### Bối cảnh
+
+- Giáo viên mở phiếu còn chậm hơn Ban Giám hiệu, trong khi các chức năng nghiệp vụ đã PASS.
+- Thống nhất không phát triển chức năng mới, không chỉnh giao diện, không refactor rộng.
+- Mục tiêu duy nhất: xác định nguyên nhân chậm của luồng Giáo viên và tối ưu an toàn, không ảnh hưởng các chức năng đã ổn định.
+
+### Quy trình điều tra
+
+- Đối chiếu `app/pages/bgh_score_page.py` với `app/pages/teacher_score_page.py`.
+- Thiết lập đo nhiều tầng:
+  - đo Google Sheets cấp cao;
+  - đo sâu `thi_dua_service.get_phieu()`;
+  - đo sâu `thi_dua_service.get_chi_tiet_phieu()`;
+  - đo vòng chạy `render_teacher_score_page()` của Streamlit;
+  - đo cấp thấp trong `google_sheets_service.py`.
+- Xuất log TXT để kiểm tra đầy đủ thay vì chỉ xem một phần trên giao diện.
+
+### Kết quả loại trừ
+
+Đã loại trừ các nguyên nhân sau:
+
+- `teacher_score_page.py` không tạo vòng lặp `st.rerun()` bất thường.
+- `score_form_component.render_score_form()` chỉ mất khoảng 0.25-0.32 giây.
+- `thi_dua_service.get_phieu()` xử lý nội bộ rất nhanh; thời gian chủ yếu nằm ở đọc dữ liệu.
+- `thi_dua_service.get_chi_tiet_phieu()` xử lý lọc và khử trùng dữ liệu rất nhanh.
+- Dữ liệu hiện tại nhỏ:
+  - `TH_ThiDua`: khoảng 10-12 dòng;
+  - `CT_ThiDua`: khoảng 207-231 dòng;
+  - `DM_TieuChi`: khoảng 31-32 dòng.
+- Không có bằng chứng cho thấy lỗi nằm ở nghiệp vụ M02/M03.
+
+### Nguyên nhân xác định
+
+- Thời gian chậm chủ yếu nằm ở lớp giao tiếp Google Sheets:
+  - `client.open_by_key()` khi mở Spreadsheet lần đầu;
+  - truy xuất worksheet lần đầu bằng API Google Sheets;
+  - các lệnh `worksheet.get_all_values()` hoặc `worksheet.get()` khi chưa có cache dữ liệu dòng.
+- Cache `read_sheet_records()` hoạt động đúng sau khi dữ liệu đã được đọc.
+- Cache Spreadsheet và Worksheet hoạt động đúng, nhưng trước tối ưu mỗi worksheet vẫn có thể phát sinh lệnh API riêng.
+
+### Bản tối ưu đã thực hiện
+
+- Bổ sung Worksheet Catalog Cache trong `google_sheets_service.py`:
+  - tải danh sách worksheet một lần bằng `spreadsheet.worksheets()`;
+  - cache worksheet handle theo tên sheet;
+  - tránh gọi `spreadsheet.worksheet()` riêng lẻ cho từng sheet.
+- Bổ sung warm-up Google Sheets sau đăng nhập:
+  - thực hiện sau khi `authenticate()` thành công;
+  - làm nóng client/spreadsheet/worksheet catalog trước khi chuyển sang trang làm việc.
+- Gỡ các bộ đo tạm sau khi chốt kết quả điều tra.
+- Giữ lại phần tối ưu cache an toàn.
+
+### Kết quả sau tối ưu
+
+- `spreadsheet.worksheet()` không còn gọi riêng lẻ nhiều lần cho từng sheet trong luồng mở phiếu.
+- Các sheet sau khi nạp catalog chuyển sang `get_worksheet cache hit`.
+- Thời gian còn lại chủ yếu là giới hạn của Google Sheets API khi đọc dữ liệu lần đầu.
+- Tốc độ hiện tại được thống nhất là chấp nhận được cho giai đoạn Pilot.
+
+### Quyết định
+
+- Dừng tối ưu hiệu năng tại đây để tránh rủi ro ảnh hưởng các chức năng đã PASS.
+- Không tiếp tục sửa `teacher_score_page.py`, `thi_dua_service.py` hoặc `google_sheets_service.py` nếu không có bằng chứng mới.
+- Trong giai đoạn Pilot, chỉ điều tra lại hiệu năng nếu:
+  - dữ liệu tăng mạnh;
+  - người dùng phản ánh chậm bất thường;
+  - log cho thấy cache không hoạt động;
+  - thay đổi kiến trúc dữ liệu hoặc cách đọc Google Sheets.
+
+### File liên quan
+
+- `app/services/google_sheets_service.py`
+- `app/auth/login_page.py`
+- `app/pages/teacher_score_page.py`
+- `app/pages/bgh_score_page.py`
+- `app/services/thi_dua_service.py`
+
+### Bản bàn giao liên quan
+
+- `EVUS_ThiDua_ServiceTrace_GetPhieu_CT_Perf_2026-07-07.zip`
+- `EVUS_ThiDua_ServiceTrace_TXT_GetPhieu_CT_2026-07-07.zip`
+- `EVUS_ThiDua_StreamlitRerunTrace_2026-07-07.zip`
+- `EVUS_ThiDua_GoogleSheetsLowLevelTrace_2026-07-07.zip`
+- `EVUS_ThiDua_WorksheetCatalogCache_2026-07-07.zip`
+- `EVUS_ThiDua_LoginGoogleSheetsWarmup_2026-07-07.zip`
+- `EVUS_ThiDua_CleanAfterPerformanceOptimization_2026-07-07.zip`
+## 2026-07-07 - Pilot v1.0-beta: Hoàn thiện giao diện Giáo viên
+
+- Hoàn thiện giao diện M02 theo hướng ưu tiên trải nghiệm người dùng.
+- Thu gọn Header ứng dụng.
+- Thu gọn thông tin phiếu thành một khối tóm tắt.
+- Tách khu vực thao tác khỏi bảng điểm.
+- Bổ sung khu vực xác nhận nộp phiếu độc lập.
+- Bổ sung danh sách tiêu chí còn thiếu giải trình ngay trong khu vực thao tác.
+- Hoàn thiện kiểm tra thiếu giải trình dựa trên dữ liệu hiện hành của form.
+- Giữ nguyên toàn bộ nghiệp vụ M02; chỉ thay đổi giao diện.
+- Khối thao tác và cảnh báo hoạt động ổn định.
+- Giao diện Giáo viên được xem là hoàn thành cho Pilot, chuyển sang kiểm thử hồi quy Ban Giám hiệu.
+
+## 2026-07-07 - Hoàn thiện giao diện Ban Giám hiệu và kiểm thử hồi quy
+
+- Hoàn thiện giao diện Ban Giám hiệu cho Pilot (chạy thử nghiệm), theo hướng gọn và tối ưu diện tích màn hình.
+- Thu gọn khối thông tin người dùng BGH ở Header.
+- Bố trí lại khối điều khiển BGH thành 2 bảng:
+  - Bảng thiết lập chung gồm `Thông tin chấm điểm thi đua` và `Quản trị hệ thống`.
+  - Bảng thao tác xử lý tháng gồm `Chọn phiếu xử lý`, `Chốt tháng`, `Tổng hợp tháng`, `Xuất Excel tháng`.
+- Bỏ bảng `Danh sách phiếu tháng` khỏi luồng chính để giảm chiều cao giao diện.
+- Thu gọn khu vực `Chi tiết phiếu`.
+- Giữ nguyên dòng tiêu đề 7 cột của bảng chi tiết phiếu BGH.
+- Bọc riêng phần tiêu chí BGH vào vùng cuộn, chỉ phần tiêu chí cuộn, không tạo thêm dòng tiêu đề mới.
+- Không thay đổi nghiệp vụ, Google Sheets, service lưu điểm, chốt tháng, tổng hợp tháng hoặc xuất Excel hiện hành.
+- Kiểm thử hồi quy Ban Giám hiệu: PASS.
+  - Mở phiếu: PASS.
+  - Sửa điểm BGH: PASS.
+  - Lưu và đọc lại: PASS.
+  - Chốt tháng: PASS.
+  - Tổng hợp tháng: PASS.
+  - Xuất Excel: PASS.
+- Kiểm thử hồi quy Giáo viên sau khi chạm `score_form_component.py`: PASS.
+  - Mở phiếu: PASS.
+  - Nhập điểm: PASS.
+  - Lưu: PASS.
+  - Đọc lại: PASS.
+  - Nộp phiếu: PASS.
+  - Phiếu đã nộp chỉ xem: PASS.
+- Quyết định: không tiếp tục sửa giao diện GV/BGH nếu không phát hiện lỗi mới.
+
+## 2026-07-07 - Chốt định hướng mẫu Excel tháng mới
+
+- Thống nhất cần bổ sung mẫu Excel tháng mới sau khi hoàn tất kiểm thử hồi quy giao diện.
+- Sheet `TongHop_Thang` sẽ mở rộng theo từng tiêu chí, gồm các cột thông tin giáo viên, tổng điểm và các cột tiêu chí như `1.1`, `1.2`, `1.3`, ...
+- Mỗi giáo viên sẽ có một sheet riêng trong file Excel tháng để xem phiếu chi tiết.
+- Quy tắc điểm ở các cột tiêu chí của sheet tổng hợp:
+  - Nếu có `DiemBGH` thì dùng `DiemBGH`.
+  - Nếu không có `DiemBGH` thì dùng `DiemGV`.
+- Đây là điểm chính thức sau khi BGH duyệt, dùng cho báo cáo tháng.
+- Phạm vi triển khai dự kiến: chỉ sửa phần xuất Excel, không thay đổi Google Sheets và không thay đổi nghiệp vụ chấm điểm.
+

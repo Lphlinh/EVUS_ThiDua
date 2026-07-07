@@ -307,10 +307,9 @@ def create_phieu_for_teacher(ma_gv: str, thang: str | None = None) -> dict:
         LanMoKhoa=0,
     )
 
-    get_worksheet(SHEET_TH).append_row(
-        [header.to_row().get(column, "") for column in TH_HEADERS],
-        value_input_option="USER_ENTERED",
-    )
+    worksheet = get_worksheet(SHEET_TH)
+    _append_th_row_by_sheet_headers(worksheet, header.to_row())
+    clear_sheet_records_cache(SHEET_TH)
     generate_chi_tiet_from_tieu_chi(id_phieu, actor=ma_gv)
     return header.to_row()
 
@@ -839,8 +838,8 @@ def get_month_summary_rows(thang: str) -> list[dict]:
     """Return TongHop_ThiDua rows for one month using canonical keys.
 
     This function only reads summary data. It does not create or modify any
-    worksheet. Excel export must rely on TongHop_ThiDua and must not recalculate
-    scores from CT_ThiDua.
+    worksheet. The monthly Excel export uses these rows as the list of finalized
+    teachers, then reads CT_ThiDua only to fill criterion-level detail columns.
     """
     normalized_month = _normalize_month_key(thang)
     if not normalized_month:
@@ -875,14 +874,14 @@ def get_month_summary_rows(thang: str) -> list[dict]:
 
 
 def build_monthly_excel_export(thang: str) -> tuple[str, bytes, int]:
-    """Build monthly all-school Excel export from TongHop_ThiDua.
+    """Build monthly all-school Excel export with summary and per-teacher sheets.
 
     Returns: (filename, bytes, row_count). The export is generated in memory and
     does not write to Google Sheets or local project files.
     """
     normalized_month = _normalize_month_key(thang)
-    rows = get_month_summary_rows(normalized_month)
-    if not rows:
+    summary_rows = get_month_summary_rows(normalized_month)
+    if not summary_rows:
         raise ValueError("Chưa có dữ liệu tổng hợp tháng. Vui lòng thực hiện Tổng hợp tháng trước khi xuất Excel.")
 
     try:
@@ -893,75 +892,342 @@ def build_monthly_excel_export(thang: str) -> tuple[str, bytes, int]:
     except ImportError as exc:
         raise ValueError("Thiếu thư viện openpyxl. Vui lòng cài đặt dependency trước khi xuất Excel.") from exc
 
-    workbook = Workbook()
-    worksheet = workbook.active
-    worksheet.title = "TongHop_Thang"
+    criteria = get_all_criteria()
+    display_code_by_ma_tc = _build_display_code_map(criteria)
+    item_criteria = [criterion for criterion in criteria if _is_item_criterion(criterion)]
+    all_details_by_phieu = _get_month_details_by_phieu(summary_rows)
 
-    title = f"BẢNG TỔNG HỢP THI ĐUA THÁNG {normalized_month}"
-    worksheet.merge_cells("A1:G1")
-    worksheet["A1"] = title
-    worksheet["A1"].font = Font(bold=True, size=14)
-    worksheet["A1"].alignment = Alignment(horizontal="center", vertical="center")
+    workbook = Workbook()
+    summary_sheet = workbook.active
+    summary_sheet.title = "TongHop_Thang"
+
+    styles = _build_excel_styles(Font, Alignment, Border, PatternFill, Side)
+    _build_monthly_summary_sheet(
+        summary_sheet,
+        normalized_month,
+        summary_rows,
+        item_criteria,
+        all_details_by_phieu,
+        display_code_by_ma_tc,
+        styles,
+        get_column_letter,
+    )
+
+    used_sheet_names = {summary_sheet.title}
+    for row in summary_rows:
+        id_phieu = str(row.get("ID", "")).strip()
+        ma_gv = str(row.get("MaGV", "")).strip()
+        sheet_title = _safe_excel_sheet_title(ma_gv or id_phieu or "GV", used_sheet_names)
+        used_sheet_names.add(sheet_title)
+        teacher_sheet = workbook.create_sheet(title=sheet_title)
+        _build_teacher_detail_sheet(
+            teacher_sheet,
+            normalized_month,
+            row,
+            criteria,
+            all_details_by_phieu.get(id_phieu, []),
+            display_code_by_ma_tc,
+            styles,
+            get_column_letter,
+        )
+
+    output = BytesIO()
+    workbook.save(output)
+    safe_month = normalized_month.replace("/", "_")
+    filename = f"TongHop_ThiDua_Thang_{safe_month}.xlsx"
+    return filename, output.getvalue(), len(summary_rows)
+
+
+def _build_excel_styles(Font: Any, Alignment: Any, Border: Any, PatternFill: Any, Side: Any) -> dict[str, Any]:
+    """Create reusable openpyxl style objects for monthly Excel export."""
+    thin = Side(style="thin", color="B7B7B7")
+    return {
+        "title_font": Font(bold=True, size=14),
+        "subtitle_font": Font(italic=True, size=10),
+        "header_font": Font(bold=True),
+        "section_font": Font(bold=True),
+        "center": Alignment(horizontal="center", vertical="center", wrap_text=True),
+        "left": Alignment(horizontal="left", vertical="center", wrap_text=True),
+        "right": Alignment(horizontal="right", vertical="center", wrap_text=True),
+        "header_fill": PatternFill("solid", fgColor="D9EAF7"),
+        "section_fill": PatternFill("solid", fgColor="F2F2F2"),
+        "border": Border(left=thin, right=thin, top=thin, bottom=thin),
+    }
+
+
+def _build_monthly_summary_sheet(
+    worksheet: Any,
+    normalized_month: str,
+    summary_rows: list[dict],
+    item_criteria: list[dict],
+    details_by_phieu: dict[str, list[dict]],
+    display_code_by_ma_tc: dict[str, str],
+    styles: dict[str, Any],
+    get_column_letter: Any,
+) -> None:
+    """Build TongHop_Thang sheet with one official-score column per ITEM criterion."""
+    fixed_left_headers = ["STT", "Mã GV", "Họ tên", "Tổ chuyên môn"]
+    criterion_headers = [
+        display_code_by_ma_tc.get(_criterion_text(criterion, "MaTC"), _criterion_text(criterion, "MaTC"))
+        for criterion in item_criteria
+    ]
+    fixed_right_headers = ["Tổng điểm", "Xếp loại", "Ghi chú"]
+    headers = fixed_left_headers + criterion_headers + fixed_right_headers
+    last_column = len(headers)
+
+    worksheet.merge_cells(start_row=1, start_column=1, end_row=1, end_column=last_column)
+    worksheet.cell(row=1, column=1, value=f"BẢNG TỔNG HỢP THI ĐUA THÁNG {normalized_month}")
+    worksheet.cell(row=1, column=1).font = styles["title_font"]
+    worksheet.cell(row=1, column=1).alignment = styles["center"]
     worksheet.row_dimensions[1].height = 24
 
-    worksheet.merge_cells("A2:G2")
-    worksheet["A2"] = f"Ngày xuất: {now_iso()}"
-    worksheet["A2"].alignment = Alignment(horizontal="right")
-    worksheet["A2"].font = Font(italic=True, size=10)
+    worksheet.merge_cells(start_row=2, start_column=1, end_row=2, end_column=last_column)
+    worksheet.cell(row=2, column=1, value=f"Ngày xuất: {now_iso()}")
+    worksheet.cell(row=2, column=1).font = styles["subtitle_font"]
+    worksheet.cell(row=2, column=1).alignment = styles["right"]
 
-    headers = ["STT", "Mã GV", "Họ tên", "Tổ chuyên môn", "Tổng điểm", "Xếp loại", "Ghi chú"]
     header_row = 4
     for column_index, header in enumerate(headers, start=1):
         cell = worksheet.cell(row=header_row, column=column_index, value=header)
-        cell.font = Font(bold=True)
-        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-        cell.fill = PatternFill("solid", fgColor="D9EAF7")
+        cell.font = styles["header_font"]
+        cell.alignment = styles["center"]
+        cell.fill = styles["header_fill"]
+        cell.border = styles["border"]
 
-    thin = Side(style="thin", color="B7B7B7")
-    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+    first_score_column = len(fixed_left_headers) + 1
+    total_column = len(fixed_left_headers) + len(criterion_headers) + 1
 
-    for row_index, row in enumerate(rows, start=header_row + 1):
+    for row_index, row in enumerate(summary_rows, start=header_row + 1):
+        id_phieu = str(row.get("ID", "")).strip()
+        detail_by_ma_tc = _detail_by_ma_tc(details_by_phieu.get(id_phieu, []))
+        criterion_scores = [
+            _official_score_from_detail(detail_by_ma_tc.get(_criterion_text(criterion, "MaTC"), {}))
+            for criterion in item_criteria
+        ]
+        official_total = sum(criterion_scores)
         excel_values = [
             row_index - header_row,
             row.get("MaGV", ""),
             row.get("HoTen", ""),
             row.get("ToChuyenMon", ""),
-            row.get("TongDiem", 0),
+            *criterion_scores,
+            official_total,
             row.get("XepLoai", ""),
             "",
         ]
         for column_index, value in enumerate(excel_values, start=1):
             cell = worksheet.cell(row=row_index, column=column_index, value=value)
-            cell.border = border
-            cell.alignment = Alignment(vertical="center", wrap_text=True)
-            if column_index in {1, 2, 5, 6}:
-                cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-            if column_index == 5:
+            cell.border = styles["border"]
+            cell.alignment = styles["left"]
+            if column_index in {1, 2} or first_score_column <= column_index <= total_column + 1:
+                cell.alignment = styles["center"]
+            if first_score_column <= column_index <= total_column:
                 cell.number_format = "0.##"
-
-    for column_index in range(1, len(headers) + 1):
-        worksheet.cell(row=header_row, column=column_index).border = border
 
     widths = {
         1: 8,
         2: 14,
         3: 28,
         4: 24,
-        5: 14,
-        6: 14,
-        7: 28,
+    }
+    for column_index in range(first_score_column, total_column):
+        widths[column_index] = 9
+    widths[total_column] = 14
+    widths[total_column + 1] = 14
+    widths[total_column + 2] = 28
+    for column_index, width in widths.items():
+        worksheet.column_dimensions[get_column_letter(column_index)].width = width
+
+    worksheet.freeze_panes = "A5"
+    worksheet.auto_filter.ref = f"A4:{get_column_letter(last_column)}{header_row + len(summary_rows)}"
+
+
+def _build_teacher_detail_sheet(
+    worksheet: Any,
+    normalized_month: str,
+    summary_row: dict,
+    criteria: list[dict],
+    details: list[dict],
+    display_code_by_ma_tc: dict[str, str],
+    styles: dict[str, Any],
+    get_column_letter: Any,
+) -> None:
+    """Build one teacher detail sheet following the BGH review data layout."""
+    headers = [
+        "Mã",
+        "Nội dung tiêu chí",
+        "Điểm mặc định",
+        "Điểm GV",
+        "Ghi chú GV",
+        "Điểm BGH",
+        "Ghi chú BGH",
+        "Điểm chính thức",
+    ]
+    last_column = len(headers)
+    teacher_name = str(summary_row.get("HoTen", "")).strip()
+    ma_gv = str(summary_row.get("MaGV", "")).strip()
+
+    worksheet.merge_cells(start_row=1, start_column=1, end_row=1, end_column=last_column)
+    worksheet.cell(row=1, column=1, value=f"PHIẾU THI ĐUA THÁNG {normalized_month} - {ma_gv} {teacher_name}".strip())
+    worksheet.cell(row=1, column=1).font = styles["title_font"]
+    worksheet.cell(row=1, column=1).alignment = styles["center"]
+    worksheet.row_dimensions[1].height = 24
+
+    worksheet.merge_cells(start_row=2, start_column=1, end_row=2, end_column=last_column)
+    worksheet.cell(
+        row=2,
+        column=1,
+        value=(
+            f"Tổ: {summary_row.get('ToChuyenMon', '')} | "
+            f"ID phiếu: {summary_row.get('ID', '')} | "
+            f"Ngày xuất: {now_iso()}"
+        ),
+    )
+    worksheet.cell(row=2, column=1).font = styles["subtitle_font"]
+    worksheet.cell(row=2, column=1).alignment = styles["right"]
+
+    header_row = 4
+    for column_index, header in enumerate(headers, start=1):
+        cell = worksheet.cell(row=header_row, column=column_index, value=header)
+        cell.font = styles["header_font"]
+        cell.alignment = styles["center"]
+        cell.fill = styles["header_fill"]
+        cell.border = styles["border"]
+
+    detail_by_ma_tc = _detail_by_ma_tc(details)
+    row_index = header_row + 1
+    official_total = 0.0
+    for criterion in criteria:
+        ma_tc = _criterion_text(criterion, "MaTC")
+        loai = _criterion_text(criterion, "Loai").upper()
+        detail = detail_by_ma_tc.get(ma_tc, {})
+        display_code = display_code_by_ma_tc.get(ma_tc) or _criterion_text(criterion, "MaHienThi") or ma_tc
+        official_score = _official_score_from_detail(detail) if loai == "ITEM" else ""
+        if loai == "ITEM":
+            official_total += _safe_float(official_score)
+
+        excel_values = [
+            display_code,
+            _criterion_text(criterion, "NoiDung"),
+            _safe_float(detail.get("DiemMacDinh")) if loai == "ITEM" else "",
+            _safe_float(detail.get("DiemGV")) if loai == "ITEM" else "",
+            str(detail.get("GhiChuGV", "")).strip() if loai == "ITEM" else "",
+            _blank_if_empty(detail.get("DiemBGH")) if loai == "ITEM" else "",
+            str(detail.get("GhiChuBGH", "")).strip() if loai == "ITEM" else "",
+            official_score,
+        ]
+        for column_index, value in enumerate(excel_values, start=1):
+            cell = worksheet.cell(row=row_index, column=column_index, value=value)
+            cell.border = styles["border"]
+            cell.alignment = styles["left"]
+            if column_index in {1, 3, 4, 6, 8}:
+                cell.alignment = styles["center"]
+            if column_index in {3, 4, 6, 8} and value != "":
+                cell.number_format = "0.##"
+            if loai in {"SECTION", "GROUP"}:
+                cell.font = styles["section_font"]
+                cell.fill = styles["section_fill"]
+        row_index += 1
+
+    total_row = row_index
+    worksheet.merge_cells(start_row=total_row, start_column=1, end_row=total_row, end_column=7)
+    worksheet.cell(row=total_row, column=1, value="Tổng điểm chính thức")
+    worksheet.cell(row=total_row, column=1).font = styles["header_font"]
+    worksheet.cell(row=total_row, column=1).alignment = styles["right"]
+    worksheet.cell(row=total_row, column=8, value=official_total)
+    worksheet.cell(row=total_row, column=8).font = styles["header_font"]
+    worksheet.cell(row=total_row, column=8).alignment = styles["center"]
+    worksheet.cell(row=total_row, column=8).number_format = "0.##"
+    for column_index in range(1, last_column + 1):
+        worksheet.cell(row=total_row, column=column_index).border = styles["border"]
+
+    widths = {
+        1: 12,
+        2: 55,
+        3: 14,
+        4: 12,
+        5: 32,
+        6: 12,
+        7: 32,
+        8: 15,
     }
     for column_index, width in widths.items():
         worksheet.column_dimensions[get_column_letter(column_index)].width = width
 
     worksheet.freeze_panes = "A5"
-    worksheet.auto_filter.ref = f"A4:G{header_row + len(rows)}"
+    worksheet.auto_filter.ref = f"A4:{get_column_letter(last_column)}{max(header_row + 1, total_row - 1)}"
 
-    output = BytesIO()
-    workbook.save(output)
-    safe_month = normalized_month.replace("/", "_")
-    filename = f"TongHop_ThiDua_Thang_{safe_month}.xlsx"
-    return filename, output.getvalue(), len(rows)
+
+def _get_month_details_by_phieu(summary_rows: list[dict]) -> dict[str, list[dict]]:
+    """Read CT_ThiDua once and group de-duplicated detail rows by summary form ID."""
+    target_ids = {str(row.get("ID", "")).strip() for row in summary_rows if str(row.get("ID", "")).strip()}
+    grouped: dict[str, list[dict]] = {id_phieu: [] for id_phieu in target_ids}
+    if not target_ids:
+        return grouped
+
+    for record in read_sheet_records(SHEET_CT):
+        id_phieu = _get_record_text(record, "IDPhieu")
+        if id_phieu in grouped:
+            grouped[id_phieu].append(record)
+
+    return {id_phieu: _dedupe_ct_records(records) for id_phieu, records in grouped.items()}
+
+
+def _detail_by_ma_tc(details: list[dict]) -> dict[str, dict]:
+    """Return canonical detail rows keyed by MaTC."""
+    result: dict[str, dict] = {}
+    for detail in details:
+        canonical = _canonicalize_ct_record(detail)
+        ma_tc = str(canonical.get("MaTC", "")).strip()
+        if ma_tc:
+            result[ma_tc] = canonical
+    return result
+
+
+def _official_score_from_detail(detail: dict) -> float:
+    """Return official score: use DiemBGH when present, otherwise DiemGV."""
+    diem_bgh = str(detail.get("DiemBGH", "")).strip()
+    if diem_bgh != "":
+        return _safe_float(diem_bgh)
+    return _safe_float(detail.get("DiemGV"))
+
+
+def _blank_if_empty(value: Any) -> Any:
+    """Keep empty BGH score visually blank in Excel."""
+    text = str(value or "").strip()
+    if text == "":
+        return ""
+    return _safe_float(text)
+
+
+def _is_item_criterion(criterion: dict) -> bool:
+    return _criterion_text(criterion, "Loai").upper() == "ITEM"
+
+
+def _criterion_text(criterion: dict, canonical: str) -> str:
+    aliases = {
+        "MaTC": ("ma_tc", "MaTC", "Mã TC", "MaTieuChi", "Mã tiêu chí", "ma_tieu_chi"),
+        "Loai": ("loai", "Loai", "Loại", "type"),
+        "MaHienThi": ("ma_hien_thi", "MaHienThi", "Mã hiển thị", "display_code"),
+        "NoiDung": ("noi_dung", "NoiDung", "Nội dung", "TieuChi", "Tiêu chí", "ten_tieu_chi"),
+    }.get(canonical, (canonical,))
+    return _get_text(criterion, *aliases)
+
+
+def _safe_excel_sheet_title(raw_title: str, used_titles: set[str]) -> str:
+    """Return an Excel-safe unique worksheet title up to 31 characters."""
+    invalid_chars = set('[]:*?/\\')
+    cleaned = "".join("_" if ch in invalid_chars else ch for ch in str(raw_title or "").strip())
+    cleaned = cleaned or "Sheet"
+    base = cleaned[:31]
+    title = base
+    counter = 2
+    while title in used_titles:
+        suffix = f"_{counter}"
+        title = f"{base[:31 - len(suffix)]}{suffix}"
+        counter += 1
+    return title
+
 
 def _build_safe_summary_id(phieu: dict, normalized_month: str) -> str:
     """Return stable TongHop_ThiDua.ID from the TH_ThiDua business key.
@@ -1261,14 +1527,6 @@ def _looks_like_full_display_code(value: str) -> bool:
     text = str(value).strip()
     return "." in text or text.upper() in {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}
 
-def _trace_submit_event(trace: list[str] | None, message: str) -> None:
-    """Append one submit-flow trace line for temporary debugging."""
-    if trace is not None:
-        trace.append(str(message))
-
-
-def _format_submit_trace(trace: list[str]) -> str:
-    return "\n".join(trace)
 
 def submit_phieu(id_phieu: str, ma_gv: str, changed_rows: list[dict] | None = None) -> dict:
     """Save final changes, lock teacher editing, and audit submit action."""
@@ -1358,6 +1616,30 @@ def get_header_by_id(id_phieu: str) -> dict | None:
         if str(canonical.get("ID", "")).strip() == str(id_phieu).strip():
             return canonical
     return None
+
+def _append_th_row_by_sheet_headers(worksheet: Any, row_data: dict[str, Any]) -> None:
+    """Append TH_ThiDua using the actual sheet header order.
+
+    TH_ThiDua sheets in pilot data may contain Vietnamese headers or extra
+    columns such as XepLoai and may not follow TH_HEADERS order. Appending by
+    the fixed TH_HEADERS list shifts values into wrong columns, making a newly
+    created draft look submitted because NgayTao lands in NgayNop.
+    """
+    raw_headers = [str(header).strip() for header in worksheet.row_values(1)]
+    if not raw_headers or not any(raw_headers):
+        worksheet.update("A1:P1", [TH_HEADERS], value_input_option="RAW")
+        raw_headers = TH_HEADERS[:]
+
+    values: list[Any] = []
+    for raw_header in raw_headers:
+        if not raw_header:
+            values.append("")
+            continue
+        canonical = _canonical_header_name(raw_header)
+        values.append(row_data.get(canonical, ""))
+
+    worksheet.append_row(values, value_input_option="USER_ENTERED")
+
 
 def update_header_fields(id_phieu: str, fields: dict[str, Any]) -> None:
     """Update selected TH_ThiDua fields by canonical header names using batch_update."""
@@ -1608,7 +1890,10 @@ def _canonicalize_th_record(record: dict) -> dict:
     locked = _parse_bool(canonical.get("KhoaGV"))
     ngay_nop = str(canonical.get("NgayNop", "")).strip()
 
-    if status != STATUS_DA_CHOT and status != STATUS_DA_NOP and (locked or ngay_nop):
+    # Chỉ suy ra Đã nộp khi có khóa GV. Không dùng riêng NgayNop để
+    # ép trạng thái, vì một số sheet legacy từng có thứ tự cột khác chuẩn;
+    # khi tạo phiếu mới, timestamp NgayTao có thể bị lệch vào NgayNop.
+    if status not in {STATUS_DA_CHOT, STATUS_DA_NOP, STATUS_BGH_DA_CHINH_SUA} and locked:
         canonical["TrangThai"] = str(STATUS_DA_NOP)
 
     return canonical

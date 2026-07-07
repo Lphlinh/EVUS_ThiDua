@@ -60,6 +60,18 @@
 - [x] Chuẩn hóa đọc `TH_ThiDua`.
 - [x] Áp dụng quy tắc Trace-first khi xử lý lỗi chưa rõ nguyên nhân.
 
+### Pilot hardening - Hiệu năng luồng Giáo viên 2026-07-07
+- [x] Đối chiếu luồng BGH nhanh với luồng GV chậm.
+- [x] Đo sâu `thi_dua_service.get_phieu()`.
+- [x] Đo sâu `thi_dua_service.get_chi_tiet_phieu()`.
+- [x] Đo vòng chạy `render_teacher_score_page()` để loại trừ rerun bất thường.
+- [x] Đo cấp thấp Google Sheets: `get_gspread_client()`, `open_spreadsheet()`, `get_worksheet()`, `worksheet.get_all_values()`.
+- [x] Xác định nguyên nhân chính nằm ở lớp Google Sheets API, không nằm ở nghiệp vụ M02/M03.
+- [x] Tối ưu Worksheet Catalog Cache để tránh gọi `spreadsheet.worksheet()` riêng lẻ nhiều lần.
+- [x] Bổ sung warm-up Google Sheets sau đăng nhập.
+- [x] Gỡ các bộ đo tạm và giữ bản sạch sau tối ưu.
+- [x] Chốt không tiếp tục tối ưu hiệu năng nếu chưa có bằng chứng mới.
+
 ## M03
 - [x] Màn hình BGH
 - [x] BGH xem phiếu theo tháng
@@ -107,11 +119,28 @@
 - [ ] Gửi link GitHub/Release cho trường.
 
 ### Pilot - Theo dõi vận hành
+- [x] Thống nhất chuyển sang cho trường chạy thực tế trong khoảng 02 tháng.
+- [x] Thống nhất đóng băng chức năng trong giai đoạn Pilot, không phát triển chức năng mới nếu không thật sự bắt buộc.
 - [ ] Ghi nhận phản ánh thực tế từ giáo viên.
 - [ ] Ghi nhận phản ánh thực tế từ Ban Giám hiệu.
 - [ ] Phân loại phản ánh: bug / giao diện / nghiệp vụ / hiệu năng.
 - [ ] Gom bản vá theo phiên bản nhỏ `v1.0.1`, `v1.0.2`, ... nếu cần.
 - [ ] Sau ít nhất 02 tháng, tổng kết Pilot trước khi quyết định M04.
+
+### Pilot - Hiệu năng
+- [x] Hiệu năng luồng Giáo viên đạt mức chấp nhận được sau tối ưu 2026-07-07.
+- [x] Không tiếp tục tối ưu Google Sheets nếu không có bằng chứng mới.
+- [ ] Theo dõi phản ánh hiệu năng trong vận hành thực tế.
+- [ ] Chỉ mở lại điều tra hiệu năng khi dữ liệu tăng mạnh, cache không hoạt động, hoặc người dùng phản ánh chậm bất thường.
+
+
+### Pilot (chạy thử nghiệm) - Xuất Excel tháng mẫu mới
+- [x] Thiết kế mẫu Excel tháng mới.
+- [x] Sheet `TongHop_Thang` mở rộng theo từng tiêu chí.
+- [x] Sheet `TongHop_Thang` dùng điểm chính thức theo quy tắc: có `DiemBGH` thì dùng `DiemBGH`, không có thì dùng `DiemGV`.
+- [x] Mỗi giáo viên có một sheet phiếu chi tiết trong file Excel tháng.
+- [x] Kiểm thử xuất Excel mẫu mới và đối chiếu với dữ liệu BGH đã duyệt.
+- [x] Xuất Excel tháng mẫu mới PASS bằng dữ liệu thực tế và đúng kỳ vọng nghiệp vụ.
 
 ## M04
 - [ ] Tổng hợp năm học
@@ -119,3 +148,34 @@
 - [ ] Xuất Excel năm học
 - [ ] Báo cáo theo giáo viên
 - [ ] Báo cáo theo tổ chuyên môn
+Đánh dấu hoàn thành:
+
+### Pilot - Giao diện Giáo viên
+- [x] Thu gọn Header.
+- [x] Thu gọn thông tin phiếu.
+- [x] Tách khối thao tác.
+- [x] Cảnh báo thiếu giải trình trong khu vực thao tác.
+- [x] Hoàn thiện luồng Lưu.
+- [x] Hoàn thiện luồng Xác nhận nộp.
+- [x] Hoàn thiện luồng Đồng ý/Hủy.
+- [x] Hoàn thiện giao diện Pilot Giáo viên.
+
+Thêm mục ưu tiên tiếp theo:
+
+### Pilot (chạy thử nghiệm) - Kiểm thử Ban Giám hiệu
+- [x] Kiểm thử hồi quy giao diện BGH sau các thay đổi dùng chung.
+- [x] Kiểm thử sửa điểm BGH.
+- [x] Kiểm thử lưu và đọc lại.
+- [x] Kiểm thử Chốt tháng.
+- [x] Kiểm thử Tổng hợp tháng.
+- [x] Kiểm thử Xuất Excel.
+
+## Trạng thái bàn giao Pilot (chạy thử nghiệm) - 2026-07-07
+- [x] M02 Giáo viên PASS.
+- [x] M03 Ban Giám hiệu PASS.
+- [x] Chốt tháng PASS.
+- [x] Tổng hợp tháng PASS.
+- [x] Xuất Excel tháng mẫu mới PASS.
+- [x] Thống nhất chuyển sang giai đoạn vận hành thực tế tại trường trong khoảng 02 tháng.
+- [x] Thống nhất chỉ theo dõi vận hành và xử lý bug / hiệu năng / phản hồi cần thiết trong giai đoạn Pilot.
+- [ ] Sau 02 tháng, tổng kết dữ liệu vận hành trước khi quyết định M04.

@@ -74,15 +74,24 @@ def render_bgh_score_page() -> None:
         st.error("Tài khoản hiện tại không có quyền truy cập màn hình Ban Giám hiệu.")
         return
 
-    st.title("Ban Giám hiệu - Chỉnh điểm thi đua")
-    st.caption(f"Vai trò: BGH | Kỳ đánh giá: {get_current_scoring_month()}")
+    _render_bgh_compact_css()
 
     default_month = get_current_scoring_month()
-    col_workflow, col_admin = st.columns([3.2, 1.6])
-    with col_workflow:
-        thang = st.text_input("Tháng chấm", value=default_month, help="Định dạng MM/YYYY, ví dụ 06/2026.")
-    with col_admin:
-        _render_system_admin_panel(compact=True)
+    st.markdown(
+        '<div class="ev-bgh-page-title">Ban Giám hiệu - Chỉnh điểm thi đua</div>',
+        unsafe_allow_html=True,
+    )
+    st.caption(f"Vai trò: BGH | Kỳ đánh giá: {default_month}")
+
+    top_left, top_right = st.columns([2.1, 1.2], gap="small")
+    with top_left:
+        with st.container(border=True):
+            st.markdown('<div class="ev-bgh-card-title">Thông tin chấm điểm thi đua</div>', unsafe_allow_html=True)
+            thang = st.text_input("Tháng chấm", value=default_month, help="Định dạng MM/YYYY, ví dụ 06/2026.")
+    with top_right:
+        with st.container(border=True):
+            _render_system_admin_panel(compact=True)
+
     normalized_month = _normalize_month_key(thang)
 
     try:
@@ -106,38 +115,27 @@ def render_bgh_score_page() -> None:
     if summary_status:
         st.success(summary_status)
 
-    if not phieu_list:
-        st.info(f"Chưa có phiếu thi đua cho tháng {normalized_month or thang}.")
-        return
-
-    st.subheader(f"Danh sách phiếu tháng {normalized_month}")
-    st.dataframe(
-        [_build_list_row(phieu, teacher_map) for phieu in phieu_list],
-        use_container_width=True,
-        hide_index=True,
-    )
-
-    _render_finalize_month_panel(normalized_month, phieu_list, teacher_map)
-    _render_summarize_month_panel(normalized_month, phieu_list)
-    _render_export_month_excel_panel(normalized_month)
-
     options = {
         _format_select_label(phieu, teacher_map): str(phieu.get("ID", "")).strip()
         for phieu in phieu_list
         if str(phieu.get("ID", "")).strip()
     }
-    if not options:
-        st.error("Không đọc được ID phiếu trong TH_ThiDua.")
+
+    action_cols = st.columns(4, gap="small")
+    with action_cols[0]:
+        selected_id = _render_select_phieu_card(options)
+    with action_cols[1]:
+        _render_finalize_month_card(normalized_month, phieu_list, teacher_map)
+    with action_cols[2]:
+        _render_summarize_month_card(normalized_month, phieu_list)
+    with action_cols[3]:
+        _render_export_month_excel_card(normalized_month)
+
+    if not phieu_list:
+        st.info(f"Chưa có phiếu thi đua cho tháng {normalized_month or thang}.")
         return
 
-    selected_label = st.selectbox("Chọn phiếu để xem / chỉnh sửa", list(options.keys()))
-    selected_id = options[selected_label]
-
-    if st.button("Xem / Chỉnh phiếu", type="primary", use_container_width=False):
-        st.session_state["m03_bgh_selected_phieu_id"] = selected_id
-        st.rerun()
-
-    selected_phieu_id = st.session_state.get("m03_bgh_selected_phieu_id")
+    selected_phieu_id = st.session_state.get("m03_bgh_selected_phieu_id") or selected_id
     if selected_phieu_id:
         selected_phieu = next((item for item in phieu_list if str(item.get("ID", "")).strip() == selected_phieu_id), None)
         if not selected_phieu:
@@ -145,6 +143,209 @@ def render_bgh_score_page() -> None:
             return
         _render_selected_phieu(selected_phieu, teacher_map)
 
+
+def _render_bgh_compact_css() -> None:
+    """Attach compact CSS for the BGH control area only."""
+    st.markdown(
+        """
+        <style>
+        .ev-bgh-page-title {
+            font-size: 1.85rem;
+            font-weight: 800;
+            line-height: 1.12;
+            margin: 0.2rem 0 0.1rem 0;
+        }
+        .ev-bgh-card-title {
+            font-weight: 750;
+            font-size: 0.95rem;
+            margin-bottom: 0.35rem;
+        }
+        .ev-bgh-card-caption {
+            opacity: 0.72;
+            font-size: 0.78rem;
+            line-height: 1.2;
+            margin-bottom: 0.45rem;
+        }
+        .ev-bgh-card-metric {
+            font-size: 1.25rem;
+            font-weight: 750;
+            line-height: 1.1;
+            margin: 0.15rem 0 0.35rem 0;
+        }
+        div[data-testid="stVerticalBlockBorderWrapper"] {
+            padding-top: 0.45rem !important;
+            padding-bottom: 0.45rem !important;
+        }
+        div[data-testid="stMetric"] {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        div[data-testid="stMetric"] label {
+            font-size: 0.72rem !important;
+        }
+        div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+            font-size: 1.15rem !important;
+        }
+
+        .ev-bgh-detail-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0.55rem 0 0.35rem 0;
+        }
+        .ev-bgh-info-label {
+            color: rgba(49, 51, 63, 0.68);
+            font-size: 0.72rem;
+            line-height: 1.15;
+            margin-bottom: 0.05rem;
+            white-space: nowrap;
+        }
+        .ev-bgh-info-value {
+            font-size: 0.82rem;
+            font-weight: 650;
+            line-height: 1.15;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-bottom: 0.35rem;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def _render_select_phieu_card(options: dict[str, str]) -> str:
+    """Render compact selected-form action card and return selected form ID."""
+    with st.container(border=True):
+        st.markdown('<div class="ev-bgh-card-title">Chọn phiếu xử lý</div>', unsafe_allow_html=True)
+        if not options:
+            st.info("Không đọc được ID phiếu trong TH_ThiDua.")
+            return ""
+        selected_label = st.selectbox("Phiếu xem/chỉnh", list(options.keys()), label_visibility="collapsed")
+        selected_id = options[selected_label]
+        if st.button("Xem / Chỉnh phiếu", type="primary", use_container_width=True):
+            st.session_state["m03_bgh_selected_phieu_id"] = selected_id
+            st.rerun()
+        return selected_id
+
+
+def _render_finalize_month_card(thang: str, phieu_list: list[dict], teacher_map: dict[str, dict]) -> None:
+    """Render compact finalization card."""
+    normalized_month = _normalize_month_key(thang)
+    eligible = [phieu for phieu in phieu_list if _safe_int(phieu.get("TrangThai"), default=0) in {3, 4}]
+    finalized = [phieu for phieu in phieu_list if _safe_int(phieu.get("TrangThai"), default=0) == 5]
+    unsubmitted = [phieu for phieu in phieu_list if _safe_int(phieu.get("TrangThai"), default=0) not in {3, 4, 5}]
+    phieu_teacher_codes = {
+        str(phieu.get("MaGV", "")).strip()
+        for phieu in phieu_list
+        if str(phieu.get("MaGV", "")).strip()
+    }
+    no_form_teachers = [
+        teacher for ma_gv, teacher in teacher_map.items()
+        if ma_gv not in phieu_teacher_codes and not _is_bgh_user(teacher)
+    ]
+
+    with st.container(border=True):
+        st.markdown('<div class="ev-bgh-card-title">Chốt tháng</div>', unsafe_allow_html=True)
+        cols = st.columns(3)
+        with cols[0]:
+            st.metric("Có thể", len(eligible))
+        with cols[1]:
+            st.metric("Đã chốt", len(finalized))
+        with cols[2]:
+            st.metric("Chưa nộp", len(unsubmitted) + len(no_form_teachers))
+        if unsubmitted or no_form_teachers:
+            with st.expander("Danh sách chưa nộp/chưa có", expanded=False):
+                for phieu in unsubmitted:
+                    ma_gv = str(phieu.get("MaGV", "")).strip()
+                    teacher = teacher_map.get(ma_gv, {})
+                    name = teacher.get("ho_ten") or ma_gv or "Không rõ"
+                    st.write(f"- {ma_gv} - {name}: {_status_text(phieu.get('TrangThai'))}")
+                for teacher in no_form_teachers:
+                    ma_gv = str(teacher.get("ma_gv", "")).strip()
+                    name = teacher.get("ho_ten") or ma_gv or "Không rõ"
+                    st.write(f"- {ma_gv} - {name}: Chưa có phiếu")
+        if not eligible:
+            st.button("Chốt tháng", disabled=True, use_container_width=True)
+            return
+        confirm_key = f"m03_confirm_finalize_{normalized_month}"
+        if st.button("Chốt tháng", type="primary", use_container_width=True):
+            st.session_state[confirm_key] = True
+            st.rerun()
+
+    if not st.session_state.get(confirm_key):
+        return
+
+    st.error(
+        f"Xác nhận chốt tháng {normalized_month}. Sau khi chốt, giáo viên và BGH chỉ được xem, không được chỉnh sửa các phiếu đã chốt."
+    )
+    confirm_col, cancel_col, _ = st.columns([1.1, 1.1, 4])
+    with confirm_col:
+        if st.button("Xác nhận chốt tháng", type="primary", use_container_width=True):
+            try:
+                actor = _resolve_actor_code(_get_logged_in_user() or {})
+                result = finalize_month(normalized_month, actor)
+                st.session_state["m03_finalize_status"] = (
+                    f"Đã chốt tháng {result.get('thang')}. "
+                    f"Số phiếu chốt: {result.get('finalized_count', 0)}. "
+                    f"Số phiếu chưa nộp/bỏ qua: {result.get('unsubmitted_count', 0)}."
+                )
+                st.session_state[confirm_key] = False
+                st.session_state.pop("m03_bgh_selected_phieu_id", None)
+                st.rerun()
+            except ValueError as exc:
+                st.error(str(exc))
+    with cancel_col:
+        if st.button("Hủy chốt tháng", use_container_width=True):
+            st.session_state[confirm_key] = False
+            st.rerun()
+
+
+def _render_summarize_month_card(thang: str, phieu_list: list[dict]) -> None:
+    """Render compact summary card."""
+    normalized_month = _normalize_month_key(thang)
+    finalized = [phieu for phieu in phieu_list if _safe_int(phieu.get("TrangThai"), default=0) == 5]
+    with st.container(border=True):
+        st.markdown('<div class="ev-bgh-card-title">Tổng hợp tháng</div>', unsafe_allow_html=True)
+        st.metric("Phiếu đã chốt", len(finalized))
+        if not finalized:
+            st.button("Tổng hợp tháng", disabled=True, use_container_width=True)
+            return
+        if st.button("Tổng hợp tháng", type="primary", use_container_width=True):
+            try:
+                actor = _resolve_actor_code(_get_logged_in_user() or {})
+                result = summarize_month(normalized_month, actor)
+                st.session_state["m03_summary_status"] = (
+                    f"Đã tổng hợp tháng {result.get('thang')}. "
+                    f"Số dòng: {result.get('summary_count', 0)}. "
+                    f"Thêm mới: {result.get('created_count', 0)}. "
+                    f"Cập nhật: {result.get('updated_count', 0)}."
+                )
+                st.rerun()
+            except ValueError as exc:
+                st.error(str(exc))
+
+
+def _render_export_month_excel_card(thang: str) -> None:
+    """Render compact Excel export card."""
+    normalized_month = _normalize_month_key(thang)
+    with st.container(border=True):
+        st.markdown('<div class="ev-bgh-card-title">Xuất Excel tháng</div>', unsafe_allow_html=True)
+        try:
+            filename, file_bytes, row_count = build_monthly_excel_export(normalized_month)
+        except ValueError as exc:
+            st.info(str(exc))
+            st.button("Tải Excel", disabled=True, use_container_width=True)
+            return
+        st.metric("Số dòng", row_count)
+        st.download_button(
+            "Tải Excel tổng hợp",
+            data=file_bytes,
+            file_name=filename,
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            type="primary",
+            use_container_width=True,
+        )
 
 
 def _render_finalize_month_panel(thang: str, phieu_list: list[dict], teacher_map: dict[str, dict]) -> None:
@@ -395,25 +596,28 @@ def _render_selected_phieu(phieu: dict, teacher_map: dict[str, dict]) -> None:
     ma_gv = str(phieu.get("MaGV", "")).strip()
     teacher = teacher_map.get(ma_gv, {})
 
-    st.divider()
-    st.subheader("Chi tiết phiếu")
-
     details = get_chi_tiet_phieu(id_phieu)
     criteria = get_all_criteria()
     official_total = _calculate_total_score(details)
 
-    col_teacher, col_status, col_total = st.columns(3)
-    with col_teacher:
-        st.metric("Giáo viên", teacher.get("ho_ten") or ma_gv or "Không rõ")
-    with col_status:
-        st.metric("Trạng thái", _status_text(phieu.get("TrangThai")))
-    with col_total:
-        st.metric("Tổng điểm", _format_number(official_total))
-
-    st.caption(
-        f"ID phiếu: {id_phieu} | Mã GV: {ma_gv} | Ngày nộp: {phieu.get('NgayNop', '') or 'Chưa nộp'} | "
-        f"Lần nộp: {phieu.get('LanNop', '') or 0} | Lần mở khóa: {phieu.get('LanMoKhoa', '') or 0}"
-    )
+    st.markdown('<div class="ev-bgh-detail-title">Chi tiết phiếu</div>', unsafe_allow_html=True)
+    info_cols = st.columns([1.6, 1.0, 1.0, 2.4, 1.5, 0.8, 0.9], gap="small")
+    values = [
+        ("Giáo viên", teacher.get("ho_ten") or ma_gv or "Không rõ"),
+        ("Trạng thái", _status_text(phieu.get("TrangThai"))),
+        ("Tổng điểm", _format_number(official_total)),
+        ("ID phiếu", id_phieu),
+        ("Ngày nộp", phieu.get("NgayNop", "") or "Chưa nộp"),
+        ("Lần nộp", phieu.get("LanNop", "") or 0),
+        ("Lần mở khóa", phieu.get("LanMoKhoa", "") or 0),
+    ]
+    for col, (label, value) in zip(info_cols, values):
+        with col:
+            st.markdown(
+                f'<div class="ev-bgh-info-label">{_html_escape(label)}</div>'
+                f'<div class="ev-bgh-info-value">{_html_escape(value)}</div>',
+                unsafe_allow_html=True,
+            )
 
     if not details:
         st.warning("Không tìm thấy CT_ThiDua của phiếu này.")
@@ -449,6 +653,16 @@ def _render_selected_phieu(phieu: dict, teacher_map: dict[str, dict]) -> None:
             st.rerun()
         except ValueError as exc:
             st.error(str(exc))
+
+
+def _html_escape(value: object) -> str:
+    text = str(value or "")
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
 
 
 def _resolve_actor_code(user: dict) -> str:

@@ -24,14 +24,22 @@ SCOPES = [
 _CLIENT_CACHE: gspread.Client | None = None
 _SPREADSHEET_CACHE: gspread.Spreadsheet | None = None
 _WORKSHEET_CACHE: dict[str, "CachedWorksheet"] = {}
+_WORKSHEET_CATALOG_LOADED = False
 _READ_RECORDS_CACHE: dict[str, list[dict[str, Any]]] = {}
+
+# Gioi han vung doc cho sheet danh muc nho de tranh Google Sheets tra ve qua nhieu cot trong/dinh dang.
+# DM_GiaoVien hien dung 11 cot A:K theo cau truc du an.
+_SHEET_READ_RANGES: dict[str, str] = {
+    "DM_GiaoVien": "A:K",
+}
 
 
 def clear_google_sheets_connection_cache() -> None:
     """Clear cached Google Sheets client, spreadsheet, worksheets and row reads."""
-    global _CLIENT_CACHE, _SPREADSHEET_CACHE
+    global _CLIENT_CACHE, _SPREADSHEET_CACHE, _WORKSHEET_CATALOG_LOADED
     _CLIENT_CACHE = None
     _SPREADSHEET_CACHE = None
+    _WORKSHEET_CATALOG_LOADED = False
     _WORKSHEET_CACHE.clear()
     clear_sheet_records_cache()
 
@@ -47,7 +55,6 @@ def clear_sheet_records_cache(sheet_name: str | None = None) -> None:
         _READ_RECORDS_CACHE.clear()
         return
     _READ_RECORDS_CACHE.pop(str(sheet_name).strip(), None)
-
 
 
 class CachedWorksheet:
@@ -96,6 +103,7 @@ class CachedWorksheet:
         result = self._worksheet.update(*args, **kwargs)
         self._clear_cache()
         return result
+
 
 def get_gspread_client() -> gspread.Client:
     """Return an authorized gspread client, cached for the Streamlit process.
@@ -168,16 +176,50 @@ def open_spreadsheet() -> gspread.Spreadsheet:
 
 
 def get_worksheet(sheet_name: str) -> CachedWorksheet:
-    """Return a worksheet by name, cached for the process."""
+    """Return a worksheet by name, cached for the process.
+
+    Loads the worksheet catalog once and caches worksheet handles by title.
+    This avoids repeated ``spreadsheet.worksheet(name)`` calls for each sheet
+    while keeping row-data cache invalidation unchanged.
+    """
     normalized_sheet_name = str(sheet_name).strip()
     cached = _WORKSHEET_CACHE.get(normalized_sheet_name)
     if cached is not None:
         return cached
 
     spreadsheet = open_spreadsheet()
+    _populate_worksheet_cache(spreadsheet)
+    cached = _WORKSHEET_CACHE.get(normalized_sheet_name)
+    if cached is not None:
+        return cached
+
+    # Fallback for a worksheet created after the catalog was loaded.
     worksheet = CachedWorksheet(spreadsheet.worksheet(normalized_sheet_name), normalized_sheet_name)
     _WORKSHEET_CACHE[normalized_sheet_name] = worksheet
     return worksheet
+
+
+def _populate_worksheet_cache(spreadsheet: gspread.Spreadsheet) -> None:
+    """Load worksheet handles once and cache them by title."""
+    global _WORKSHEET_CATALOG_LOADED
+    if _WORKSHEET_CATALOG_LOADED:
+        return
+
+    for worksheet in spreadsheet.worksheets():
+        title = str(worksheet.title).strip()
+        if not title:
+            continue
+        _WORKSHEET_CACHE.setdefault(title, CachedWorksheet(worksheet, title))
+    _WORKSHEET_CATALOG_LOADED = True
+
+
+def warm_up_google_sheets() -> None:
+    """Warm up Google Sheets client, spreadsheet object and worksheet catalog after login.
+
+    This function intentionally does not read worksheet row data.
+    """
+    spreadsheet = open_spreadsheet()
+    _populate_worksheet_cache(spreadsheet)
 
 
 def read_sheet_records(sheet_name: str) -> list[dict[str, Any]]:
@@ -188,12 +230,18 @@ def read_sheet_records(sheet_name: str) -> list[dict[str, Any]]:
     reads raw values and ignores blank header columns instead.
     """
     normalized_sheet_name = str(sheet_name).strip()
+
     cached_records = _READ_RECORDS_CACHE.get(normalized_sheet_name)
     if cached_records is not None:
         return [dict(record) for record in cached_records]
 
     worksheet = get_worksheet(normalized_sheet_name)
-    values = worksheet.get_all_values()
+    range_name = _SHEET_READ_RANGES.get(normalized_sheet_name)
+    if range_name:
+        values = worksheet.get(range_name)
+    else:
+        values = worksheet.get_all_values()
+
     if not values:
         _READ_RECORDS_CACHE[normalized_sheet_name] = []
         return []

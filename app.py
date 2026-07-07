@@ -18,41 +18,48 @@ st.set_page_config(
 APP_CSS = """
 <style>
 .block-container {
-    padding-top: 4.5rem;
-    padding-bottom: 2rem;
+    padding-top: 2.5rem !important;
+    padding-bottom: 0.75rem !important;
+    max-width: 96vw !important;
 }
 .ev-app-title {
-    font-size: 1.85rem;
-    padding-top: 0.5rem;
+    font-size: 1.45rem;
     font-weight: 800;
-    margin-bottom: 0.2rem;
+    line-height: 1.02;
+    margin: 0;
 }
 .ev-app-subtitle {
-    opacity: 0.75;
-    font-size: 0.92rem;
+    opacity: 0.72;
+    font-size: 0.78rem;
+    line-height: 1.05;
+    margin-top: 0.08rem;
 }
-.ev-user-panel {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 0.35rem;
-    margin-bottom: 0.8rem;
+.ev-shell-spacer {
+    height: 0.1rem;
 }
-.ev-user-card {
-    max-width: 100%;
-    min-width: 18rem;
-    border: 1px solid rgba(128, 128, 128, 0.22);
-    border-radius: 0.55rem;
-    padding: 0.55rem 0.75rem;
-    font-size: 0.88rem;
-    line-height: 1.45;
-    text-align: left;
-    white-space: normal;
-    overflow-wrap: anywhere;
+.ev-user-text {
+    font-size: 0.76rem;
+    line-height: 1.08;
+    margin: 0 0 0.12rem 0;
+}
+.ev-user-text b {
+    font-weight: 700;
+}
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    padding-top: 0.18rem !important;
+    padding-bottom: 0.18rem !important;
+}
+div[data-testid="stButton"] > button {
+    min-height: 1.45rem;
+    padding-top: 0.04rem;
+    padding-bottom: 0.04rem;
+    font-size: 0.76rem;
 }
 @media (max-width: 900px) {
-    .ev-user-panel { justify-content: flex-start; }
-    .ev-user-card { min-width: 0; }
+    .block-container { max-width: 98vw !important; }
+    .ev-app-title { font-size: 1.3rem; }
+    .ev-app-subtitle { font-size: 0.74rem; }
+    .ev-user-text { font-size: 0.74rem; }
 }
 </style>
 """
@@ -75,38 +82,41 @@ def main() -> None:
 
 
 def _render_authenticated_shell(teacher: dict) -> None:
-    """Render common header for authenticated users without clipping user name."""
-    col_title, col_logout = st.columns([8, 1.4])
+    """Render compact authenticated shell with title and user box on one row."""
+    ho_ten = teacher.get("ho_ten") or teacher.get("Họ và tên") or ""
+    vai_tro = teacher.get("vai_tro") or teacher.get("Vai trò") or ""
+    ma_gv = teacher.get("ma_gv") or teacher.get("Mã GV") or ""
+
+    col_title, col_user = st.columns([7.0, 1.35], vertical_alignment="top")
 
     with col_title:
         st.markdown('<div class="ev-app-title">EVUS Thi Đua</div>', unsafe_allow_html=True)
         st.markdown('<div class="ev-app-subtitle">Hệ thống chấm điểm thi đua giáo viên</div>', unsafe_allow_html=True)
 
-    with col_logout:
-        if st.button("Đăng xuất", use_container_width=True):
-            for key in (
-                "teacher",
-                "user",
-                "current_user",
-                "auth_user",
-                "m02_confirm_submit",
-                "m02_pending_changed_rows",
-                "m03_bgh_selected_phieu_id",
-            ):
-                st.session_state.pop(key, None)
-            st.rerun()
+    with col_user:
+        with st.container(border=True):
+            st.markdown(
+                f"""<div class="ev-user-text">
+                <b>Giáo viên:</b> {ho_ten}<br>
+                <b>Mã GV:</b> {ma_gv}<br>
+                <b>Vai trò:</b> {vai_tro}
+                </div>""",
+                unsafe_allow_html=True,
+            )
+            if st.button("Đăng xuất", use_container_width=True):
+                for key in (
+                    "teacher",
+                    "user",
+                    "current_user",
+                    "auth_user",
+                    "m02_confirm_submit",
+                    "m02_pending_changed_rows",
+                    "m03_bgh_selected_phieu_id",
+                ):
+                    st.session_state.pop(key, None)
+                st.rerun()
 
-    ho_ten = teacher.get("ho_ten") or teacher.get("Họ và tên") or ""
-    vai_tro = teacher.get("vai_tro") or teacher.get("Vai trò") or ""
-    ma_gv = teacher.get("ma_gv") or teacher.get("Mã GV") or ""
-    st.markdown(
-        f"""<div class="ev-user-panel"><div class="ev-user-card">
-        <b>Giáo viên:</b> {ho_ten}<br>
-        <b>Mã GV:</b> {ma_gv}<br>
-        <b>Vai trò:</b> {vai_tro}
-        </div></div>""",
-        unsafe_allow_html=True,
-    )
+    st.markdown('<div class="ev-shell-spacer"></div>', unsafe_allow_html=True)
 
 
 def _normalize_role(value: object) -> str:

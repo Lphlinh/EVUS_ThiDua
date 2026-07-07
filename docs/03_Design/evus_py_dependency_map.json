@@ -1,0 +1,9667 @@
+{
+  "app.py": {
+    "module": "app",
+    "functions": [
+      {
+        "name": "main",
+        "line": 61
+      },
+      {
+        "name": "_render_authenticated_shell",
+        "line": 77
+      },
+      {
+        "name": "_normalize_role",
+        "line": 112
+      },
+      {
+        "name": "_is_bgh_user",
+        "line": 126
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.auth.login_page",
+        "name": "render_login_page",
+        "alias": null,
+        "line": 7
+      },
+      {
+        "module": "app.pages.bgh_score_page",
+        "name": "render_bgh_score_page",
+        "alias": null,
+        "line": 8
+      },
+      {
+        "module": "app.pages.teacher_score_page",
+        "name": "render_teacher_score_page",
+        "alias": null,
+        "line": 9
+      }
+    ],
+    "calls": [
+      {
+        "name": "st.set_page_config",
+        "line": 12
+      },
+      {
+        "name": "st.markdown",
+        "line": 63
+      },
+      {
+        "name": "st.session_state.get",
+        "line": 65
+      },
+      {
+        "name": "isinstance",
+        "line": 66
+      },
+      {
+        "name": "render_login_page",
+        "line": 67
+      },
+      {
+        "name": "_render_authenticated_shell",
+        "line": 70
+      },
+      {
+        "name": "_is_bgh_user",
+        "line": 71
+      },
+      {
+        "name": "render_bgh_score_page",
+        "line": 72
+      },
+      {
+        "name": "render_teacher_score_page",
+        "line": 74
+      },
+      {
+        "name": "st.columns",
+        "line": 79
+      },
+      {
+        "name": "st.markdown",
+        "line": 82
+      },
+      {
+        "name": "st.markdown",
+        "line": 83
+      },
+      {
+        "name": "st.button",
+        "line": 86
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 96
+      },
+      {
+        "name": "st.rerun",
+        "line": 97
+      },
+      {
+        "name": "teacher.get",
+        "line": 99
+      },
+      {
+        "name": "teacher.get",
+        "line": 99
+      },
+      {
+        "name": "teacher.get",
+        "line": 100
+      },
+      {
+        "name": "teacher.get",
+        "line": 100
+      },
+      {
+        "name": "teacher.get",
+        "line": 101
+      },
+      {
+        "name": "teacher.get",
+        "line": 101
+      },
+      {
+        "name": "st.markdown",
+        "line": 102
+      },
+      {
+        "name": "lower",
+        "line": 114
+      },
+      {
+        "name": "strip",
+        "line": 114
+      },
+      {
+        "name": "str",
+        "line": 114
+      },
+      {
+        "name": "replacements.items",
+        "line": 121
+      },
+      {
+        "name": "text.replace",
+        "line": 122
+      },
+      {
+        "name": "join",
+        "line": 123
+      },
+      {
+        "name": "split",
+        "line": 123
+      },
+      {
+        "name": "replace",
+        "line": 123
+      },
+      {
+        "name": "replace",
+        "line": 123
+      },
+      {
+        "name": "text.replace",
+        "line": 123
+      },
+      {
+        "name": "_normalize_role",
+        "line": 128
+      },
+      {
+        "name": "user.get",
+        "line": 128
+      },
+      {
+        "name": "user.get",
+        "line": 128
+      },
+      {
+        "name": "user.get",
+        "line": 128
+      },
+      {
+        "name": "main",
+        "line": 133
+      }
+    ]
+  },
+  "app/__init__.py": {
+    "module": "app.__init__",
+    "functions": [],
+    "imports": [],
+    "calls": []
+  },
+  "app/pages/__init__.py": {
+    "module": "app.pages.__init__",
+    "functions": [],
+    "imports": [],
+    "calls": []
+  },
+  "app/pages/teacher_score_page.py": {
+    "module": "app.pages.teacher_score_page",
+    "functions": [
+      {
+        "name": "render_teacher_score_page",
+        "line": 32
+      },
+      {
+        "name": "_score_cache_key",
+        "line": 152
+      },
+      {
+        "name": "_submit_warning_key",
+        "line": 156
+      },
+      {
+        "name": "_apply_changed_rows_to_cache",
+        "line": 160
+      },
+      {
+        "name": "_get_logged_in_teacher",
+        "line": 171
+      },
+      {
+        "name": "_render_header_info",
+        "line": 180
+      },
+      {
+        "name": "_status_text",
+        "line": 193
+      },
+      {
+        "name": "_merge_unsaved_changes",
+        "line": 207
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.components.score_form_component",
+        "name": "FORM_ACTION_SAVE",
+        "alias": null,
+        "line": 7
+      },
+      {
+        "module": "app.components.score_form_component",
+        "name": "FORM_ACTION_SUBMIT",
+        "alias": null,
+        "line": 7
+      },
+      {
+        "module": "app.components.score_form_component",
+        "name": "render_score_form",
+        "alias": null,
+        "line": 7
+      },
+      {
+        "module": "app.services.criteria_service",
+        "name": "get_all_criteria",
+        "alias": null,
+        "line": 12
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "create_phieu_for_teacher",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "get_chi_tiet_phieu",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "get_current_scoring_month",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "get_phieu",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "is_teacher_allowed_to_create",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "is_teacher_allowed_to_edit",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "save_teacher_scores",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "submit_phieu",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "validate_before_submit",
+        "alias": null,
+        "line": 13
+      }
+    ],
+    "calls": [
+      {
+        "name": "_get_logged_in_teacher",
+        "line": 34
+      },
+      {
+        "name": "st.warning",
+        "line": 36
+      },
+      {
+        "name": "strip",
+        "line": 39
+      },
+      {
+        "name": "str",
+        "line": 39
+      },
+      {
+        "name": "teacher.get",
+        "line": 39
+      },
+      {
+        "name": "teacher.get",
+        "line": 39
+      },
+      {
+        "name": "st.error",
+        "line": 41
+      },
+      {
+        "name": "get_current_scoring_month",
+        "line": 44
+      },
+      {
+        "name": "st.title",
+        "line": 45
+      },
+      {
+        "name": "_score_cache_key",
+        "line": 47
+      },
+      {
+        "name": "st.session_state.setdefault",
+        "line": 48
+      },
+      {
+        "name": "get_phieu",
+        "line": 52
+      },
+      {
+        "name": "is_teacher_allowed_to_create",
+        "line": 54
+      },
+      {
+        "name": "st.warning",
+        "line": 55
+      },
+      {
+        "name": "create_phieu_for_teacher",
+        "line": 57
+      },
+      {
+        "name": "st.success",
+        "line": 58
+      },
+      {
+        "name": "strip",
+        "line": 60
+      },
+      {
+        "name": "str",
+        "line": 60
+      },
+      {
+        "name": "phieu.get",
+        "line": 60
+      },
+      {
+        "name": "get_chi_tiet_phieu",
+        "line": 62
+      },
+      {
+        "name": "get_all_criteria",
+        "line": 64
+      },
+      {
+        "name": "is_teacher_allowed_to_edit",
+        "line": 68
+      },
+      {
+        "name": "_render_header_info",
+        "line": 70
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 71
+      },
+      {
+        "name": "st.success",
+        "line": 73
+      },
+      {
+        "name": "render_score_form",
+        "line": 74
+      },
+      {
+        "name": "st.info",
+        "line": 77
+      },
+      {
+        "name": "_submit_warning_key",
+        "line": 80
+      },
+      {
+        "name": "st.error",
+        "line": 84
+      },
+      {
+        "name": "st.warning",
+        "line": 87
+      },
+      {
+        "name": "save_teacher_scores",
+        "line": 89
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 90
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 92
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 93
+      },
+      {
+        "name": "st.rerun",
+        "line": 95
+      },
+      {
+        "name": "st.error",
+        "line": 99
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 103
+      },
+      {
+        "name": "st.session_state.get",
+        "line": 105
+      },
+      {
+        "name": "SUBMIT_CONFIRM_TEXT.replace",
+        "line": 106
+      },
+      {
+        "name": "chr",
+        "line": 106
+      },
+      {
+        "name": "st.markdown",
+        "line": 107
+      },
+      {
+        "name": "st.columns",
+        "line": 116
+      },
+      {
+        "name": "st.button",
+        "line": 119
+      },
+      {
+        "name": "st.session_state.get",
+        "line": 121
+      },
+      {
+        "name": "_merge_unsaved_changes",
+        "line": 122
+      },
+      {
+        "name": "validate_before_submit",
+        "line": 123
+      },
+      {
+        "name": "st.session_state.get",
+        "line": 124
+      },
+      {
+        "name": "st.warning",
+        "line": 125
+      },
+      {
+        "name": "st.error",
+        "line": 130
+      },
+      {
+        "name": "submit_phieu",
+        "line": 134
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 136
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 137
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 138
+      },
+      {
+        "name": "st.success",
+        "line": 139
+      },
+      {
+        "name": "st.rerun",
+        "line": 140
+      },
+      {
+        "name": "st.error",
+        "line": 142
+      },
+      {
+        "name": "str",
+        "line": 142
+      },
+      {
+        "name": "st.button",
+        "line": 145
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 147
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 148
+      },
+      {
+        "name": "st.rerun",
+        "line": 149
+      },
+      {
+        "name": "strip",
+        "line": 157
+      },
+      {
+        "name": "str",
+        "line": 157
+      },
+      {
+        "name": "strip",
+        "line": 163
+      },
+      {
+        "name": "str",
+        "line": 163
+      },
+      {
+        "name": "row.get",
+        "line": 163
+      },
+      {
+        "name": "dict",
+        "line": 163
+      },
+      {
+        "name": "cache.get",
+        "line": 163
+      },
+      {
+        "name": "strip",
+        "line": 165
+      },
+      {
+        "name": "str",
+        "line": 165
+      },
+      {
+        "name": "changed.get",
+        "line": 165
+      },
+      {
+        "name": "update",
+        "line": 167
+      },
+      {
+        "name": "list",
+        "line": 168
+      },
+      {
+        "name": "detail_by_id.values",
+        "line": 168
+      },
+      {
+        "name": "st.session_state.get",
+        "line": 174
+      },
+      {
+        "name": "isinstance",
+        "line": 175
+      },
+      {
+        "name": "st.columns",
+        "line": 181
+      },
+      {
+        "name": "st.metric",
+        "line": 183
+      },
+      {
+        "name": "_status_text",
+        "line": 183
+      },
+      {
+        "name": "phieu.get",
+        "line": 183
+      },
+      {
+        "name": "st.metric",
+        "line": 185
+      },
+      {
+        "name": "phieu.get",
+        "line": 185
+      },
+      {
+        "name": "st.caption",
+        "line": 187
+      },
+      {
+        "name": "phieu.get",
+        "line": 188
+      },
+      {
+        "name": "phieu.get",
+        "line": 188
+      },
+      {
+        "name": "phieu.get",
+        "line": 189
+      },
+      {
+        "name": "mapping.get",
+        "line": 202
+      },
+      {
+        "name": "int",
+        "line": 202
+      },
+      {
+        "name": "str",
+        "line": 202
+      },
+      {
+        "name": "str",
+        "line": 204
+      },
+      {
+        "name": "strip",
+        "line": 208
+      },
+      {
+        "name": "str",
+        "line": 208
+      },
+      {
+        "name": "row.get",
+        "line": 208
+      },
+      {
+        "name": "dict",
+        "line": 208
+      },
+      {
+        "name": "strip",
+        "line": 210
+      },
+      {
+        "name": "str",
+        "line": 210
+      },
+      {
+        "name": "changed.get",
+        "line": 210
+      },
+      {
+        "name": "update",
+        "line": 212
+      },
+      {
+        "name": "list",
+        "line": 213
+      },
+      {
+        "name": "detail_by_id.values",
+        "line": 213
+      }
+    ]
+  },
+  "app/pages/bgh_score_page.py": {
+    "module": "app.pages.bgh_score_page",
+    "functions": [
+      {
+        "name": "render_bgh_score_page",
+        "line": 66
+      },
+      {
+        "name": "_render_finalize_month_panel",
+        "line": 150
+      },
+      {
+        "name": "_render_summarize_month_panel",
+        "line": 241
+      },
+      {
+        "name": "_render_export_month_excel_panel",
+        "line": 274
+      },
+      {
+        "name": "_render_system_admin_panel",
+        "line": 298
+      },
+      {
+        "name": "_render_scoring_deadline_panel",
+        "line": 324
+      },
+      {
+        "name": "_render_account_password_panel",
+        "line": 366
+      },
+      {
+        "name": "_render_selected_phieu",
+        "line": 393
+      },
+      {
+        "name": "_resolve_actor_code",
+        "line": 454
+      },
+      {
+        "name": "_get_phieu_list_by_month",
+        "line": 464
+      },
+      {
+        "name": "_phieu_priority",
+        "line": 484
+      },
+      {
+        "name": "_get_teacher_map",
+        "line": 489
+      },
+      {
+        "name": "_build_list_row",
+        "line": 494
+      },
+      {
+        "name": "_format_select_label",
+        "line": 509
+      },
+      {
+        "name": "_get_logged_in_user",
+        "line": 519
+      },
+      {
+        "name": "_is_bgh_user",
+        "line": 527
+      },
+      {
+        "name": "_canonicalize_th_record",
+        "line": 532
+      },
+      {
+        "name": "_canonicalize_ct_record",
+        "line": 544
+      },
+      {
+        "name": "_status_text",
+        "line": 548
+      },
+      {
+        "name": "_calculate_total_score",
+        "line": 553
+      },
+      {
+        "name": "_official_score",
+        "line": 567
+      },
+      {
+        "name": "_get_text",
+        "line": 574
+      },
+      {
+        "name": "_build_expected_phieu_id",
+        "line": 587
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 596
+      },
+      {
+        "name": "_normalize_key",
+        "line": 615
+      },
+      {
+        "name": "_safe_int",
+        "line": 628
+      },
+      {
+        "name": "_safe_float",
+        "line": 638
+      },
+      {
+        "name": "_format_number",
+        "line": 648
+      },
+      {
+        "name": "_parse_bool",
+        "line": 655
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.components.score_form_component",
+        "name": "FORM_ACTION_SAVE",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.components.score_form_component",
+        "name": "FORM_MODE_BGH",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.components.score_form_component",
+        "name": "render_score_form",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.criteria_service",
+        "name": "get_all_criteria",
+        "alias": null,
+        "line": 14
+      },
+      {
+        "module": "app.services.account_service",
+        "name": "normalize_missing_password_hashes",
+        "alias": null,
+        "line": 15
+      },
+      {
+        "module": "app.services.config_service",
+        "name": "get_teacher_scoring_deadline_day",
+        "alias": null,
+        "line": 16
+      },
+      {
+        "module": "app.services.config_service",
+        "name": "set_teacher_scoring_deadline_day",
+        "alias": null,
+        "line": 16
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "read_sheet_records",
+        "alias": null,
+        "line": 20
+      },
+      {
+        "module": "app.services.teacher_service",
+        "name": "get_all_teachers",
+        "alias": null,
+        "line": 21
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "build_monthly_excel_export",
+        "alias": null,
+        "line": 22
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "finalize_month",
+        "alias": null,
+        "line": 22
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "summarize_month",
+        "alias": null,
+        "line": 22
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "repair_th_ids_for_month",
+        "alias": null,
+        "line": 22
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "get_chi_tiet_phieu",
+        "alias": null,
+        "line": 22
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "get_current_scoring_month",
+        "alias": null,
+        "line": 22
+      },
+      {
+        "module": "app.services.thi_dua_service",
+        "name": "save_bgh_scores",
+        "alias": null,
+        "line": 22
+      }
+    ],
+    "calls": [
+      {
+        "name": "_get_logged_in_user",
+        "line": 68
+      },
+      {
+        "name": "st.warning",
+        "line": 70
+      },
+      {
+        "name": "_is_bgh_user",
+        "line": 73
+      },
+      {
+        "name": "st.error",
+        "line": 74
+      },
+      {
+        "name": "st.title",
+        "line": 77
+      },
+      {
+        "name": "st.caption",
+        "line": 78
+      },
+      {
+        "name": "get_current_scoring_month",
+        "line": 78
+      },
+      {
+        "name": "get_current_scoring_month",
+        "line": 80
+      },
+      {
+        "name": "st.columns",
+        "line": 81
+      },
+      {
+        "name": "st.text_input",
+        "line": 83
+      },
+      {
+        "name": "_render_system_admin_panel",
+        "line": 85
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 86
+      },
+      {
+        "name": "repair_th_ids_for_month",
+        "line": 89
+      },
+      {
+        "name": "repair_result.get",
+        "line": 90
+      },
+      {
+        "name": "st.warning",
+        "line": 91
+      },
+      {
+        "name": "repair_result.get",
+        "line": 92
+      },
+      {
+        "name": "st.error",
+        "line": 95
+      },
+      {
+        "name": "str",
+        "line": 95
+      },
+      {
+        "name": "_get_phieu_list_by_month",
+        "line": 98
+      },
+      {
+        "name": "_get_teacher_map",
+        "line": 99
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 101
+      },
+      {
+        "name": "st.success",
+        "line": 103
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 105
+      },
+      {
+        "name": "st.success",
+        "line": 107
+      },
+      {
+        "name": "st.info",
+        "line": 110
+      },
+      {
+        "name": "st.subheader",
+        "line": 113
+      },
+      {
+        "name": "st.dataframe",
+        "line": 114
+      },
+      {
+        "name": "_build_list_row",
+        "line": 115
+      },
+      {
+        "name": "_render_finalize_month_panel",
+        "line": 120
+      },
+      {
+        "name": "_render_summarize_month_panel",
+        "line": 121
+      },
+      {
+        "name": "_render_export_month_excel_panel",
+        "line": 122
+      },
+      {
+        "name": "_format_select_label",
+        "line": 125
+      },
+      {
+        "name": "strip",
+        "line": 125
+      },
+      {
+        "name": "str",
+        "line": 125
+      },
+      {
+        "name": "phieu.get",
+        "line": 125
+      },
+      {
+        "name": "strip",
+        "line": 127
+      },
+      {
+        "name": "str",
+        "line": 127
+      },
+      {
+        "name": "phieu.get",
+        "line": 127
+      },
+      {
+        "name": "st.error",
+        "line": 130
+      },
+      {
+        "name": "st.selectbox",
+        "line": 133
+      },
+      {
+        "name": "list",
+        "line": 133
+      },
+      {
+        "name": "options.keys",
+        "line": 133
+      },
+      {
+        "name": "st.button",
+        "line": 136
+      },
+      {
+        "name": "st.rerun",
+        "line": 138
+      },
+      {
+        "name": "st.session_state.get",
+        "line": 140
+      },
+      {
+        "name": "next",
+        "line": 142
+      },
+      {
+        "name": "strip",
+        "line": 142
+      },
+      {
+        "name": "str",
+        "line": 142
+      },
+      {
+        "name": "item.get",
+        "line": 142
+      },
+      {
+        "name": "st.warning",
+        "line": 144
+      },
+      {
+        "name": "_render_selected_phieu",
+        "line": 146
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 152
+      },
+      {
+        "name": "_safe_int",
+        "line": 155
+      },
+      {
+        "name": "phieu.get",
+        "line": 155
+      },
+      {
+        "name": "_safe_int",
+        "line": 159
+      },
+      {
+        "name": "phieu.get",
+        "line": 159
+      },
+      {
+        "name": "_safe_int",
+        "line": 163
+      },
+      {
+        "name": "phieu.get",
+        "line": 163
+      },
+      {
+        "name": "strip",
+        "line": 167
+      },
+      {
+        "name": "str",
+        "line": 167
+      },
+      {
+        "name": "phieu.get",
+        "line": 167
+      },
+      {
+        "name": "strip",
+        "line": 169
+      },
+      {
+        "name": "str",
+        "line": 169
+      },
+      {
+        "name": "phieu.get",
+        "line": 169
+      },
+      {
+        "name": "teacher_map.items",
+        "line": 172
+      },
+      {
+        "name": "_is_bgh_user",
+        "line": 173
+      },
+      {
+        "name": "st.divider",
+        "line": 176
+      },
+      {
+        "name": "st.subheader",
+        "line": 177
+      },
+      {
+        "name": "st.caption",
+        "line": 178
+      },
+      {
+        "name": "st.columns",
+        "line": 183
+      },
+      {
+        "name": "st.metric",
+        "line": 185
+      },
+      {
+        "name": "len",
+        "line": 185
+      },
+      {
+        "name": "st.metric",
+        "line": 187
+      },
+      {
+        "name": "len",
+        "line": 187
+      },
+      {
+        "name": "st.metric",
+        "line": 189
+      },
+      {
+        "name": "len",
+        "line": 189
+      },
+      {
+        "name": "len",
+        "line": 189
+      },
+      {
+        "name": "st.warning",
+        "line": 192
+      },
+      {
+        "name": "st.expander",
+        "line": 193
+      },
+      {
+        "name": "strip",
+        "line": 195
+      },
+      {
+        "name": "str",
+        "line": 195
+      },
+      {
+        "name": "phieu.get",
+        "line": 195
+      },
+      {
+        "name": "teacher_map.get",
+        "line": 196
+      },
+      {
+        "name": "teacher.get",
+        "line": 197
+      },
+      {
+        "name": "st.write",
+        "line": 198
+      },
+      {
+        "name": "_status_text",
+        "line": 198
+      },
+      {
+        "name": "phieu.get",
+        "line": 198
+      },
+      {
+        "name": "strip",
+        "line": 200
+      },
+      {
+        "name": "str",
+        "line": 200
+      },
+      {
+        "name": "teacher.get",
+        "line": 200
+      },
+      {
+        "name": "teacher.get",
+        "line": 201
+      },
+      {
+        "name": "st.write",
+        "line": 202
+      },
+      {
+        "name": "st.info",
+        "line": 205
+      },
+      {
+        "name": "st.button",
+        "line": 209
+      },
+      {
+        "name": "st.rerun",
+        "line": 211
+      },
+      {
+        "name": "st.session_state.get",
+        "line": 213
+      },
+      {
+        "name": "st.error",
+        "line": 216
+      },
+      {
+        "name": "st.columns",
+        "line": 219
+      },
+      {
+        "name": "st.button",
+        "line": 221
+      },
+      {
+        "name": "_resolve_actor_code",
+        "line": 223
+      },
+      {
+        "name": "_get_logged_in_user",
+        "line": 223
+      },
+      {
+        "name": "finalize_month",
+        "line": 224
+      },
+      {
+        "name": "result.get",
+        "line": 226
+      },
+      {
+        "name": "result.get",
+        "line": 227
+      },
+      {
+        "name": "result.get",
+        "line": 228
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 231
+      },
+      {
+        "name": "st.rerun",
+        "line": 232
+      },
+      {
+        "name": "st.error",
+        "line": 234
+      },
+      {
+        "name": "str",
+        "line": 234
+      },
+      {
+        "name": "st.button",
+        "line": 236
+      },
+      {
+        "name": "st.rerun",
+        "line": 238
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 243
+      },
+      {
+        "name": "_safe_int",
+        "line": 246
+      },
+      {
+        "name": "phieu.get",
+        "line": 246
+      },
+      {
+        "name": "st.divider",
+        "line": 249
+      },
+      {
+        "name": "st.subheader",
+        "line": 250
+      },
+      {
+        "name": "st.caption",
+        "line": 251
+      },
+      {
+        "name": "st.info",
+        "line": 254
+      },
+      {
+        "name": "st.metric",
+        "line": 257
+      },
+      {
+        "name": "len",
+        "line": 257
+      },
+      {
+        "name": "st.button",
+        "line": 258
+      },
+      {
+        "name": "_resolve_actor_code",
+        "line": 260
+      },
+      {
+        "name": "_get_logged_in_user",
+        "line": 260
+      },
+      {
+        "name": "summarize_month",
+        "line": 261
+      },
+      {
+        "name": "result.get",
+        "line": 263
+      },
+      {
+        "name": "result.get",
+        "line": 264
+      },
+      {
+        "name": "result.get",
+        "line": 265
+      },
+      {
+        "name": "result.get",
+        "line": 266
+      },
+      {
+        "name": "st.rerun",
+        "line": 268
+      },
+      {
+        "name": "st.error",
+        "line": 270
+      },
+      {
+        "name": "str",
+        "line": 270
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 276
+      },
+      {
+        "name": "st.divider",
+        "line": 277
+      },
+      {
+        "name": "st.subheader",
+        "line": 278
+      },
+      {
+        "name": "st.caption",
+        "line": 279
+      },
+      {
+        "name": "build_monthly_excel_export",
+        "line": 282
+      },
+      {
+        "name": "st.info",
+        "line": 284
+      },
+      {
+        "name": "str",
+        "line": 284
+      },
+      {
+        "name": "st.metric",
+        "line": 287
+      },
+      {
+        "name": "st.download_button",
+        "line": 288
+      },
+      {
+        "name": "st.divider",
+        "line": 301
+      },
+      {
+        "name": "st.markdown",
+        "line": 302
+      },
+      {
+        "name": "st.caption",
+        "line": 306
+      },
+      {
+        "name": "st.markdown",
+        "line": 311
+      },
+      {
+        "name": "st.caption",
+        "line": 315
+      },
+      {
+        "name": "st.expander",
+        "line": 317
+      },
+      {
+        "name": "_render_scoring_deadline_panel",
+        "line": 318
+      },
+      {
+        "name": "st.expander",
+        "line": 320
+      },
+      {
+        "name": "_render_account_password_panel",
+        "line": 321
+      },
+      {
+        "name": "st.markdown",
+        "line": 326
+      },
+      {
+        "name": "st.caption",
+        "line": 327
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 332
+      },
+      {
+        "name": "st.success",
+        "line": 334
+      },
+      {
+        "name": "get_teacher_scoring_deadline_day",
+        "line": 337
+      },
+      {
+        "name": "st.error",
+        "line": 339
+      },
+      {
+        "name": "str",
+        "line": 339
+      },
+      {
+        "name": "st.columns",
+        "line": 342
+      },
+      {
+        "name": "st.number_input",
+        "line": 344
+      },
+      {
+        "name": "int",
+        "line": 348
+      },
+      {
+        "name": "st.write",
+        "line": 353
+      },
+      {
+        "name": "st.button",
+        "line": 354
+      },
+      {
+        "name": "_resolve_actor_code",
+        "line": 356
+      },
+      {
+        "name": "_get_logged_in_user",
+        "line": 356
+      },
+      {
+        "name": "set_teacher_scoring_deadline_day",
+        "line": 357
+      },
+      {
+        "name": "int",
+        "line": 357
+      },
+      {
+        "name": "int",
+        "line": 359
+      },
+      {
+        "name": "st.rerun",
+        "line": 361
+      },
+      {
+        "name": "st.error",
+        "line": 363
+      },
+      {
+        "name": "str",
+        "line": 363
+      },
+      {
+        "name": "st.markdown",
+        "line": 368
+      },
+      {
+        "name": "st.caption",
+        "line": 369
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 375
+      },
+      {
+        "name": "st.success",
+        "line": 377
+      },
+      {
+        "name": "st.columns",
+        "line": 379
+      },
+      {
+        "name": "st.button",
+        "line": 381
+      },
+      {
+        "name": "_resolve_actor_code",
+        "line": 383
+      },
+      {
+        "name": "_get_logged_in_user",
+        "line": 383
+      },
+      {
+        "name": "normalize_missing_password_hashes",
+        "line": 384
+      },
+      {
+        "name": "result.get",
+        "line": 386
+      },
+      {
+        "name": "result.get",
+        "line": 387
+      },
+      {
+        "name": "st.rerun",
+        "line": 389
+      },
+      {
+        "name": "st.error",
+        "line": 391
+      },
+      {
+        "name": "str",
+        "line": 391
+      },
+      {
+        "name": "strip",
+        "line": 394
+      },
+      {
+        "name": "str",
+        "line": 394
+      },
+      {
+        "name": "phieu.get",
+        "line": 394
+      },
+      {
+        "name": "strip",
+        "line": 395
+      },
+      {
+        "name": "str",
+        "line": 395
+      },
+      {
+        "name": "phieu.get",
+        "line": 395
+      },
+      {
+        "name": "teacher_map.get",
+        "line": 396
+      },
+      {
+        "name": "st.divider",
+        "line": 398
+      },
+      {
+        "name": "st.subheader",
+        "line": 399
+      },
+      {
+        "name": "get_chi_tiet_phieu",
+        "line": 401
+      },
+      {
+        "name": "get_all_criteria",
+        "line": 402
+      },
+      {
+        "name": "_calculate_total_score",
+        "line": 403
+      },
+      {
+        "name": "st.columns",
+        "line": 405
+      },
+      {
+        "name": "st.metric",
+        "line": 407
+      },
+      {
+        "name": "teacher.get",
+        "line": 407
+      },
+      {
+        "name": "st.metric",
+        "line": 409
+      },
+      {
+        "name": "_status_text",
+        "line": 409
+      },
+      {
+        "name": "phieu.get",
+        "line": 409
+      },
+      {
+        "name": "st.metric",
+        "line": 411
+      },
+      {
+        "name": "_format_number",
+        "line": 411
+      },
+      {
+        "name": "st.caption",
+        "line": 413
+      },
+      {
+        "name": "phieu.get",
+        "line": 414
+      },
+      {
+        "name": "phieu.get",
+        "line": 415
+      },
+      {
+        "name": "phieu.get",
+        "line": 415
+      },
+      {
+        "name": "st.warning",
+        "line": 419
+      },
+      {
+        "name": "_safe_int",
+        "line": 422
+      },
+      {
+        "name": "phieu.get",
+        "line": 422
+      },
+      {
+        "name": "_parse_bool",
+        "line": 422
+      },
+      {
+        "name": "phieu.get",
+        "line": 422
+      },
+      {
+        "name": "st.session_state.pop",
+        "line": 423
+      },
+      {
+        "name": "st.success",
+        "line": 425
+      },
+      {
+        "name": "render_score_form",
+        "line": 427
+      },
+      {
+        "name": "st.info",
+        "line": 435
+      },
+      {
+        "name": "st.error",
+        "line": 440
+      },
+      {
+        "name": "st.warning",
+        "line": 443
+      },
+      {
+        "name": "_resolve_actor_code",
+        "line": 446
+      },
+      {
+        "name": "_get_logged_in_user",
+        "line": 446
+      },
+      {
+        "name": "save_bgh_scores",
+        "line": 447
+      },
+      {
+        "name": "_format_number",
+        "line": 448
+      },
+      {
+        "name": "st.rerun",
+        "line": 449
+      },
+      {
+        "name": "st.error",
+        "line": 451
+      },
+      {
+        "name": "str",
+        "line": 451
+      },
+      {
+        "name": "strip",
+        "line": 455
+      },
+      {
+        "name": "str",
+        "line": 455
+      },
+      {
+        "name": "user.get",
+        "line": 456
+      },
+      {
+        "name": "user.get",
+        "line": 457
+      },
+      {
+        "name": "user.get",
+        "line": 458
+      },
+      {
+        "name": "user.get",
+        "line": 459
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 465
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 467
+      },
+      {
+        "name": "_canonicalize_th_record",
+        "line": 468
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 469
+      },
+      {
+        "name": "phieu.get",
+        "line": 469
+      },
+      {
+        "name": "strip",
+        "line": 471
+      },
+      {
+        "name": "str",
+        "line": 471
+      },
+      {
+        "name": "phieu.get",
+        "line": 471
+      },
+      {
+        "name": "_build_expected_phieu_id",
+        "line": 472
+      },
+      {
+        "name": "selected_by_id.get",
+        "line": 478
+      },
+      {
+        "name": "_phieu_priority",
+        "line": 479
+      },
+      {
+        "name": "_phieu_priority",
+        "line": 479
+      },
+      {
+        "name": "sorted",
+        "line": 481
+      },
+      {
+        "name": "selected_by_id.values",
+        "line": 481
+      },
+      {
+        "name": "str",
+        "line": 481
+      },
+      {
+        "name": "item.get",
+        "line": 481
+      },
+      {
+        "name": "int",
+        "line": 485
+      },
+      {
+        "name": "_safe_float",
+        "line": 485
+      },
+      {
+        "name": "phieu.get",
+        "line": 485
+      },
+      {
+        "name": "strip",
+        "line": 486
+      },
+      {
+        "name": "str",
+        "line": 486
+      },
+      {
+        "name": "phieu.get",
+        "line": 486
+      },
+      {
+        "name": "strip",
+        "line": 486
+      },
+      {
+        "name": "str",
+        "line": 486
+      },
+      {
+        "name": "phieu.get",
+        "line": 486
+      },
+      {
+        "name": "get_all_teachers",
+        "line": 490
+      },
+      {
+        "name": "strip",
+        "line": 491
+      },
+      {
+        "name": "str",
+        "line": 491
+      },
+      {
+        "name": "teacher.get",
+        "line": 491
+      },
+      {
+        "name": "strip",
+        "line": 491
+      },
+      {
+        "name": "str",
+        "line": 491
+      },
+      {
+        "name": "teacher.get",
+        "line": 491
+      },
+      {
+        "name": "strip",
+        "line": 495
+      },
+      {
+        "name": "str",
+        "line": 495
+      },
+      {
+        "name": "phieu.get",
+        "line": 495
+      },
+      {
+        "name": "teacher_map.get",
+        "line": 496
+      },
+      {
+        "name": "teacher.get",
+        "line": 499
+      },
+      {
+        "name": "teacher.get",
+        "line": 500
+      },
+      {
+        "name": "_status_text",
+        "line": 501
+      },
+      {
+        "name": "phieu.get",
+        "line": 501
+      },
+      {
+        "name": "phieu.get",
+        "line": 502
+      },
+      {
+        "name": "phieu.get",
+        "line": 503
+      },
+      {
+        "name": "phieu.get",
+        "line": 504
+      },
+      {
+        "name": "phieu.get",
+        "line": 505
+      },
+      {
+        "name": "strip",
+        "line": 510
+      },
+      {
+        "name": "str",
+        "line": 510
+      },
+      {
+        "name": "phieu.get",
+        "line": 510
+      },
+      {
+        "name": "get",
+        "line": 511
+      },
+      {
+        "name": "teacher_map.get",
+        "line": 511
+      },
+      {
+        "name": "phieu.get",
+        "line": 512
+      },
+      {
+        "name": "_status_text",
+        "line": 513
+      },
+      {
+        "name": "phieu.get",
+        "line": 513
+      },
+      {
+        "name": "st.session_state.get",
+        "line": 521
+      },
+      {
+        "name": "isinstance",
+        "line": 522
+      },
+      {
+        "name": "_normalize_key",
+        "line": 528
+      },
+      {
+        "name": "user.get",
+        "line": 528
+      },
+      {
+        "name": "user.get",
+        "line": 528
+      },
+      {
+        "name": "user.get",
+        "line": 528
+      },
+      {
+        "name": "_get_text",
+        "line": 533
+      },
+      {
+        "name": "TH_ALIASES.items",
+        "line": 533
+      },
+      {
+        "name": "_safe_int",
+        "line": 535
+      },
+      {
+        "name": "canonical.get",
+        "line": 535
+      },
+      {
+        "name": "_parse_bool",
+        "line": 536
+      },
+      {
+        "name": "canonical.get",
+        "line": 536
+      },
+      {
+        "name": "strip",
+        "line": 537
+      },
+      {
+        "name": "str",
+        "line": 537
+      },
+      {
+        "name": "canonical.get",
+        "line": 537
+      },
+      {
+        "name": "_get_text",
+        "line": 545
+      },
+      {
+        "name": "CT_ALIASES.items",
+        "line": 545
+      },
+      {
+        "name": "_safe_int",
+        "line": 549
+      },
+      {
+        "name": "STATUS_TEXT.get",
+        "line": 550
+      },
+      {
+        "name": "str",
+        "line": 550
+      },
+      {
+        "name": "set",
+        "line": 555
+      },
+      {
+        "name": "_canonicalize_ct_record",
+        "line": 557
+      },
+      {
+        "name": "strip",
+        "line": 558
+      },
+      {
+        "name": "str",
+        "line": 558
+      },
+      {
+        "name": "detail.get",
+        "line": 558
+      },
+      {
+        "name": "detail.get",
+        "line": 558
+      },
+      {
+        "name": "detail.get",
+        "line": 558
+      },
+      {
+        "name": "seen.add",
+        "line": 562
+      },
+      {
+        "name": "_official_score",
+        "line": 563
+      },
+      {
+        "name": "strip",
+        "line": 568
+      },
+      {
+        "name": "str",
+        "line": 568
+      },
+      {
+        "name": "detail.get",
+        "line": 568
+      },
+      {
+        "name": "_safe_float",
+        "line": 570
+      },
+      {
+        "name": "_safe_float",
+        "line": 571
+      },
+      {
+        "name": "detail.get",
+        "line": 571
+      },
+      {
+        "name": "_normalize_key",
+        "line": 575
+      },
+      {
+        "name": "record.items",
+        "line": 575
+      },
+      {
+        "name": "record.get",
+        "line": 577
+      },
+      {
+        "name": "strip",
+        "line": 578
+      },
+      {
+        "name": "str",
+        "line": 578
+      },
+      {
+        "name": "strip",
+        "line": 579
+      },
+      {
+        "name": "str",
+        "line": 579
+      },
+      {
+        "name": "normalized.get",
+        "line": 580
+      },
+      {
+        "name": "_normalize_key",
+        "line": 580
+      },
+      {
+        "name": "strip",
+        "line": 581
+      },
+      {
+        "name": "str",
+        "line": 581
+      },
+      {
+        "name": "strip",
+        "line": 582
+      },
+      {
+        "name": "str",
+        "line": 582
+      },
+      {
+        "name": "strip",
+        "line": 588
+      },
+      {
+        "name": "str",
+        "line": 588
+      },
+      {
+        "name": "phieu.get",
+        "line": 588
+      },
+      {
+        "name": "strip",
+        "line": 589
+      },
+      {
+        "name": "str",
+        "line": 589
+      },
+      {
+        "name": "phieu.get",
+        "line": 589
+      },
+      {
+        "name": "replace",
+        "line": 592
+      },
+      {
+        "name": "str",
+        "line": 592
+      },
+      {
+        "name": "replace",
+        "line": 597
+      },
+      {
+        "name": "strip",
+        "line": 597
+      },
+      {
+        "name": "str",
+        "line": 597
+      },
+      {
+        "name": "text.split",
+        "line": 601
+      },
+      {
+        "name": "len",
+        "line": 602
+      },
+      {
+        "name": "strip",
+        "line": 603
+      },
+      {
+        "name": "strip",
+        "line": 603
+      },
+      {
+        "name": "int",
+        "line": 605
+      },
+      {
+        "name": "float",
+        "line": 605
+      },
+      {
+        "name": "int",
+        "line": 605
+      },
+      {
+        "name": "float",
+        "line": 605
+      },
+      {
+        "name": "join",
+        "line": 609
+      },
+      {
+        "name": "ch.isdigit",
+        "line": 609
+      },
+      {
+        "name": "len",
+        "line": 610
+      },
+      {
+        "name": "lower",
+        "line": 616
+      },
+      {
+        "name": "strip",
+        "line": 616
+      },
+      {
+        "name": "str",
+        "line": 616
+      },
+      {
+        "name": "replacements.items",
+        "line": 623
+      },
+      {
+        "name": "text.replace",
+        "line": 624
+      },
+      {
+        "name": "join",
+        "line": 625
+      },
+      {
+        "name": "split",
+        "line": 625
+      },
+      {
+        "name": "replace",
+        "line": 625
+      },
+      {
+        "name": "replace",
+        "line": 625
+      },
+      {
+        "name": "text.replace",
+        "line": 625
+      },
+      {
+        "name": "strip",
+        "line": 629
+      },
+      {
+        "name": "str",
+        "line": 629
+      },
+      {
+        "name": "int",
+        "line": 633
+      },
+      {
+        "name": "float",
+        "line": 633
+      },
+      {
+        "name": "text.replace",
+        "line": 633
+      },
+      {
+        "name": "strip",
+        "line": 639
+      },
+      {
+        "name": "str",
+        "line": 639
+      },
+      {
+        "name": "float",
+        "line": 643
+      },
+      {
+        "name": "text.replace",
+        "line": 643
+      },
+      {
+        "name": "_safe_float",
+        "line": 649
+      },
+      {
+        "name": "number.is_integer",
+        "line": 650
+      },
+      {
+        "name": "str",
+        "line": 651
+      },
+      {
+        "name": "int",
+        "line": 651
+      },
+      {
+        "name": "rstrip",
+        "line": 652
+      },
+      {
+        "name": "rstrip",
+        "line": 652
+      },
+      {
+        "name": "isinstance",
+        "line": 656
+      },
+      {
+        "name": "lower",
+        "line": 658
+      },
+      {
+        "name": "strip",
+        "line": 658
+      },
+      {
+        "name": "str",
+        "line": 658
+      }
+    ]
+  },
+  "app/components/__init__.py": {
+    "module": "app.components.__init__",
+    "functions": [],
+    "imports": [],
+    "calls": []
+  },
+  "app/components/score_form_component.py": {
+    "module": "app.components.score_form_component",
+    "functions": [
+      {
+        "name": "render_score_form",
+        "line": 137
+      },
+      {
+        "name": "_render_teacher_score_form",
+        "line": 153
+      },
+      {
+        "name": "_render_bgh_score_form",
+        "line": 285
+      },
+      {
+        "name": "_render_bgh_sticky_header",
+        "line": 393
+      },
+      {
+        "name": "_render_bgh_static_row",
+        "line": 410
+      },
+      {
+        "name": "_render_bgh_item_row",
+        "line": 430
+      },
+      {
+        "name": "_cap_total",
+        "line": 477
+      },
+      {
+        "name": "_render_live_total",
+        "line": 481
+      },
+      {
+        "name": "_attach_live_total_and_sticky_header",
+        "line": 493
+      },
+      {
+        "name": "_attach_input_helpers",
+        "line": 560
+      },
+      {
+        "name": "_render_total_bar",
+        "line": 565
+      },
+      {
+        "name": "_render_sticky_header",
+        "line": 576
+      },
+      {
+        "name": "_render_static_row",
+        "line": 591
+      },
+      {
+        "name": "_render_item_row",
+        "line": 607
+      },
+      {
+        "name": "_prepare_rows",
+        "line": 647
+      },
+      {
+        "name": "_build_parent_totals",
+        "line": 677
+      },
+      {
+        "name": "_normalize_detail",
+        "line": 706
+      },
+      {
+        "name": "_calculate_total_from_state",
+        "line": 726
+      },
+      {
+        "name": "_is_changed",
+        "line": 738
+      },
+      {
+        "name": "_safe_content",
+        "line": 750
+      },
+      {
+        "name": "_normalize_criterion",
+        "line": 754
+      },
+      {
+        "name": "_resolve_default_score",
+        "line": 798
+      },
+      {
+        "name": "_resolve_teacher_score",
+        "line": 806
+      },
+      {
+        "name": "_get_text",
+        "line": 819
+      },
+      {
+        "name": "_normalize_key",
+        "line": 831
+      },
+      {
+        "name": "_to_bool",
+        "line": 844
+      },
+      {
+        "name": "_to_float",
+        "line": 855
+      },
+      {
+        "name": "_format_score",
+        "line": 864
+      },
+      {
+        "name": "_to_roman",
+        "line": 870
+      },
+      {
+        "name": "_html_escape",
+        "line": 881
+      }
+    ],
+    "imports": [],
+    "calls": [
+      {
+        "name": "lower",
+        "line": 148
+      },
+      {
+        "name": "strip",
+        "line": 148
+      },
+      {
+        "name": "str",
+        "line": 148
+      },
+      {
+        "name": "_render_bgh_score_form",
+        "line": 150
+      },
+      {
+        "name": "_render_teacher_score_form",
+        "line": 151
+      },
+      {
+        "name": "st.markdown",
+        "line": 166
+      },
+      {
+        "name": "_normalize_criterion",
+        "line": 167
+      },
+      {
+        "name": "_normalize_detail",
+        "line": 168
+      },
+      {
+        "name": "strip",
+        "line": 169
+      },
+      {
+        "name": "str",
+        "line": 169
+      },
+      {
+        "name": "row.get",
+        "line": 169
+      },
+      {
+        "name": "strip",
+        "line": 169
+      },
+      {
+        "name": "str",
+        "line": 169
+      },
+      {
+        "name": "row.get",
+        "line": 169
+      },
+      {
+        "name": "_prepare_rows",
+        "line": 171
+      },
+      {
+        "name": "_build_parent_totals",
+        "line": 172
+      },
+      {
+        "name": "_render_sticky_header",
+        "line": 173
+      },
+      {
+        "name": "st.form",
+        "line": 179
+      },
+      {
+        "name": "parent_totals.get",
+        "line": 189
+      },
+      {
+        "name": "_render_static_row",
+        "line": 190
+      },
+      {
+        "name": "_to_roman",
+        "line": 191
+      },
+      {
+        "name": "_format_score",
+        "line": 193
+      },
+      {
+        "name": "_to_float",
+        "line": 193
+      },
+      {
+        "name": "totals.get",
+        "line": 193
+      },
+      {
+        "name": "_format_score",
+        "line": 195
+      },
+      {
+        "name": "_to_float",
+        "line": 195
+      },
+      {
+        "name": "totals.get",
+        "line": 195
+      },
+      {
+        "name": "parent_totals.get",
+        "line": 200
+      },
+      {
+        "name": "_render_static_row",
+        "line": 201
+      },
+      {
+        "name": "_format_score",
+        "line": 204
+      },
+      {
+        "name": "_to_float",
+        "line": 204
+      },
+      {
+        "name": "totals.get",
+        "line": 204
+      },
+      {
+        "name": "_format_score",
+        "line": 206
+      },
+      {
+        "name": "_to_float",
+        "line": 206
+      },
+      {
+        "name": "totals.get",
+        "line": 206
+      },
+      {
+        "name": "str",
+        "line": 214
+      },
+      {
+        "name": "_render_item_row",
+        "line": 216
+      },
+      {
+        "name": "errors.append",
+        "line": 228
+      },
+      {
+        "name": "_to_float",
+        "line": 232
+      },
+      {
+        "name": "float",
+        "line": 232
+      },
+      {
+        "name": "changed_rows.append",
+        "line": 239
+      },
+      {
+        "name": "get",
+        "line": 241
+      },
+      {
+        "name": "get",
+        "line": 242
+      },
+      {
+        "name": "float",
+        "line": 245
+      },
+      {
+        "name": "strip",
+        "line": 246
+      },
+      {
+        "name": "str",
+        "line": 246
+      },
+      {
+        "name": "st.markdown",
+        "line": 251
+      },
+      {
+        "name": "_html_escape",
+        "line": 252
+      },
+      {
+        "name": "_html_escape",
+        "line": 253
+      },
+      {
+        "name": "st.markdown",
+        "line": 259
+      },
+      {
+        "name": "_html_escape",
+        "line": 259
+      },
+      {
+        "name": "_cap_total",
+        "line": 261
+      },
+      {
+        "name": "_render_live_total",
+        "line": 262
+      },
+      {
+        "name": "_attach_live_total_and_sticky_header",
+        "line": 263
+      },
+      {
+        "name": "st.columns",
+        "line": 265
+      },
+      {
+        "name": "st.session_state.get",
+        "line": 266
+      },
+      {
+        "name": "st.form_submit_button",
+        "line": 270
+      },
+      {
+        "name": "st.form_submit_button",
+        "line": 272
+      },
+      {
+        "name": "st.markdown",
+        "line": 291
+      },
+      {
+        "name": "_normalize_criterion",
+        "line": 292
+      },
+      {
+        "name": "_normalize_detail",
+        "line": 293
+      },
+      {
+        "name": "strip",
+        "line": 294
+      },
+      {
+        "name": "str",
+        "line": 294
+      },
+      {
+        "name": "row.get",
+        "line": 294
+      },
+      {
+        "name": "strip",
+        "line": 294
+      },
+      {
+        "name": "str",
+        "line": 294
+      },
+      {
+        "name": "row.get",
+        "line": 294
+      },
+      {
+        "name": "_prepare_rows",
+        "line": 296
+      },
+      {
+        "name": "_build_parent_totals",
+        "line": 297
+      },
+      {
+        "name": "_render_bgh_sticky_header",
+        "line": 298
+      },
+      {
+        "name": "st.form",
+        "line": 304
+      },
+      {
+        "name": "parent_totals.get",
+        "line": 314
+      },
+      {
+        "name": "_render_bgh_static_row",
+        "line": 315
+      },
+      {
+        "name": "_to_roman",
+        "line": 316
+      },
+      {
+        "name": "_format_score",
+        "line": 318
+      },
+      {
+        "name": "_to_float",
+        "line": 318
+      },
+      {
+        "name": "totals.get",
+        "line": 318
+      },
+      {
+        "name": "_format_score",
+        "line": 319
+      },
+      {
+        "name": "_to_float",
+        "line": 319
+      },
+      {
+        "name": "totals.get",
+        "line": 319
+      },
+      {
+        "name": "_format_score",
+        "line": 320
+      },
+      {
+        "name": "_to_float",
+        "line": 320
+      },
+      {
+        "name": "totals.get",
+        "line": 320
+      },
+      {
+        "name": "parent_totals.get",
+        "line": 326
+      },
+      {
+        "name": "_render_bgh_static_row",
+        "line": 327
+      },
+      {
+        "name": "_format_score",
+        "line": 330
+      },
+      {
+        "name": "_to_float",
+        "line": 330
+      },
+      {
+        "name": "totals.get",
+        "line": 330
+      },
+      {
+        "name": "_format_score",
+        "line": 331
+      },
+      {
+        "name": "_to_float",
+        "line": 331
+      },
+      {
+        "name": "totals.get",
+        "line": 331
+      },
+      {
+        "name": "_format_score",
+        "line": 332
+      },
+      {
+        "name": "_to_float",
+        "line": 332
+      },
+      {
+        "name": "totals.get",
+        "line": 332
+      },
+      {
+        "name": "str",
+        "line": 341
+      },
+      {
+        "name": "_render_bgh_item_row",
+        "line": 343
+      },
+      {
+        "name": "errors.append",
+        "line": 357
+      },
+      {
+        "name": "float",
+        "line": 361
+      },
+      {
+        "name": "changed_rows.append",
+        "line": 364
+      },
+      {
+        "name": "get",
+        "line": 366
+      },
+      {
+        "name": "get",
+        "line": 367
+      },
+      {
+        "name": "float",
+        "line": 369
+      },
+      {
+        "name": "float",
+        "line": 370
+      },
+      {
+        "name": "strip",
+        "line": 371
+      },
+      {
+        "name": "str",
+        "line": 371
+      },
+      {
+        "name": "st.markdown",
+        "line": 377
+      },
+      {
+        "name": "_html_escape",
+        "line": 377
+      },
+      {
+        "name": "_cap_total",
+        "line": 379
+      },
+      {
+        "name": "_render_live_total",
+        "line": 380
+      },
+      {
+        "name": "_attach_live_total_and_sticky_header",
+        "line": 381
+      },
+      {
+        "name": "st.columns",
+        "line": 383
+      },
+      {
+        "name": "st.form_submit_button",
+        "line": 385
+      },
+      {
+        "name": "st.markdown",
+        "line": 394
+      },
+      {
+        "name": "st.columns",
+        "line": 412
+      },
+      {
+        "name": "_safe_content",
+        "line": 413
+      },
+      {
+        "name": "st.markdown",
+        "line": 415
+      },
+      {
+        "name": "_html_escape",
+        "line": 415
+      },
+      {
+        "name": "st.markdown",
+        "line": 417
+      },
+      {
+        "name": "st.markdown",
+        "line": 419
+      },
+      {
+        "name": "_html_escape",
+        "line": 419
+      },
+      {
+        "name": "st.markdown",
+        "line": 421
+      },
+      {
+        "name": "_html_escape",
+        "line": 421
+      },
+      {
+        "name": "st.markdown",
+        "line": 423
+      },
+      {
+        "name": "st.markdown",
+        "line": 425
+      },
+      {
+        "name": "_html_escape",
+        "line": 425
+      },
+      {
+        "name": "st.markdown",
+        "line": 427
+      },
+      {
+        "name": "st.columns",
+        "line": 443
+      },
+      {
+        "name": "strip",
+        "line": 444
+      },
+      {
+        "name": "str",
+        "line": 444
+      },
+      {
+        "name": "_to_float",
+        "line": 444
+      },
+      {
+        "name": "float",
+        "line": 444
+      },
+      {
+        "name": "max",
+        "line": 445
+      },
+      {
+        "name": "float",
+        "line": 445
+      },
+      {
+        "name": "st.markdown",
+        "line": 447
+      },
+      {
+        "name": "_html_escape",
+        "line": 447
+      },
+      {
+        "name": "st.markdown",
+        "line": 449
+      },
+      {
+        "name": "_safe_content",
+        "line": 449
+      },
+      {
+        "name": "st.markdown",
+        "line": 451
+      },
+      {
+        "name": "_format_score",
+        "line": 451
+      },
+      {
+        "name": "st.markdown",
+        "line": 453
+      },
+      {
+        "name": "_format_score",
+        "line": 453
+      },
+      {
+        "name": "st.markdown",
+        "line": 455
+      },
+      {
+        "name": "_html_escape",
+        "line": 455
+      },
+      {
+        "name": "st.number_input",
+        "line": 457
+      },
+      {
+        "name": "float",
+        "line": 461
+      },
+      {
+        "name": "st.text_input",
+        "line": 468
+      },
+      {
+        "name": "float",
+        "line": 475
+      },
+      {
+        "name": "str",
+        "line": 475
+      },
+      {
+        "name": "min",
+        "line": 478
+      },
+      {
+        "name": "float",
+        "line": 478
+      },
+      {
+        "name": "_format_score",
+        "line": 486
+      },
+      {
+        "name": "st.markdown",
+        "line": 490
+      },
+      {
+        "name": "components.html",
+        "line": 499
+      },
+      {
+        "name": "st.markdown",
+        "line": 566
+      },
+      {
+        "name": "_format_score",
+        "line": 569
+      },
+      {
+        "name": "st.markdown",
+        "line": 577
+      },
+      {
+        "name": "st.columns",
+        "line": 593
+      },
+      {
+        "name": "_safe_content",
+        "line": 594
+      },
+      {
+        "name": "st.markdown",
+        "line": 596
+      },
+      {
+        "name": "_html_escape",
+        "line": 596
+      },
+      {
+        "name": "st.markdown",
+        "line": 598
+      },
+      {
+        "name": "st.markdown",
+        "line": 600
+      },
+      {
+        "name": "_html_escape",
+        "line": 600
+      },
+      {
+        "name": "st.markdown",
+        "line": 602
+      },
+      {
+        "name": "_html_escape",
+        "line": 602
+      },
+      {
+        "name": "st.markdown",
+        "line": 604
+      },
+      {
+        "name": "st.columns",
+        "line": 618
+      },
+      {
+        "name": "st.markdown",
+        "line": 620
+      },
+      {
+        "name": "_html_escape",
+        "line": 620
+      },
+      {
+        "name": "st.markdown",
+        "line": 622
+      },
+      {
+        "name": "_safe_content",
+        "line": 622
+      },
+      {
+        "name": "st.markdown",
+        "line": 624
+      },
+      {
+        "name": "_format_score",
+        "line": 624
+      },
+      {
+        "name": "st.number_input",
+        "line": 626
+      },
+      {
+        "name": "float",
+        "line": 629
+      },
+      {
+        "name": "float",
+        "line": 630
+      },
+      {
+        "name": "st.text_input",
+        "line": 637
+      },
+      {
+        "name": "float",
+        "line": 644
+      },
+      {
+        "name": "str",
+        "line": 644
+      },
+      {
+        "name": "detail_by_ma_tc.get",
+        "line": 652
+      },
+      {
+        "name": "_resolve_default_score",
+        "line": 653
+      },
+      {
+        "name": "_resolve_teacher_score",
+        "line": 654
+      },
+      {
+        "name": "replace",
+        "line": 655
+      },
+      {
+        "name": "str",
+        "line": 655
+      },
+      {
+        "name": "detail.get",
+        "line": 655
+      },
+      {
+        "name": "rows.append",
+        "line": 656
+      },
+      {
+        "name": "criterion.get",
+        "line": 659
+      },
+      {
+        "name": "criterion.get",
+        "line": 662
+      },
+      {
+        "name": "criterion.get",
+        "line": 663
+      },
+      {
+        "name": "criterion.get",
+        "line": 664
+      },
+      {
+        "name": "strip",
+        "line": 667
+      },
+      {
+        "name": "str",
+        "line": 667
+      },
+      {
+        "name": "detail.get",
+        "line": 667
+      },
+      {
+        "name": "strip",
+        "line": 668
+      },
+      {
+        "name": "str",
+        "line": 668
+      },
+      {
+        "name": "detail.get",
+        "line": 668
+      },
+      {
+        "name": "strip",
+        "line": 669
+      },
+      {
+        "name": "str",
+        "line": 669
+      },
+      {
+        "name": "detail.get",
+        "line": 669
+      },
+      {
+        "name": "strip",
+        "line": 679
+      },
+      {
+        "name": "str",
+        "line": 679
+      },
+      {
+        "name": "row.get",
+        "line": 679
+      },
+      {
+        "name": "strip",
+        "line": 679
+      },
+      {
+        "name": "str",
+        "line": 679
+      },
+      {
+        "name": "row.get",
+        "line": 679
+      },
+      {
+        "name": "row.get",
+        "line": 683
+      },
+      {
+        "name": "row.get",
+        "line": 683
+      },
+      {
+        "name": "_to_float",
+        "line": 686
+      },
+      {
+        "name": "row.get",
+        "line": 686
+      },
+      {
+        "name": "_to_float",
+        "line": 687
+      },
+      {
+        "name": "row.get",
+        "line": 687
+      },
+      {
+        "name": "strip",
+        "line": 688
+      },
+      {
+        "name": "str",
+        "line": 688
+      },
+      {
+        "name": "row.get",
+        "line": 688
+      },
+      {
+        "name": "set",
+        "line": 689
+      },
+      {
+        "name": "visited.add",
+        "line": 692
+      },
+      {
+        "name": "row_by_code.get",
+        "line": 693
+      },
+      {
+        "name": "parent.get",
+        "line": 696
+      },
+      {
+        "name": "totals.setdefault",
+        "line": 697
+      },
+      {
+        "name": "strip",
+        "line": 700
+      },
+      {
+        "name": "str",
+        "line": 700
+      },
+      {
+        "name": "parent.get",
+        "line": 700
+      },
+      {
+        "name": "_get_text",
+        "line": 714
+      },
+      {
+        "name": "_get_text",
+        "line": 715
+      },
+      {
+        "name": "_get_text",
+        "line": 716
+      },
+      {
+        "name": "_get_text",
+        "line": 717
+      },
+      {
+        "name": "_get_text",
+        "line": 718
+      },
+      {
+        "name": "_get_text",
+        "line": 719
+      },
+      {
+        "name": "_get_text",
+        "line": 720
+      },
+      {
+        "name": "_get_text",
+        "line": 721
+      },
+      {
+        "name": "_get_text",
+        "line": 722
+      },
+      {
+        "name": "_get_text",
+        "line": 723
+      },
+      {
+        "name": "st.session_state.get",
+        "line": 732
+      },
+      {
+        "name": "_to_float",
+        "line": 734
+      },
+      {
+        "name": "_to_float",
+        "line": 734
+      },
+      {
+        "name": "_to_float",
+        "line": 740
+      },
+      {
+        "name": "detail.get",
+        "line": 740
+      },
+      {
+        "name": "_to_float",
+        "line": 741
+      },
+      {
+        "name": "detail.get",
+        "line": 741
+      },
+      {
+        "name": "float",
+        "line": 744
+      },
+      {
+        "name": "strip",
+        "line": 746
+      },
+      {
+        "name": "str",
+        "line": 746
+      },
+      {
+        "name": "_html_escape",
+        "line": 751
+      },
+      {
+        "name": "_get_text",
+        "line": 756
+      },
+      {
+        "name": "_get_text",
+        "line": 757
+      },
+      {
+        "name": "_get_text",
+        "line": 758
+      },
+      {
+        "name": "upper",
+        "line": 771
+      },
+      {
+        "name": "_get_text",
+        "line": 771
+      },
+      {
+        "name": "_get_text",
+        "line": 772
+      },
+      {
+        "name": "_get_text",
+        "line": 773
+      },
+      {
+        "name": "_to_bool",
+        "line": 774
+      },
+      {
+        "name": "_get_text",
+        "line": 774
+      },
+      {
+        "name": "_to_float",
+        "line": 775
+      },
+      {
+        "name": "_get_text",
+        "line": 776
+      },
+      {
+        "name": "_to_float",
+        "line": 799
+      },
+      {
+        "name": "detail.get",
+        "line": 799
+      },
+      {
+        "name": "_to_float",
+        "line": 800
+      },
+      {
+        "name": "criterion.get",
+        "line": 800
+      },
+      {
+        "name": "strip",
+        "line": 809
+      },
+      {
+        "name": "str",
+        "line": 809
+      },
+      {
+        "name": "detail.get",
+        "line": 809
+      },
+      {
+        "name": "strip",
+        "line": 810
+      },
+      {
+        "name": "str",
+        "line": 810
+      },
+      {
+        "name": "detail.get",
+        "line": 810
+      },
+      {
+        "name": "_to_float",
+        "line": 813
+      },
+      {
+        "name": "min",
+        "line": 816
+      },
+      {
+        "name": "_normalize_key",
+        "line": 820
+      },
+      {
+        "name": "record.items",
+        "line": 820
+      },
+      {
+        "name": "record.get",
+        "line": 822
+      },
+      {
+        "name": "strip",
+        "line": 823
+      },
+      {
+        "name": "str",
+        "line": 823
+      },
+      {
+        "name": "strip",
+        "line": 824
+      },
+      {
+        "name": "str",
+        "line": 824
+      },
+      {
+        "name": "normalized.get",
+        "line": 825
+      },
+      {
+        "name": "_normalize_key",
+        "line": 825
+      },
+      {
+        "name": "strip",
+        "line": 826
+      },
+      {
+        "name": "str",
+        "line": 826
+      },
+      {
+        "name": "strip",
+        "line": 827
+      },
+      {
+        "name": "str",
+        "line": 827
+      },
+      {
+        "name": "lower",
+        "line": 832
+      },
+      {
+        "name": "strip",
+        "line": 832
+      },
+      {
+        "name": "str",
+        "line": 832
+      },
+      {
+        "name": "replacements.items",
+        "line": 839
+      },
+      {
+        "name": "text.replace",
+        "line": 840
+      },
+      {
+        "name": "join",
+        "line": 841
+      },
+      {
+        "name": "split",
+        "line": 841
+      },
+      {
+        "name": "replace",
+        "line": 841
+      },
+      {
+        "name": "replace",
+        "line": 841
+      },
+      {
+        "name": "text.replace",
+        "line": 841
+      },
+      {
+        "name": "lower",
+        "line": 845
+      },
+      {
+        "name": "strip",
+        "line": 845
+      },
+      {
+        "name": "str",
+        "line": 845
+      },
+      {
+        "name": "strip",
+        "line": 856
+      },
+      {
+        "name": "str",
+        "line": 856
+      },
+      {
+        "name": "float",
+        "line": 859
+      },
+      {
+        "name": "replace",
+        "line": 859
+      },
+      {
+        "name": "str",
+        "line": 859
+      },
+      {
+        "name": "is_integer",
+        "line": 865
+      },
+      {
+        "name": "float",
+        "line": 865
+      },
+      {
+        "name": "str",
+        "line": 866
+      },
+      {
+        "name": "int",
+        "line": 866
+      },
+      {
+        "name": "str",
+        "line": 867
+      },
+      {
+        "name": "str",
+        "line": 882
+      },
+      {
+        "name": "replace",
+        "line": 883
+      },
+      {
+        "name": "replace",
+        "line": 883
+      },
+      {
+        "name": "replace",
+        "line": 883
+      },
+      {
+        "name": "replace",
+        "line": 883
+      },
+      {
+        "name": "text.replace",
+        "line": 883
+      }
+    ]
+  },
+  "app/services/__init__.py": {
+    "module": "app.services.__init__",
+    "functions": [],
+    "imports": [],
+    "calls": []
+  },
+  "app/services/google_sheets_service.py": {
+    "module": "app.services.google_sheets_service",
+    "functions": [
+      {
+        "name": "clear_google_sheets_connection_cache",
+        "line": 30
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 39
+      },
+      {
+        "name": "__init__",
+        "line": 56
+      },
+      {
+        "name": "__getattr__",
+        "line": 60
+      },
+      {
+        "name": "title",
+        "line": 64
+      },
+      {
+        "name": "_clear_cache",
+        "line": 67
+      },
+      {
+        "name": "append_row",
+        "line": 70
+      },
+      {
+        "name": "append_rows",
+        "line": 76
+      },
+      {
+        "name": "batch_update",
+        "line": 82
+      },
+      {
+        "name": "update_cell",
+        "line": 88
+      },
+      {
+        "name": "update",
+        "line": 94
+      },
+      {
+        "name": "get_gspread_client",
+        "line": 100
+      },
+      {
+        "name": "_build_google_credentials",
+        "line": 115
+      },
+      {
+        "name": "_get_streamlit_service_account_info",
+        "line": 137
+      },
+      {
+        "name": "open_spreadsheet",
+        "line": 159
+      },
+      {
+        "name": "get_worksheet",
+        "line": 170
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 183
+      },
+      {
+        "name": "read_dm_giaovien",
+        "line": 231
+      },
+      {
+        "name": "_normalize_header_key",
+        "line": 236
+      }
+    ],
+    "imports": [],
+    "calls": [
+      {
+        "name": "Path",
+        "line": 17
+      },
+      {
+        "name": "_WORKSHEET_CACHE.clear",
+        "line": 35
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 36
+      },
+      {
+        "name": "_READ_RECORDS_CACHE.clear",
+        "line": 47
+      },
+      {
+        "name": "_READ_RECORDS_CACHE.pop",
+        "line": 49
+      },
+      {
+        "name": "strip",
+        "line": 49
+      },
+      {
+        "name": "str",
+        "line": 49
+      },
+      {
+        "name": "strip",
+        "line": 58
+      },
+      {
+        "name": "str",
+        "line": 58
+      },
+      {
+        "name": "getattr",
+        "line": 61
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 68
+      },
+      {
+        "name": "self._clear_cache",
+        "line": 71
+      },
+      {
+        "name": "self._worksheet.append_row",
+        "line": 72
+      },
+      {
+        "name": "self._clear_cache",
+        "line": 73
+      },
+      {
+        "name": "self._clear_cache",
+        "line": 77
+      },
+      {
+        "name": "self._worksheet.append_rows",
+        "line": 78
+      },
+      {
+        "name": "self._clear_cache",
+        "line": 79
+      },
+      {
+        "name": "self._clear_cache",
+        "line": 83
+      },
+      {
+        "name": "self._worksheet.batch_update",
+        "line": 84
+      },
+      {
+        "name": "self._clear_cache",
+        "line": 85
+      },
+      {
+        "name": "self._clear_cache",
+        "line": 89
+      },
+      {
+        "name": "self._worksheet.update_cell",
+        "line": 90
+      },
+      {
+        "name": "self._clear_cache",
+        "line": 91
+      },
+      {
+        "name": "self._clear_cache",
+        "line": 95
+      },
+      {
+        "name": "self._worksheet.update",
+        "line": 96
+      },
+      {
+        "name": "self._clear_cache",
+        "line": 97
+      },
+      {
+        "name": "_build_google_credentials",
+        "line": 110
+      },
+      {
+        "name": "gspread.authorize",
+        "line": 111
+      },
+      {
+        "name": "_get_streamlit_service_account_info",
+        "line": 117
+      },
+      {
+        "name": "Credentials.from_service_account_info",
+        "line": 119
+      },
+      {
+        "name": "SERVICE_ACCOUNT_FILE.exists",
+        "line": 124
+      },
+      {
+        "name": "Credentials.from_service_account_file",
+        "line": 125
+      },
+      {
+        "name": "FileNotFoundError",
+        "line": 130
+      },
+      {
+        "name": "st.secrets.get",
+        "line": 145
+      },
+      {
+        "name": "dict",
+        "line": 152
+      },
+      {
+        "name": "info.get",
+        "line": 153
+      },
+      {
+        "name": "isinstance",
+        "line": 154
+      },
+      {
+        "name": "private_key.replace",
+        "line": 155
+      },
+      {
+        "name": "get_gspread_client",
+        "line": 165
+      },
+      {
+        "name": "client.open_by_key",
+        "line": 166
+      },
+      {
+        "name": "strip",
+        "line": 172
+      },
+      {
+        "name": "str",
+        "line": 172
+      },
+      {
+        "name": "_WORKSHEET_CACHE.get",
+        "line": 173
+      },
+      {
+        "name": "open_spreadsheet",
+        "line": 177
+      },
+      {
+        "name": "CachedWorksheet",
+        "line": 178
+      },
+      {
+        "name": "spreadsheet.worksheet",
+        "line": 178
+      },
+      {
+        "name": "strip",
+        "line": 190
+      },
+      {
+        "name": "str",
+        "line": 190
+      },
+      {
+        "name": "_READ_RECORDS_CACHE.get",
+        "line": 191
+      },
+      {
+        "name": "dict",
+        "line": 193
+      },
+      {
+        "name": "get_worksheet",
+        "line": 195
+      },
+      {
+        "name": "worksheet.get_all_values",
+        "line": 196
+      },
+      {
+        "name": "strip",
+        "line": 201
+      },
+      {
+        "name": "str",
+        "line": 201
+      },
+      {
+        "name": "set",
+        "line": 203
+      },
+      {
+        "name": "enumerate",
+        "line": 205
+      },
+      {
+        "name": "seen_headers.add",
+        "line": 210
+      },
+      {
+        "name": "valid_columns.append",
+        "line": 211
+      },
+      {
+        "name": "any",
+        "line": 215
+      },
+      {
+        "name": "strip",
+        "line": 215
+      },
+      {
+        "name": "str",
+        "line": 215
+      },
+      {
+        "name": "len",
+        "line": 220
+      },
+      {
+        "name": "_normalize_header_key",
+        "line": 222
+      },
+      {
+        "name": "records.append",
+        "line": 225
+      },
+      {
+        "name": "dict",
+        "line": 227
+      },
+      {
+        "name": "dict",
+        "line": 228
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 233
+      },
+      {
+        "name": "lower",
+        "line": 237
+      },
+      {
+        "name": "strip",
+        "line": 237
+      },
+      {
+        "name": "str",
+        "line": 237
+      },
+      {
+        "name": "replacements.items",
+        "line": 244
+      },
+      {
+        "name": "text.replace",
+        "line": 245
+      },
+      {
+        "name": "join",
+        "line": 246
+      },
+      {
+        "name": "split",
+        "line": 246
+      },
+      {
+        "name": "replace",
+        "line": 246
+      },
+      {
+        "name": "replace",
+        "line": 246
+      },
+      {
+        "name": "text.replace",
+        "line": 246
+      }
+    ]
+  },
+  "app/services/teacher_service.py": {
+    "module": "app.services.teacher_service",
+    "functions": [
+      {
+        "name": "parse_bool",
+        "line": 11
+      },
+      {
+        "name": "normalize_teacher_record",
+        "line": 23
+      },
+      {
+        "name": "get_all_teachers",
+        "line": 41
+      },
+      {
+        "name": "get_teacher_by_username",
+        "line": 47
+      },
+      {
+        "name": "get_teacher_by_magv",
+        "line": 57
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "read_dm_giaovien",
+        "alias": null,
+        "line": 8
+      }
+    ],
+    "calls": [
+      {
+        "name": "isinstance",
+        "line": 13
+      },
+      {
+        "name": "lower",
+        "line": 19
+      },
+      {
+        "name": "strip",
+        "line": 19
+      },
+      {
+        "name": "str",
+        "line": 19
+      },
+      {
+        "name": "strip",
+        "line": 26
+      },
+      {
+        "name": "str",
+        "line": 26
+      },
+      {
+        "name": "record.get",
+        "line": 26
+      },
+      {
+        "name": "strip",
+        "line": 27
+      },
+      {
+        "name": "str",
+        "line": 27
+      },
+      {
+        "name": "record.get",
+        "line": 27
+      },
+      {
+        "name": "strip",
+        "line": 28
+      },
+      {
+        "name": "str",
+        "line": 28
+      },
+      {
+        "name": "record.get",
+        "line": 28
+      },
+      {
+        "name": "strip",
+        "line": 29
+      },
+      {
+        "name": "str",
+        "line": 29
+      },
+      {
+        "name": "record.get",
+        "line": 29
+      },
+      {
+        "name": "strip",
+        "line": 30
+      },
+      {
+        "name": "str",
+        "line": 30
+      },
+      {
+        "name": "record.get",
+        "line": 30
+      },
+      {
+        "name": "strip",
+        "line": 31
+      },
+      {
+        "name": "str",
+        "line": 31
+      },
+      {
+        "name": "record.get",
+        "line": 31
+      },
+      {
+        "name": "strip",
+        "line": 32
+      },
+      {
+        "name": "str",
+        "line": 32
+      },
+      {
+        "name": "record.get",
+        "line": 32
+      },
+      {
+        "name": "parse_bool",
+        "line": 33
+      },
+      {
+        "name": "record.get",
+        "line": 33
+      },
+      {
+        "name": "strip",
+        "line": 34
+      },
+      {
+        "name": "str",
+        "line": 34
+      },
+      {
+        "name": "record.get",
+        "line": 34
+      },
+      {
+        "name": "strip",
+        "line": 35
+      },
+      {
+        "name": "str",
+        "line": 35
+      },
+      {
+        "name": "record.get",
+        "line": 35
+      },
+      {
+        "name": "parse_bool",
+        "line": 36
+      },
+      {
+        "name": "record.get",
+        "line": 36
+      },
+      {
+        "name": "read_dm_giaovien",
+        "line": 43
+      },
+      {
+        "name": "normalize_teacher_record",
+        "line": 44
+      },
+      {
+        "name": "lower",
+        "line": 49
+      },
+      {
+        "name": "strip",
+        "line": 49
+      },
+      {
+        "name": "str",
+        "line": 49
+      },
+      {
+        "name": "get_all_teachers",
+        "line": 51
+      },
+      {
+        "name": "lower",
+        "line": 52
+      },
+      {
+        "name": "lower",
+        "line": 59
+      },
+      {
+        "name": "strip",
+        "line": 59
+      },
+      {
+        "name": "str",
+        "line": 59
+      },
+      {
+        "name": "get_all_teachers",
+        "line": 63
+      },
+      {
+        "name": "lower",
+        "line": 64
+      },
+      {
+        "name": "strip",
+        "line": 64
+      },
+      {
+        "name": "str",
+        "line": 64
+      },
+      {
+        "name": "teacher.get",
+        "line": 64
+      }
+    ]
+  },
+  "app/services/auth_service.py": {
+    "module": "app.services.auth_service",
+    "functions": [
+      {
+        "name": "authenticate",
+        "line": 14
+      },
+      {
+        "name": "_authenticate_by_role_and_default_password",
+        "line": 58
+      },
+      {
+        "name": "_check_password",
+        "line": 91
+      },
+      {
+        "name": "_normalize_key",
+        "line": 98
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.services.teacher_service",
+        "name": "get_all_teachers",
+        "alias": null,
+        "line": 9
+      },
+      {
+        "module": "app.services.teacher_service",
+        "name": "get_teacher_by_username",
+        "alias": null,
+        "line": 9
+      }
+    ],
+    "calls": [
+      {
+        "name": "_normalize_key",
+        "line": 24
+      },
+      {
+        "name": "strip",
+        "line": 25
+      },
+      {
+        "name": "str",
+        "line": 25
+      },
+      {
+        "name": "_authenticate_by_role_and_default_password",
+        "line": 30
+      },
+      {
+        "name": "_authenticate_by_role_and_default_password",
+        "line": 37
+      },
+      {
+        "name": "get_teacher_by_username",
+        "line": 44
+      },
+      {
+        "name": "teacher.get",
+        "line": 45
+      },
+      {
+        "name": "strip",
+        "line": 48
+      },
+      {
+        "name": "str",
+        "line": 48
+      },
+      {
+        "name": "teacher.get",
+        "line": 48
+      },
+      {
+        "name": "_check_password",
+        "line": 52
+      },
+      {
+        "name": "get_all_teachers",
+        "line": 64
+      },
+      {
+        "name": "teacher.get",
+        "line": 65
+      },
+      {
+        "name": "_normalize_key",
+        "line": 68
+      },
+      {
+        "name": "teacher.get",
+        "line": 68
+      },
+      {
+        "name": "strip",
+        "line": 72
+      },
+      {
+        "name": "str",
+        "line": 72
+      },
+      {
+        "name": "teacher.get",
+        "line": 72
+      },
+      {
+        "name": "strip",
+        "line": 77
+      },
+      {
+        "name": "str",
+        "line": 77
+      },
+      {
+        "name": "teacher.get",
+        "line": 77
+      },
+      {
+        "name": "_check_password",
+        "line": 85
+      },
+      {
+        "name": "bcrypt.checkpw",
+        "line": 93
+      },
+      {
+        "name": "password.encode",
+        "line": 93
+      },
+      {
+        "name": "password_hash.encode",
+        "line": 93
+      },
+      {
+        "name": "lower",
+        "line": 99
+      },
+      {
+        "name": "strip",
+        "line": 99
+      },
+      {
+        "name": "str",
+        "line": 99
+      },
+      {
+        "name": "replacements.items",
+        "line": 106
+      },
+      {
+        "name": "text.replace",
+        "line": 107
+      },
+      {
+        "name": "join",
+        "line": 108
+      },
+      {
+        "name": "split",
+        "line": 108
+      },
+      {
+        "name": "replace",
+        "line": 108
+      },
+      {
+        "name": "replace",
+        "line": 108
+      },
+      {
+        "name": "text.replace",
+        "line": 108
+      }
+    ]
+  },
+  "app/services/criteria_service.py": {
+    "module": "app.services.criteria_service",
+    "functions": [
+      {
+        "name": "parse_bool",
+        "line": 18
+      },
+      {
+        "name": "parse_float",
+        "line": 26
+      },
+      {
+        "name": "parse_int",
+        "line": 39
+      },
+      {
+        "name": "normalize_criteria_record",
+        "line": 50
+      },
+      {
+        "name": "get_all_criteria",
+        "line": 79
+      },
+      {
+        "name": "get_item_criteria",
+        "line": 86
+      },
+      {
+        "name": "get_criteria_by_code",
+        "line": 91
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "read_sheet_records",
+        "alias": null,
+        "line": 12
+      }
+    ],
+    "calls": [
+      {
+        "name": "isinstance",
+        "line": 20
+      },
+      {
+        "name": "lower",
+        "line": 22
+      },
+      {
+        "name": "strip",
+        "line": 22
+      },
+      {
+        "name": "str",
+        "line": 22
+      },
+      {
+        "name": "strip",
+        "line": 30
+      },
+      {
+        "name": "str",
+        "line": 30
+      },
+      {
+        "name": "float",
+        "line": 34
+      },
+      {
+        "name": "text.replace",
+        "line": 34
+      },
+      {
+        "name": "strip",
+        "line": 42
+      },
+      {
+        "name": "str",
+        "line": 42
+      },
+      {
+        "name": "int",
+        "line": 45
+      },
+      {
+        "name": "float",
+        "line": 45
+      },
+      {
+        "name": "text.replace",
+        "line": 45
+      },
+      {
+        "name": "strip",
+        "line": 52
+      },
+      {
+        "name": "str",
+        "line": 52
+      },
+      {
+        "name": "record.get",
+        "line": 52
+      },
+      {
+        "name": "upper",
+        "line": 53
+      },
+      {
+        "name": "strip",
+        "line": 53
+      },
+      {
+        "name": "str",
+        "line": 53
+      },
+      {
+        "name": "record.get",
+        "line": 53
+      },
+      {
+        "name": "parse_float",
+        "line": 54
+      },
+      {
+        "name": "record.get",
+        "line": 54
+      },
+      {
+        "name": "strip",
+        "line": 58
+      },
+      {
+        "name": "str",
+        "line": 58
+      },
+      {
+        "name": "record.get",
+        "line": 58
+      },
+      {
+        "name": "parse_int",
+        "line": 59
+      },
+      {
+        "name": "record.get",
+        "line": 59
+      },
+      {
+        "name": "parse_int",
+        "line": 60
+      },
+      {
+        "name": "record.get",
+        "line": 60
+      },
+      {
+        "name": "strip",
+        "line": 61
+      },
+      {
+        "name": "str",
+        "line": 61
+      },
+      {
+        "name": "record.get",
+        "line": 61
+      },
+      {
+        "name": "strip",
+        "line": 62
+      },
+      {
+        "name": "str",
+        "line": 62
+      },
+      {
+        "name": "record.get",
+        "line": 62
+      },
+      {
+        "name": "strip",
+        "line": 63
+      },
+      {
+        "name": "str",
+        "line": 63
+      },
+      {
+        "name": "record.get",
+        "line": 63
+      },
+      {
+        "name": "parse_bool",
+        "line": 65
+      },
+      {
+        "name": "record.get",
+        "line": 65
+      },
+      {
+        "name": "parse_bool",
+        "line": 66
+      },
+      {
+        "name": "record.get",
+        "line": 66
+      },
+      {
+        "name": "parse_bool",
+        "line": 67
+      },
+      {
+        "name": "record.get",
+        "line": 67
+      },
+      {
+        "name": "strip",
+        "line": 68
+      },
+      {
+        "name": "str",
+        "line": 68
+      },
+      {
+        "name": "record.get",
+        "line": 68
+      },
+      {
+        "name": "parse_float",
+        "line": 69
+      },
+      {
+        "name": "record.get",
+        "line": 69
+      },
+      {
+        "name": "parse_bool",
+        "line": 71
+      },
+      {
+        "name": "record.get",
+        "line": 71
+      },
+      {
+        "name": "parse_float",
+        "line": 72
+      },
+      {
+        "name": "record.get",
+        "line": 72
+      },
+      {
+        "name": "strip",
+        "line": 73
+      },
+      {
+        "name": "str",
+        "line": 73
+      },
+      {
+        "name": "record.get",
+        "line": 73
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 81
+      },
+      {
+        "name": "normalize_criteria_record",
+        "line": 82
+      },
+      {
+        "name": "sorted",
+        "line": 83
+      },
+      {
+        "name": "get_all_criteria",
+        "line": 88
+      },
+      {
+        "name": "get_all_criteria",
+        "line": 93
+      }
+    ]
+  },
+  "app/services/audit_service.py": {
+    "module": "app.services.audit_service",
+    "functions": [
+      {
+        "name": "write_audit_log",
+        "line": 20
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "get_worksheet",
+        "alias": null,
+        "line": 7
+      },
+      {
+        "module": "app.utils.date_utils",
+        "name": "now_iso",
+        "alias": null,
+        "line": 8
+      }
+    ],
+    "calls": [
+      {
+        "name": "str",
+        "line": 27
+      },
+      {
+        "name": "uuid4",
+        "line": 27
+      },
+      {
+        "name": "now_iso",
+        "line": 28
+      },
+      {
+        "name": "strip",
+        "line": 29
+      },
+      {
+        "name": "str",
+        "line": 29
+      },
+      {
+        "name": "strip",
+        "line": 30
+      },
+      {
+        "name": "str",
+        "line": 30
+      },
+      {
+        "name": "strip",
+        "line": 31
+      },
+      {
+        "name": "str",
+        "line": 31
+      },
+      {
+        "name": "strip",
+        "line": 32
+      },
+      {
+        "name": "str",
+        "line": 32
+      },
+      {
+        "name": "get_worksheet",
+        "line": 35
+      },
+      {
+        "name": "worksheet.append_row",
+        "line": 36
+      },
+      {
+        "name": "row.keys",
+        "line": 36
+      }
+    ]
+  },
+  "app/services/thi_dua_service.py": {
+    "module": "app.services.thi_dua_service",
+    "functions": [
+      {
+        "name": "get_current_scoring_month",
+        "line": 91
+      },
+      {
+        "name": "build_phieu_id",
+        "line": 96
+      },
+      {
+        "name": "_expected_phieu_id_from_values",
+        "line": 104
+      },
+      {
+        "name": "_is_valid_phieu_id",
+        "line": 114
+      },
+      {
+        "name": "repair_th_ids_for_month",
+        "line": 120
+      },
+      {
+        "name": "get_phieu",
+        "line": 197
+      },
+      {
+        "name": "get_phieu_list_by_month",
+        "line": 216
+      },
+      {
+        "name": "_th_record_priority",
+        "line": 268
+      },
+      {
+        "name": "create_phieu_for_teacher",
+        "line": 277
+      },
+      {
+        "name": "generate_chi_tiet_from_tieu_chi",
+        "line": 317
+      },
+      {
+        "name": "sync_chi_tiet_from_tieu_chi",
+        "line": 367
+      },
+      {
+        "name": "get_chi_tiet_phieu",
+        "line": 446
+      },
+      {
+        "name": "_ct_record_priority",
+        "line": 457
+      },
+      {
+        "name": "_dedupe_ct_records",
+        "line": 468
+      },
+      {
+        "name": "get_readonly_phieu",
+        "line": 485
+      },
+      {
+        "name": "calculate_total_score",
+        "line": 507
+      },
+      {
+        "name": "save_bgh_scores",
+        "line": 527
+      },
+      {
+        "name": "finalize_month",
+        "line": 645
+      },
+      {
+        "name": "summarize_month",
+        "line": 723
+      },
+      {
+        "name": "get_month_summary_rows",
+        "line": 837
+      },
+      {
+        "name": "build_monthly_excel_export",
+        "line": 876
+      },
+      {
+        "name": "_build_safe_summary_id",
+        "line": 965
+      },
+      {
+        "name": "_get_or_create_tonghop_worksheet",
+        "line": 983
+      },
+      {
+        "name": "_ensure_tonghop_headers",
+        "line": 1000
+      },
+      {
+        "name": "_get_tonghop_header_map",
+        "line": 1008
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 1032
+      },
+      {
+        "name": "_get_teacher_master_map",
+        "line": 1047
+      },
+      {
+        "name": "save_teacher_scores",
+        "line": 1060
+      },
+      {
+        "name": "validate_before_submit",
+        "line": 1176
+      },
+      {
+        "name": "_build_display_code_map",
+        "line": 1202
+      },
+      {
+        "name": "resolve",
+        "line": 1224
+      },
+      {
+        "name": "_looks_like_full_display_code",
+        "line": 1259
+      },
+      {
+        "name": "_trace_submit_event",
+        "line": 1263
+      },
+      {
+        "name": "_format_submit_trace",
+        "line": 1269
+      },
+      {
+        "name": "submit_phieu",
+        "line": 1272
+      },
+      {
+        "name": "is_teacher_allowed_to_create",
+        "line": 1331
+      },
+      {
+        "name": "is_teacher_allowed_to_edit",
+        "line": 1342
+      },
+      {
+        "name": "get_header_by_id",
+        "line": 1353
+      },
+      {
+        "name": "_append_th_row_by_sheet_headers",
+        "line": 1361
+      },
+      {
+        "name": "update_header_fields",
+        "line": 1385
+      },
+      {
+        "name": "_header_by_column",
+        "line": 1421
+      },
+      {
+        "name": "_canonical_header_name",
+        "line": 1428
+      },
+      {
+        "name": "_a1",
+        "line": 1503
+      },
+      {
+        "name": "_get_header_map",
+        "line": 1513
+      },
+      {
+        "name": "_update_cells_by_headers",
+        "line": 1528
+      },
+      {
+        "name": "_get_text",
+        "line": 1537
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 1549
+      },
+      {
+        "name": "_normalize_key",
+        "line": 1570
+      },
+      {
+        "name": "_get_float",
+        "line": 1583
+      },
+      {
+        "name": "_safe_float",
+        "line": 1591
+      },
+      {
+        "name": "_canonicalize_th_record",
+        "line": 1620
+      },
+      {
+        "name": "_safe_int",
+        "line": 1643
+      },
+      {
+        "name": "_get_th_record_text",
+        "line": 1653
+      },
+      {
+        "name": "_get_canonical_header_map",
+        "line": 1672
+      },
+      {
+        "name": "_canonicalize_ct_record",
+        "line": 1685
+      },
+      {
+        "name": "_get_record_text",
+        "line": 1689
+      },
+      {
+        "name": "_parse_bool",
+        "line": 1693
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.models.thi_dua_detail",
+        "name": "ThiDuaDetail",
+        "alias": null,
+        "line": 11
+      },
+      {
+        "module": "app.models.thi_dua_header",
+        "name": "ThiDuaHeader",
+        "alias": null,
+        "line": 12
+      },
+      {
+        "module": "app.services.config_service",
+        "name": "get_teacher_scoring_deadline_day",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.audit_service",
+        "name": "ACTION_SUBMIT_PHIEU",
+        "alias": null,
+        "line": 14
+      },
+      {
+        "module": "app.services.audit_service",
+        "name": "ACTION_BGH_UPDATE_SCORE",
+        "alias": null,
+        "line": 14
+      },
+      {
+        "module": "app.services.audit_service",
+        "name": "ACTION_BGH_FINALIZE_PHIEU",
+        "alias": null,
+        "line": 14
+      },
+      {
+        "module": "app.services.audit_service",
+        "name": "ACTION_BGH_SUMMARIZE_MONTH",
+        "alias": null,
+        "line": 14
+      },
+      {
+        "module": "app.services.audit_service",
+        "name": "write_audit_log",
+        "alias": null,
+        "line": 14
+      },
+      {
+        "module": "app.services.criteria_service",
+        "name": "get_all_criteria",
+        "alias": null,
+        "line": 21
+      },
+      {
+        "module": "app.services.criteria_service",
+        "name": "get_item_criteria",
+        "alias": null,
+        "line": 21
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "get_worksheet",
+        "alias": null,
+        "line": 22
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "open_spreadsheet",
+        "alias": null,
+        "line": 22
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "read_sheet_records",
+        "alias": null,
+        "line": 22
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "clear_sheet_records_cache",
+        "alias": null,
+        "line": 22
+      },
+      {
+        "module": "app.utils.date_utils",
+        "name": "get_previous_month",
+        "alias": null,
+        "line": 28
+      },
+      {
+        "module": "app.utils.date_utils",
+        "name": "get_school_year_from_month",
+        "alias": null,
+        "line": 28
+      },
+      {
+        "module": "app.utils.date_utils",
+        "name": "is_scoring_window_open",
+        "alias": null,
+        "line": 28
+      },
+      {
+        "module": "app.utils.date_utils",
+        "name": "now_iso",
+        "alias": null,
+        "line": 28
+      }
+    ],
+    "calls": [
+      {
+        "name": "get_previous_month",
+        "line": 93
+      },
+      {
+        "name": "replace",
+        "line": 98
+      },
+      {
+        "name": "str",
+        "line": 98
+      },
+      {
+        "name": "strip",
+        "line": 99
+      },
+      {
+        "name": "str",
+        "line": 99
+      },
+      {
+        "name": "strip",
+        "line": 106
+      },
+      {
+        "name": "str",
+        "line": 106
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 107
+      },
+      {
+        "name": "strip",
+        "line": 108
+      },
+      {
+        "name": "str",
+        "line": 108
+      },
+      {
+        "name": "build_phieu_id",
+        "line": 111
+      },
+      {
+        "name": "_expected_phieu_id_from_values",
+        "line": 116
+      },
+      {
+        "name": "bool",
+        "line": 117
+      },
+      {
+        "name": "strip",
+        "line": 117
+      },
+      {
+        "name": "str",
+        "line": 117
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 128
+      },
+      {
+        "name": "ValueError",
+        "line": 130
+      },
+      {
+        "name": "get_worksheet",
+        "line": 132
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 133
+      },
+      {
+        "name": "_get_header_map",
+        "line": 134
+      },
+      {
+        "name": "ValueError",
+        "line": 138
+      },
+      {
+        "name": "join",
+        "line": 138
+      },
+      {
+        "name": "enumerate",
+        "line": 143
+      },
+      {
+        "name": "_canonicalize_th_record",
+        "line": 145
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 146
+      },
+      {
+        "name": "canonical.get",
+        "line": 146
+      },
+      {
+        "name": "strip",
+        "line": 150
+      },
+      {
+        "name": "str",
+        "line": 150
+      },
+      {
+        "name": "canonical.get",
+        "line": 150
+      },
+      {
+        "name": "strip",
+        "line": 151
+      },
+      {
+        "name": "str",
+        "line": 151
+      },
+      {
+        "name": "canonical.get",
+        "line": 151
+      },
+      {
+        "name": "strip",
+        "line": 152
+      },
+      {
+        "name": "str",
+        "line": 152
+      },
+      {
+        "name": "canonical.get",
+        "line": 152
+      },
+      {
+        "name": "_expected_phieu_id_from_values",
+        "line": 153
+      },
+      {
+        "name": "candidates.append",
+        "line": 155
+      },
+      {
+        "name": "candidates.append",
+        "line": 161
+      },
+      {
+        "name": "conflicts.append",
+        "line": 170
+      },
+      {
+        "name": "valid_id_owner.get",
+        "line": 172
+      },
+      {
+        "name": "conflicts.append",
+        "line": 174
+      },
+      {
+        "name": "pending_updates.append",
+        "line": 179
+      },
+      {
+        "name": "_a1",
+        "line": 179
+      },
+      {
+        "name": "repaired.append",
+        "line": 180
+      },
+      {
+        "name": "ValueError",
+        "line": 184
+      },
+      {
+        "name": "join",
+        "line": 184
+      },
+      {
+        "name": "worksheet.batch_update",
+        "line": 187
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 188
+      },
+      {
+        "name": "len",
+        "line": 192
+      },
+      {
+        "name": "strip",
+        "line": 204
+      },
+      {
+        "name": "str",
+        "line": 204
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 205
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 207
+      },
+      {
+        "name": "_canonicalize_th_record",
+        "line": 208
+      },
+      {
+        "name": "strip",
+        "line": 209
+      },
+      {
+        "name": "str",
+        "line": 209
+      },
+      {
+        "name": "canonical.get",
+        "line": 209
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 210
+      },
+      {
+        "name": "canonical.get",
+        "line": 210
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 224
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 228
+      },
+      {
+        "name": "_canonicalize_th_record",
+        "line": 229
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 230
+      },
+      {
+        "name": "canonical.get",
+        "line": 230
+      },
+      {
+        "name": "strip",
+        "line": 234
+      },
+      {
+        "name": "str",
+        "line": 234
+      },
+      {
+        "name": "canonical.get",
+        "line": 234
+      },
+      {
+        "name": "_expected_phieu_id_from_values",
+        "line": 235
+      },
+      {
+        "name": "strip",
+        "line": 236
+      },
+      {
+        "name": "str",
+        "line": 236
+      },
+      {
+        "name": "canonical.get",
+        "line": 236
+      },
+      {
+        "name": "strip",
+        "line": 237
+      },
+      {
+        "name": "str",
+        "line": 237
+      },
+      {
+        "name": "canonical.get",
+        "line": 237
+      },
+      {
+        "name": "strip",
+        "line": 238
+      },
+      {
+        "name": "str",
+        "line": 238
+      },
+      {
+        "name": "canonical.get",
+        "line": 238
+      },
+      {
+        "name": "order.append",
+        "line": 252
+      },
+      {
+        "name": "_th_record_priority",
+        "line": 255
+      },
+      {
+        "name": "_th_record_priority",
+        "line": 255
+      },
+      {
+        "name": "sorted",
+        "line": 259
+      },
+      {
+        "name": "strip",
+        "line": 262
+      },
+      {
+        "name": "str",
+        "line": 262
+      },
+      {
+        "name": "row.get",
+        "line": 262
+      },
+      {
+        "name": "strip",
+        "line": 263
+      },
+      {
+        "name": "str",
+        "line": 263
+      },
+      {
+        "name": "row.get",
+        "line": 263
+      },
+      {
+        "name": "_safe_float",
+        "line": 270
+      },
+      {
+        "name": "record.get",
+        "line": 270
+      },
+      {
+        "name": "int",
+        "line": 271
+      },
+      {
+        "name": "strip",
+        "line": 272
+      },
+      {
+        "name": "str",
+        "line": 272
+      },
+      {
+        "name": "record.get",
+        "line": 272
+      },
+      {
+        "name": "strip",
+        "line": 273
+      },
+      {
+        "name": "str",
+        "line": 273
+      },
+      {
+        "name": "record.get",
+        "line": 273
+      },
+      {
+        "name": "get_current_scoring_month",
+        "line": 282
+      },
+      {
+        "name": "get_school_year_from_month",
+        "line": 283
+      },
+      {
+        "name": "build_phieu_id",
+        "line": 284
+      },
+      {
+        "name": "get_phieu",
+        "line": 286
+      },
+      {
+        "name": "now_iso",
+        "line": 290
+      },
+      {
+        "name": "ThiDuaHeader",
+        "line": 291
+      },
+      {
+        "name": "strip",
+        "line": 295
+      },
+      {
+        "name": "str",
+        "line": 295
+      },
+      {
+        "name": "strip",
+        "line": 303
+      },
+      {
+        "name": "str",
+        "line": 303
+      },
+      {
+        "name": "get_worksheet",
+        "line": 310
+      },
+      {
+        "name": "_append_th_row_by_sheet_headers",
+        "line": 311
+      },
+      {
+        "name": "header.to_row",
+        "line": 311
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 312
+      },
+      {
+        "name": "generate_chi_tiet_from_tieu_chi",
+        "line": 313
+      },
+      {
+        "name": "header.to_row",
+        "line": 314
+      },
+      {
+        "name": "strip",
+        "line": 323
+      },
+      {
+        "name": "str",
+        "line": 323
+      },
+      {
+        "name": "now_iso",
+        "line": 324
+      },
+      {
+        "name": "_get_record_text",
+        "line": 328
+      },
+      {
+        "name": "strip",
+        "line": 328
+      },
+      {
+        "name": "str",
+        "line": 328
+      },
+      {
+        "name": "record.get",
+        "line": 328
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 329
+      },
+      {
+        "name": "_get_record_text",
+        "line": 330
+      },
+      {
+        "name": "get_item_criteria",
+        "line": 333
+      },
+      {
+        "name": "strip",
+        "line": 334
+      },
+      {
+        "name": "str",
+        "line": 334
+      },
+      {
+        "name": "criterion.get",
+        "line": 334
+      },
+      {
+        "name": "float",
+        "line": 342
+      },
+      {
+        "name": "criterion.get",
+        "line": 342
+      },
+      {
+        "name": "ThiDuaDetail",
+        "line": 343
+      },
+      {
+        "name": "strip",
+        "line": 353
+      },
+      {
+        "name": "str",
+        "line": 353
+      },
+      {
+        "name": "details.append",
+        "line": 355
+      },
+      {
+        "name": "detail.to_row",
+        "line": 355
+      },
+      {
+        "name": "existing_ids.add",
+        "line": 356
+      },
+      {
+        "name": "append_rows",
+        "line": 359
+      },
+      {
+        "name": "get_worksheet",
+        "line": 359
+      },
+      {
+        "name": "row.get",
+        "line": 360
+      },
+      {
+        "name": "strip",
+        "line": 373
+      },
+      {
+        "name": "str",
+        "line": 373
+      },
+      {
+        "name": "get_item_criteria",
+        "line": 377
+      },
+      {
+        "name": "strip",
+        "line": 378
+      },
+      {
+        "name": "str",
+        "line": 378
+      },
+      {
+        "name": "item.get",
+        "line": 378
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 379
+      },
+      {
+        "name": "_get_record_text",
+        "line": 380
+      },
+      {
+        "name": "_get_record_text",
+        "line": 381
+      },
+      {
+        "name": "_get_record_text",
+        "line": 381
+      },
+      {
+        "name": "get_worksheet",
+        "line": 383
+      },
+      {
+        "name": "_get_header_map",
+        "line": 384
+      },
+      {
+        "name": "now_iso",
+        "line": 385
+      },
+      {
+        "name": "criteria_by_code.items",
+        "line": 388
+      },
+      {
+        "name": "float",
+        "line": 392
+      },
+      {
+        "name": "criterion.get",
+        "line": 392
+      },
+      {
+        "name": "ThiDuaDetail",
+        "line": 393
+      },
+      {
+        "name": "strip",
+        "line": 403
+      },
+      {
+        "name": "str",
+        "line": 403
+      },
+      {
+        "name": "rows_to_append.append",
+        "line": 405
+      },
+      {
+        "name": "detail.to_row",
+        "line": 405
+      },
+      {
+        "name": "existing_ids.add",
+        "line": 406
+      },
+      {
+        "name": "worksheet.append_rows",
+        "line": 409
+      },
+      {
+        "name": "row.get",
+        "line": 410
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 414
+      },
+      {
+        "name": "enumerate",
+        "line": 416
+      },
+      {
+        "name": "_get_record_text",
+        "line": 417
+      },
+      {
+        "name": "_get_record_text",
+        "line": 422
+      },
+      {
+        "name": "_get_record_text",
+        "line": 425
+      },
+      {
+        "name": "criteria_by_code.get",
+        "line": 426
+      },
+      {
+        "name": "float",
+        "line": 430
+      },
+      {
+        "name": "criterion.get",
+        "line": 430
+      },
+      {
+        "name": "_safe_float",
+        "line": 431
+      },
+      {
+        "name": "_get_record_text",
+        "line": 431
+      },
+      {
+        "name": "row_map.get",
+        "line": 432
+      },
+      {
+        "name": "_get_record_text",
+        "line": 432
+      },
+      {
+        "name": "_update_cells_by_headers",
+        "line": 443
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 450
+      },
+      {
+        "name": "_get_record_text",
+        "line": 451
+      },
+      {
+        "name": "strip",
+        "line": 451
+      },
+      {
+        "name": "str",
+        "line": 451
+      },
+      {
+        "name": "_dedupe_ct_records",
+        "line": 453
+      },
+      {
+        "name": "_canonicalize_ct_record",
+        "line": 458
+      },
+      {
+        "name": "_safe_float",
+        "line": 459
+      },
+      {
+        "name": "canonical.get",
+        "line": 459
+      },
+      {
+        "name": "_safe_float",
+        "line": 460
+      },
+      {
+        "name": "canonical.get",
+        "line": 460
+      },
+      {
+        "name": "int",
+        "line": 461
+      },
+      {
+        "name": "strip",
+        "line": 462
+      },
+      {
+        "name": "str",
+        "line": 462
+      },
+      {
+        "name": "canonical.get",
+        "line": 462
+      },
+      {
+        "name": "strip",
+        "line": 465
+      },
+      {
+        "name": "str",
+        "line": 465
+      },
+      {
+        "name": "canonical.get",
+        "line": 465
+      },
+      {
+        "name": "_canonicalize_ct_record",
+        "line": 473
+      },
+      {
+        "name": "strip",
+        "line": 474
+      },
+      {
+        "name": "str",
+        "line": 474
+      },
+      {
+        "name": "canonical.get",
+        "line": 474
+      },
+      {
+        "name": "canonical.get",
+        "line": 474
+      },
+      {
+        "name": "canonical.get",
+        "line": 474
+      },
+      {
+        "name": "order.append",
+        "line": 479
+      },
+      {
+        "name": "_ct_record_priority",
+        "line": 481
+      },
+      {
+        "name": "_ct_record_priority",
+        "line": 481
+      },
+      {
+        "name": "strip",
+        "line": 492
+      },
+      {
+        "name": "str",
+        "line": 492
+      },
+      {
+        "name": "ValueError",
+        "line": 494
+      },
+      {
+        "name": "get_header_by_id",
+        "line": 496
+      },
+      {
+        "name": "ValueError",
+        "line": 498
+      },
+      {
+        "name": "get_chi_tiet_phieu",
+        "line": 500
+      },
+      {
+        "name": "set",
+        "line": 510
+      },
+      {
+        "name": "_canonicalize_ct_record",
+        "line": 512
+      },
+      {
+        "name": "strip",
+        "line": 513
+      },
+      {
+        "name": "str",
+        "line": 513
+      },
+      {
+        "name": "record.get",
+        "line": 513
+      },
+      {
+        "name": "record.get",
+        "line": 513
+      },
+      {
+        "name": "record.get",
+        "line": 513
+      },
+      {
+        "name": "seen.add",
+        "line": 517
+      },
+      {
+        "name": "strip",
+        "line": 518
+      },
+      {
+        "name": "str",
+        "line": 518
+      },
+      {
+        "name": "record.get",
+        "line": 518
+      },
+      {
+        "name": "_safe_float",
+        "line": 520
+      },
+      {
+        "name": "_safe_float",
+        "line": 522
+      },
+      {
+        "name": "record.get",
+        "line": 522
+      },
+      {
+        "name": "strip",
+        "line": 534
+      },
+      {
+        "name": "str",
+        "line": 534
+      },
+      {
+        "name": "strip",
+        "line": 535
+      },
+      {
+        "name": "str",
+        "line": 535
+      },
+      {
+        "name": "ValueError",
+        "line": 537
+      },
+      {
+        "name": "calculate_total_score",
+        "line": 539
+      },
+      {
+        "name": "get_chi_tiet_phieu",
+        "line": 539
+      },
+      {
+        "name": "get_header_by_id",
+        "line": 541
+      },
+      {
+        "name": "ValueError",
+        "line": 543
+      },
+      {
+        "name": "_safe_int",
+        "line": 544
+      },
+      {
+        "name": "phieu.get",
+        "line": 544
+      },
+      {
+        "name": "_parse_bool",
+        "line": 544
+      },
+      {
+        "name": "phieu.get",
+        "line": 544
+      },
+      {
+        "name": "ValueError",
+        "line": 545
+      },
+      {
+        "name": "get_worksheet",
+        "line": 547
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 548
+      },
+      {
+        "name": "_get_canonical_header_map",
+        "line": 549
+      },
+      {
+        "name": "now_iso",
+        "line": 550
+      },
+      {
+        "name": "ValueError",
+        "line": 555
+      },
+      {
+        "name": "join",
+        "line": 555
+      },
+      {
+        "name": "enumerate",
+        "line": 559
+      },
+      {
+        "name": "_get_record_text",
+        "line": 561
+      },
+      {
+        "name": "_get_record_text",
+        "line": 562
+      },
+      {
+        "name": "_get_record_text",
+        "line": 563
+      },
+      {
+        "name": "_dedupe_ct_records",
+        "line": 569
+      },
+      {
+        "name": "_get_record_text",
+        "line": 570
+      },
+      {
+        "name": "_canonicalize_ct_record",
+        "line": 574
+      },
+      {
+        "name": "strip",
+        "line": 575
+      },
+      {
+        "name": "str",
+        "line": 575
+      },
+      {
+        "name": "canonical.get",
+        "line": 575
+      },
+      {
+        "name": "strip",
+        "line": 583
+      },
+      {
+        "name": "str",
+        "line": 583
+      },
+      {
+        "name": "changed.get",
+        "line": 583
+      },
+      {
+        "name": "strip",
+        "line": 586
+      },
+      {
+        "name": "str",
+        "line": 586
+      },
+      {
+        "name": "changed.get",
+        "line": 586
+      },
+      {
+        "name": "row_map_by_id.get",
+        "line": 587
+      },
+      {
+        "name": "row_map_by_key.get",
+        "line": 587
+      },
+      {
+        "name": "ValueError",
+        "line": 589
+      },
+      {
+        "name": "dict",
+        "line": 591
+      },
+      {
+        "name": "working_by_ma_tc.get",
+        "line": 591
+      },
+      {
+        "name": "_safe_float",
+        "line": 592
+      },
+      {
+        "name": "current.get",
+        "line": 592
+      },
+      {
+        "name": "_safe_float",
+        "line": 593
+      },
+      {
+        "name": "changed.get",
+        "line": 593
+      },
+      {
+        "name": "strip",
+        "line": 594
+      },
+      {
+        "name": "str",
+        "line": 594
+      },
+      {
+        "name": "changed.get",
+        "line": 594
+      },
+      {
+        "name": "updates.items",
+        "line": 603
+      },
+      {
+        "name": "header_map.get",
+        "line": 604
+      },
+      {
+        "name": "pending_updates.append",
+        "line": 606
+      },
+      {
+        "name": "_a1",
+        "line": 606
+      },
+      {
+        "name": "current.update",
+        "line": 608
+      },
+      {
+        "name": "calculate_total_score",
+        "line": 618
+      },
+      {
+        "name": "list",
+        "line": 618
+      },
+      {
+        "name": "working_by_ma_tc.values",
+        "line": 618
+      },
+      {
+        "name": "worksheet.batch_update",
+        "line": 621
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 622
+      },
+      {
+        "name": "calculate_total_score",
+        "line": 624
+      },
+      {
+        "name": "list",
+        "line": 624
+      },
+      {
+        "name": "working_by_ma_tc.values",
+        "line": 624
+      },
+      {
+        "name": "update_header_fields",
+        "line": 625
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 634
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 635
+      },
+      {
+        "name": "write_audit_log",
+        "line": 636
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 651
+      },
+      {
+        "name": "strip",
+        "line": 652
+      },
+      {
+        "name": "str",
+        "line": 652
+      },
+      {
+        "name": "ValueError",
+        "line": 654
+      },
+      {
+        "name": "get_phieu_list_by_month",
+        "line": 656
+      },
+      {
+        "name": "_safe_int",
+        "line": 659
+      },
+      {
+        "name": "phieu.get",
+        "line": 659
+      },
+      {
+        "name": "_safe_int",
+        "line": 663
+      },
+      {
+        "name": "phieu.get",
+        "line": 663
+      },
+      {
+        "name": "_safe_int",
+        "line": 667
+      },
+      {
+        "name": "phieu.get",
+        "line": 667
+      },
+      {
+        "name": "len",
+        "line": 678
+      },
+      {
+        "name": "len",
+        "line": 679
+      },
+      {
+        "name": "now_iso",
+        "line": 683
+      },
+      {
+        "name": "strip",
+        "line": 686
+      },
+      {
+        "name": "str",
+        "line": 686
+      },
+      {
+        "name": "phieu.get",
+        "line": 686
+      },
+      {
+        "name": "update_header_fields",
+        "line": 689
+      },
+      {
+        "name": "finalized_ids.append",
+        "line": 699
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 701
+      },
+      {
+        "name": "write_audit_log",
+        "line": 702
+      },
+      {
+        "name": "len",
+        "line": 708
+      },
+      {
+        "name": "len",
+        "line": 709
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 712
+      },
+      {
+        "name": "len",
+        "line": 716
+      },
+      {
+        "name": "len",
+        "line": 717
+      },
+      {
+        "name": "len",
+        "line": 718
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 729
+      },
+      {
+        "name": "strip",
+        "line": 730
+      },
+      {
+        "name": "str",
+        "line": 730
+      },
+      {
+        "name": "ValueError",
+        "line": 732
+      },
+      {
+        "name": "get_phieu_list_by_month",
+        "line": 734
+      },
+      {
+        "name": "_safe_int",
+        "line": 737
+      },
+      {
+        "name": "phieu.get",
+        "line": 737
+      },
+      {
+        "name": "_get_teacher_master_map",
+        "line": 747
+      },
+      {
+        "name": "_get_or_create_tonghop_worksheet",
+        "line": 748
+      },
+      {
+        "name": "_ensure_tonghop_headers",
+        "line": 749
+      },
+      {
+        "name": "_get_tonghop_header_map",
+        "line": 750
+      },
+      {
+        "name": "ValueError",
+        "line": 755
+      },
+      {
+        "name": "join",
+        "line": 755
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 757
+      },
+      {
+        "name": "enumerate",
+        "line": 760
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 762
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 766
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 767
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 767
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 768
+      },
+      {
+        "name": "now_iso",
+        "line": 773
+      },
+      {
+        "name": "strip",
+        "line": 780
+      },
+      {
+        "name": "str",
+        "line": 780
+      },
+      {
+        "name": "phieu.get",
+        "line": 780
+      },
+      {
+        "name": "strip",
+        "line": 781
+      },
+      {
+        "name": "str",
+        "line": 781
+      },
+      {
+        "name": "phieu.get",
+        "line": 781
+      },
+      {
+        "name": "_build_safe_summary_id",
+        "line": 782
+      },
+      {
+        "name": "teacher_map.get",
+        "line": 785
+      },
+      {
+        "name": "strip",
+        "line": 791
+      },
+      {
+        "name": "str",
+        "line": 791
+      },
+      {
+        "name": "teacher.get",
+        "line": 791
+      },
+      {
+        "name": "strip",
+        "line": 792
+      },
+      {
+        "name": "str",
+        "line": 792
+      },
+      {
+        "name": "teacher.get",
+        "line": 792
+      },
+      {
+        "name": "_safe_float",
+        "line": 793
+      },
+      {
+        "name": "phieu.get",
+        "line": 793
+      },
+      {
+        "name": "existing_row_by_id.get",
+        "line": 799
+      },
+      {
+        "name": "existing_row_by_key.get",
+        "line": 799
+      },
+      {
+        "name": "summary_row.items",
+        "line": 801
+      },
+      {
+        "name": "header_map.get",
+        "line": 802
+      },
+      {
+        "name": "pending_updates.append",
+        "line": 804
+      },
+      {
+        "name": "_a1",
+        "line": 804
+      },
+      {
+        "name": "rows_to_append.append",
+        "line": 807
+      },
+      {
+        "name": "summary_row.get",
+        "line": 807
+      },
+      {
+        "name": "worksheet.batch_update",
+        "line": 811
+      },
+      {
+        "name": "worksheet.append_rows",
+        "line": 813
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 815
+      },
+      {
+        "name": "write_audit_log",
+        "line": 816
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 844
+      },
+      {
+        "name": "ValueError",
+        "line": 846
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 849
+      },
+      {
+        "name": "ValueError",
+        "line": 851
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 857
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 857
+      },
+      {
+        "name": "rows.append",
+        "line": 860
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 861
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 862
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 864
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 865
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 866
+      },
+      {
+        "name": "_safe_float",
+        "line": 867
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 867
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 868
+      },
+      {
+        "name": "_get_tonghop_record_text",
+        "line": 869
+      },
+      {
+        "name": "rows.sort",
+        "line": 872
+      },
+      {
+        "name": "str",
+        "line": 872
+      },
+      {
+        "name": "item.get",
+        "line": 872
+      },
+      {
+        "name": "str",
+        "line": 872
+      },
+      {
+        "name": "item.get",
+        "line": 872
+      },
+      {
+        "name": "_normalize_month_key",
+        "line": 882
+      },
+      {
+        "name": "get_month_summary_rows",
+        "line": 883
+      },
+      {
+        "name": "ValueError",
+        "line": 885
+      },
+      {
+        "name": "ValueError",
+        "line": 893
+      },
+      {
+        "name": "Workbook",
+        "line": 895
+      },
+      {
+        "name": "worksheet.merge_cells",
+        "line": 900
+      },
+      {
+        "name": "Font",
+        "line": 902
+      },
+      {
+        "name": "Alignment",
+        "line": 903
+      },
+      {
+        "name": "worksheet.merge_cells",
+        "line": 906
+      },
+      {
+        "name": "now_iso",
+        "line": 907
+      },
+      {
+        "name": "Alignment",
+        "line": 908
+      },
+      {
+        "name": "Font",
+        "line": 909
+      },
+      {
+        "name": "enumerate",
+        "line": 913
+      },
+      {
+        "name": "worksheet.cell",
+        "line": 914
+      },
+      {
+        "name": "Font",
+        "line": 915
+      },
+      {
+        "name": "Alignment",
+        "line": 916
+      },
+      {
+        "name": "PatternFill",
+        "line": 917
+      },
+      {
+        "name": "Side",
+        "line": 919
+      },
+      {
+        "name": "Border",
+        "line": 920
+      },
+      {
+        "name": "enumerate",
+        "line": 922
+      },
+      {
+        "name": "row.get",
+        "line": 925
+      },
+      {
+        "name": "row.get",
+        "line": 926
+      },
+      {
+        "name": "row.get",
+        "line": 927
+      },
+      {
+        "name": "row.get",
+        "line": 928
+      },
+      {
+        "name": "row.get",
+        "line": 929
+      },
+      {
+        "name": "enumerate",
+        "line": 932
+      },
+      {
+        "name": "worksheet.cell",
+        "line": 933
+      },
+      {
+        "name": "Alignment",
+        "line": 935
+      },
+      {
+        "name": "Alignment",
+        "line": 937
+      },
+      {
+        "name": "range",
+        "line": 941
+      },
+      {
+        "name": "len",
+        "line": 941
+      },
+      {
+        "name": "worksheet.cell",
+        "line": 942
+      },
+      {
+        "name": "widths.items",
+        "line": 953
+      },
+      {
+        "name": "get_column_letter",
+        "line": 954
+      },
+      {
+        "name": "len",
+        "line": 957
+      },
+      {
+        "name": "BytesIO",
+        "line": 959
+      },
+      {
+        "name": "workbook.save",
+        "line": 960
+      },
+      {
+        "name": "normalized_month.replace",
+        "line": 961
+      },
+      {
+        "name": "output.getvalue",
+        "line": 963
+      },
+      {
+        "name": "len",
+        "line": 963
+      },
+      {
+        "name": "strip",
+        "line": 972
+      },
+      {
+        "name": "str",
+        "line": 972
+      },
+      {
+        "name": "phieu.get",
+        "line": 972
+      },
+      {
+        "name": "strip",
+        "line": 973
+      },
+      {
+        "name": "str",
+        "line": 973
+      },
+      {
+        "name": "phieu.get",
+        "line": 973
+      },
+      {
+        "name": "strip",
+        "line": 974
+      },
+      {
+        "name": "str",
+        "line": 974
+      },
+      {
+        "name": "phieu.get",
+        "line": 974
+      },
+      {
+        "name": "build_phieu_id",
+        "line": 975
+      },
+      {
+        "name": "len",
+        "line": 977
+      },
+      {
+        "name": "raw_id.upper",
+        "line": 977
+      },
+      {
+        "name": "raw_id.endswith",
+        "line": 979
+      },
+      {
+        "name": "get_worksheet",
+        "line": 986
+      },
+      {
+        "name": "open_spreadsheet",
+        "line": 988
+      },
+      {
+        "name": "spreadsheet.add_worksheet",
+        "line": 989
+      },
+      {
+        "name": "len",
+        "line": 992
+      },
+      {
+        "name": "get_worksheet",
+        "line": 994
+      },
+      {
+        "name": "_ensure_tonghop_headers",
+        "line": 995
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 996
+      },
+      {
+        "name": "strip",
+        "line": 1001
+      },
+      {
+        "name": "str",
+        "line": 1001
+      },
+      {
+        "name": "worksheet.row_values",
+        "line": 1001
+      },
+      {
+        "name": "any",
+        "line": 1002
+      },
+      {
+        "name": "worksheet.update",
+        "line": 1004
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 1005
+      },
+      {
+        "name": "worksheet.row_values",
+        "line": 1009
+      },
+      {
+        "name": "_normalize_key",
+        "line": 1010
+      },
+      {
+        "name": "enumerate",
+        "line": 1010
+      },
+      {
+        "name": "strip",
+        "line": 1010
+      },
+      {
+        "name": "str",
+        "line": 1010
+      },
+      {
+        "name": "aliases.items",
+        "line": 1023
+      },
+      {
+        "name": "normalized_headers.get",
+        "line": 1025
+      },
+      {
+        "name": "_normalize_key",
+        "line": 1025
+      },
+      {
+        "name": "get",
+        "line": 1033
+      },
+      {
+        "name": "_get_text",
+        "line": 1044
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 1049
+      },
+      {
+        "name": "_get_text",
+        "line": 1050
+      },
+      {
+        "name": "_get_text",
+        "line": 1055
+      },
+      {
+        "name": "_get_text",
+        "line": 1056
+      },
+      {
+        "name": "strip",
+        "line": 1067
+      },
+      {
+        "name": "str",
+        "line": 1067
+      },
+      {
+        "name": "get_chi_tiet_phieu",
+        "line": 1069
+      },
+      {
+        "name": "calculate_total_score",
+        "line": 1070
+      },
+      {
+        "name": "get_worksheet",
+        "line": 1072
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 1073
+      },
+      {
+        "name": "_get_header_map",
+        "line": 1074
+      },
+      {
+        "name": "_get_canonical_header_map",
+        "line": 1075
+      },
+      {
+        "name": "now_iso",
+        "line": 1076
+      },
+      {
+        "name": "ValueError",
+        "line": 1084
+      },
+      {
+        "name": "join",
+        "line": 1084
+      },
+      {
+        "name": "enumerate",
+        "line": 1090
+      },
+      {
+        "name": "_get_record_text",
+        "line": 1092
+      },
+      {
+        "name": "_get_record_text",
+        "line": 1093
+      },
+      {
+        "name": "_get_record_text",
+        "line": 1093
+      },
+      {
+        "name": "_ct_record_priority",
+        "line": 1094
+      },
+      {
+        "name": "_dedupe_ct_records",
+        "line": 1106
+      },
+      {
+        "name": "_get_record_text",
+        "line": 1107
+      },
+      {
+        "name": "_canonicalize_ct_record",
+        "line": 1110
+      },
+      {
+        "name": "working_details.append",
+        "line": 1111
+      },
+      {
+        "name": "strip",
+        "line": 1112
+      },
+      {
+        "name": "str",
+        "line": 1112
+      },
+      {
+        "name": "row.get",
+        "line": 1112
+      },
+      {
+        "name": "strip",
+        "line": 1115
+      },
+      {
+        "name": "str",
+        "line": 1115
+      },
+      {
+        "name": "changed.get",
+        "line": 1115
+      },
+      {
+        "name": "strip",
+        "line": 1119
+      },
+      {
+        "name": "str",
+        "line": 1119
+      },
+      {
+        "name": "changed.get",
+        "line": 1119
+      },
+      {
+        "name": "row_map_by_id.get",
+        "line": 1120
+      },
+      {
+        "name": "row_map_by_key.get",
+        "line": 1120
+      },
+      {
+        "name": "_safe_float",
+        "line": 1125
+      },
+      {
+        "name": "changed.get",
+        "line": 1125
+      },
+      {
+        "name": "strip",
+        "line": 1126
+      },
+      {
+        "name": "str",
+        "line": 1126
+      },
+      {
+        "name": "changed.get",
+        "line": 1126
+      },
+      {
+        "name": "_safe_float",
+        "line": 1131
+      },
+      {
+        "name": "changed.get",
+        "line": 1131
+      },
+      {
+        "name": "updates.items",
+        "line": 1134
+      },
+      {
+        "name": "header_map.get",
+        "line": 1135
+      },
+      {
+        "name": "pending_updates.append",
+        "line": 1137
+      },
+      {
+        "name": "_a1",
+        "line": 1138
+      },
+      {
+        "name": "dict",
+        "line": 1143
+      },
+      {
+        "name": "current_by_key.get",
+        "line": 1143
+      },
+      {
+        "name": "current.update",
+        "line": 1144
+      },
+      {
+        "name": "current.get",
+        "line": 1145
+      },
+      {
+        "name": "_safe_float",
+        "line": 1148
+      },
+      {
+        "name": "changed.get",
+        "line": 1148
+      },
+      {
+        "name": "current.get",
+        "line": 1148
+      },
+      {
+        "name": "_safe_float",
+        "line": 1149
+      },
+      {
+        "name": "changed.get",
+        "line": 1149
+      },
+      {
+        "name": "strip",
+        "line": 1150
+      },
+      {
+        "name": "str",
+        "line": 1150
+      },
+      {
+        "name": "changed.get",
+        "line": 1150
+      },
+      {
+        "name": "current.get",
+        "line": 1151
+      },
+      {
+        "name": "current.get",
+        "line": 1152
+      },
+      {
+        "name": "ValueError",
+        "line": 1159
+      },
+      {
+        "name": "worksheet.batch_update",
+        "line": 1162
+      },
+      {
+        "name": "list",
+        "line": 1164
+      },
+      {
+        "name": "current_by_key.values",
+        "line": 1164
+      },
+      {
+        "name": "calculate_total_score",
+        "line": 1165
+      },
+      {
+        "name": "update_header_fields",
+        "line": 1166
+      },
+      {
+        "name": "_build_display_code_map",
+        "line": 1183
+      },
+      {
+        "name": "_canonicalize_ct_record",
+        "line": 1187
+      },
+      {
+        "name": "_safe_float",
+        "line": 1188
+      },
+      {
+        "name": "record.get",
+        "line": 1188
+      },
+      {
+        "name": "_safe_float",
+        "line": 1189
+      },
+      {
+        "name": "record.get",
+        "line": 1189
+      },
+      {
+        "name": "strip",
+        "line": 1190
+      },
+      {
+        "name": "str",
+        "line": 1190
+      },
+      {
+        "name": "record.get",
+        "line": 1190
+      },
+      {
+        "name": "strip",
+        "line": 1191
+      },
+      {
+        "name": "str",
+        "line": 1191
+      },
+      {
+        "name": "record.get",
+        "line": 1191
+      },
+      {
+        "name": "display_by_ma_tc.get",
+        "line": 1194
+      },
+      {
+        "name": "errors.append",
+        "line": 1195
+      },
+      {
+        "name": "_get_text",
+        "line": 1206
+      },
+      {
+        "name": "_get_text",
+        "line": 1218
+      },
+      {
+        "name": "_get_text",
+        "line": 1219
+      },
+      {
+        "name": "set",
+        "line": 1227
+      },
+      {
+        "name": "visiting.add",
+        "line": 1230
+      },
+      {
+        "name": "nodes.get",
+        "line": 1232
+      },
+      {
+        "name": "strip",
+        "line": 1233
+      },
+      {
+        "name": "str",
+        "line": 1233
+      },
+      {
+        "name": "node.get",
+        "line": 1233
+      },
+      {
+        "name": "strip",
+        "line": 1234
+      },
+      {
+        "name": "str",
+        "line": 1234
+      },
+      {
+        "name": "node.get",
+        "line": 1234
+      },
+      {
+        "name": "resolve",
+        "line": 1235
+      },
+      {
+        "name": "display.startswith",
+        "line": 1241
+      },
+      {
+        "name": "_looks_like_full_display_code",
+        "line": 1243
+      },
+      {
+        "name": "len",
+        "line": 1245
+      },
+      {
+        "name": "isalnum",
+        "line": 1245
+      },
+      {
+        "name": "display.replace",
+        "line": 1245
+      },
+      {
+        "name": "resolve",
+        "line": 1254
+      },
+      {
+        "name": "strip",
+        "line": 1260
+      },
+      {
+        "name": "str",
+        "line": 1260
+      },
+      {
+        "name": "text.upper",
+        "line": 1261
+      },
+      {
+        "name": "trace.append",
+        "line": 1266
+      },
+      {
+        "name": "str",
+        "line": 1266
+      },
+      {
+        "name": "join",
+        "line": 1270
+      },
+      {
+        "name": "save_teacher_scores",
+        "line": 1276
+      },
+      {
+        "name": "get_chi_tiet_phieu",
+        "line": 1279
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 1281
+      },
+      {
+        "name": "get_header_by_id",
+        "line": 1282
+      },
+      {
+        "name": "ValueError",
+        "line": 1284
+      },
+      {
+        "name": "_safe_int",
+        "line": 1286
+      },
+      {
+        "name": "phieu.get",
+        "line": 1286
+      },
+      {
+        "name": "_parse_bool",
+        "line": 1287
+      },
+      {
+        "name": "phieu.get",
+        "line": 1287
+      },
+      {
+        "name": "update_header_fields",
+        "line": 1292
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 1293
+      },
+      {
+        "name": "get_header_by_id",
+        "line": 1294
+      },
+      {
+        "name": "now_iso",
+        "line": 1298
+      },
+      {
+        "name": "int",
+        "line": 1299
+      },
+      {
+        "name": "strip",
+        "line": 1299
+      },
+      {
+        "name": "str",
+        "line": 1299
+      },
+      {
+        "name": "phieu.get",
+        "line": 1299
+      },
+      {
+        "name": "calculate_total_score",
+        "line": 1300
+      },
+      {
+        "name": "update_header_fields",
+        "line": 1301
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 1314
+      },
+      {
+        "name": "get_header_by_id",
+        "line": 1315
+      },
+      {
+        "name": "ValueError",
+        "line": 1317
+      },
+      {
+        "name": "int",
+        "line": 1319
+      },
+      {
+        "name": "strip",
+        "line": 1319
+      },
+      {
+        "name": "str",
+        "line": 1319
+      },
+      {
+        "name": "refreshed.get",
+        "line": 1319
+      },
+      {
+        "name": "_parse_bool",
+        "line": 1320
+      },
+      {
+        "name": "refreshed.get",
+        "line": 1320
+      },
+      {
+        "name": "ValueError",
+        "line": 1322
+      },
+      {
+        "name": "refreshed.get",
+        "line": 1324
+      },
+      {
+        "name": "refreshed.get",
+        "line": 1324
+      },
+      {
+        "name": "write_audit_log",
+        "line": 1327
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 1328
+      },
+      {
+        "name": "get_teacher_scoring_deadline_day",
+        "line": 1337
+      },
+      {
+        "name": "datetime.now",
+        "line": 1338
+      },
+      {
+        "name": "ZoneInfo",
+        "line": 1338
+      },
+      {
+        "name": "_parse_bool",
+        "line": 1346
+      },
+      {
+        "name": "phieu.get",
+        "line": 1346
+      },
+      {
+        "name": "int",
+        "line": 1348
+      },
+      {
+        "name": "phieu.get",
+        "line": 1348
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 1355
+      },
+      {
+        "name": "_canonicalize_th_record",
+        "line": 1356
+      },
+      {
+        "name": "strip",
+        "line": 1357
+      },
+      {
+        "name": "str",
+        "line": 1357
+      },
+      {
+        "name": "canonical.get",
+        "line": 1357
+      },
+      {
+        "name": "strip",
+        "line": 1357
+      },
+      {
+        "name": "str",
+        "line": 1357
+      },
+      {
+        "name": "strip",
+        "line": 1369
+      },
+      {
+        "name": "str",
+        "line": 1369
+      },
+      {
+        "name": "worksheet.row_values",
+        "line": 1369
+      },
+      {
+        "name": "any",
+        "line": 1370
+      },
+      {
+        "name": "worksheet.update",
+        "line": 1371
+      },
+      {
+        "name": "values.append",
+        "line": 1377
+      },
+      {
+        "name": "_canonical_header_name",
+        "line": 1379
+      },
+      {
+        "name": "values.append",
+        "line": 1380
+      },
+      {
+        "name": "row_data.get",
+        "line": 1380
+      },
+      {
+        "name": "worksheet.append_row",
+        "line": 1382
+      },
+      {
+        "name": "get_worksheet",
+        "line": 1387
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 1388
+      },
+      {
+        "name": "_get_header_map",
+        "line": 1389
+      },
+      {
+        "name": "enumerate",
+        "line": 1392
+      },
+      {
+        "name": "_get_th_record_text",
+        "line": 1393
+      },
+      {
+        "name": "strip",
+        "line": 1393
+      },
+      {
+        "name": "str",
+        "line": 1393
+      },
+      {
+        "name": "ValueError",
+        "line": 1398
+      },
+      {
+        "name": "fields.items",
+        "line": 1402
+      },
+      {
+        "name": "header_map.get",
+        "line": 1403
+      },
+      {
+        "name": "pending_updates.append",
+        "line": 1405
+      },
+      {
+        "name": "_a1",
+        "line": 1405
+      },
+      {
+        "name": "missing_required.append",
+        "line": 1407
+      },
+      {
+        "name": "join",
+        "line": 1410
+      },
+      {
+        "name": "sorted",
+        "line": 1410
+      },
+      {
+        "name": "str",
+        "line": 1410
+      },
+      {
+        "name": "header_map.keys",
+        "line": 1410
+      },
+      {
+        "name": "ValueError",
+        "line": 1411
+      },
+      {
+        "name": "join",
+        "line": 1413
+      },
+      {
+        "name": "worksheet.batch_update",
+        "line": 1418
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 1419
+      },
+      {
+        "name": "header_map.items",
+        "line": 1422
+      },
+      {
+        "name": "_normalize_key",
+        "line": 1429
+      },
+      {
+        "name": "normalized.replace",
+        "line": 1493
+      },
+      {
+        "name": "_normalize_key",
+        "line": 1499
+      },
+      {
+        "name": "replace",
+        "line": 1499
+      },
+      {
+        "name": "_normalize_key",
+        "line": 1499
+      },
+      {
+        "name": "strip",
+        "line": 1501
+      },
+      {
+        "name": "str",
+        "line": 1501
+      },
+      {
+        "name": "int",
+        "line": 1506
+      },
+      {
+        "name": "divmod",
+        "line": 1508
+      },
+      {
+        "name": "chr",
+        "line": 1509
+      },
+      {
+        "name": "int",
+        "line": 1510
+      },
+      {
+        "name": "worksheet.row_values",
+        "line": 1514
+      },
+      {
+        "name": "enumerate",
+        "line": 1516
+      },
+      {
+        "name": "strip",
+        "line": 1517
+      },
+      {
+        "name": "str",
+        "line": 1517
+      },
+      {
+        "name": "_canonical_header_name",
+        "line": 1520
+      },
+      {
+        "name": "header_map.setdefault",
+        "line": 1523
+      },
+      {
+        "name": "header_map.setdefault",
+        "line": 1524
+      },
+      {
+        "name": "fields.items",
+        "line": 1530
+      },
+      {
+        "name": "header_map.get",
+        "line": 1531
+      },
+      {
+        "name": "pending_updates.append",
+        "line": 1533
+      },
+      {
+        "name": "_a1",
+        "line": 1533
+      },
+      {
+        "name": "worksheet.batch_update",
+        "line": 1535
+      },
+      {
+        "name": "_normalize_key",
+        "line": 1538
+      },
+      {
+        "name": "record.items",
+        "line": 1538
+      },
+      {
+        "name": "record.get",
+        "line": 1540
+      },
+      {
+        "name": "strip",
+        "line": 1541
+      },
+      {
+        "name": "str",
+        "line": 1541
+      },
+      {
+        "name": "strip",
+        "line": 1542
+      },
+      {
+        "name": "str",
+        "line": 1542
+      },
+      {
+        "name": "normalized.get",
+        "line": 1543
+      },
+      {
+        "name": "_normalize_key",
+        "line": 1543
+      },
+      {
+        "name": "strip",
+        "line": 1544
+      },
+      {
+        "name": "str",
+        "line": 1544
+      },
+      {
+        "name": "strip",
+        "line": 1545
+      },
+      {
+        "name": "str",
+        "line": 1545
+      },
+      {
+        "name": "replace",
+        "line": 1551
+      },
+      {
+        "name": "strip",
+        "line": 1551
+      },
+      {
+        "name": "str",
+        "line": 1551
+      },
+      {
+        "name": "text.split",
+        "line": 1555
+      },
+      {
+        "name": "len",
+        "line": 1556
+      },
+      {
+        "name": "strip",
+        "line": 1557
+      },
+      {
+        "name": "strip",
+        "line": 1557
+      },
+      {
+        "name": "int",
+        "line": 1559
+      },
+      {
+        "name": "float",
+        "line": 1559
+      },
+      {
+        "name": "int",
+        "line": 1559
+      },
+      {
+        "name": "float",
+        "line": 1559
+      },
+      {
+        "name": "join",
+        "line": 1563
+      },
+      {
+        "name": "ch.isdigit",
+        "line": 1563
+      },
+      {
+        "name": "len",
+        "line": 1564
+      },
+      {
+        "name": "lower",
+        "line": 1571
+      },
+      {
+        "name": "strip",
+        "line": 1571
+      },
+      {
+        "name": "str",
+        "line": 1571
+      },
+      {
+        "name": "replacements.items",
+        "line": 1578
+      },
+      {
+        "name": "text.replace",
+        "line": 1579
+      },
+      {
+        "name": "join",
+        "line": 1580
+      },
+      {
+        "name": "split",
+        "line": 1580
+      },
+      {
+        "name": "replace",
+        "line": 1580
+      },
+      {
+        "name": "replace",
+        "line": 1580
+      },
+      {
+        "name": "text.replace",
+        "line": 1580
+      },
+      {
+        "name": "_get_text",
+        "line": 1584
+      },
+      {
+        "name": "float",
+        "line": 1587
+      },
+      {
+        "name": "replace",
+        "line": 1587
+      },
+      {
+        "name": "str",
+        "line": 1587
+      },
+      {
+        "name": "strip",
+        "line": 1592
+      },
+      {
+        "name": "str",
+        "line": 1592
+      },
+      {
+        "name": "float",
+        "line": 1595
+      },
+      {
+        "name": "replace",
+        "line": 1595
+      },
+      {
+        "name": "str",
+        "line": 1595
+      },
+      {
+        "name": "_get_text",
+        "line": 1628
+      },
+      {
+        "name": "_TH_ALIASES.items",
+        "line": 1628
+      },
+      {
+        "name": "_safe_int",
+        "line": 1630
+      },
+      {
+        "name": "canonical.get",
+        "line": 1630
+      },
+      {
+        "name": "_parse_bool",
+        "line": 1631
+      },
+      {
+        "name": "canonical.get",
+        "line": 1631
+      },
+      {
+        "name": "strip",
+        "line": 1632
+      },
+      {
+        "name": "str",
+        "line": 1632
+      },
+      {
+        "name": "canonical.get",
+        "line": 1632
+      },
+      {
+        "name": "str",
+        "line": 1638
+      },
+      {
+        "name": "strip",
+        "line": 1644
+      },
+      {
+        "name": "str",
+        "line": 1644
+      },
+      {
+        "name": "int",
+        "line": 1648
+      },
+      {
+        "name": "float",
+        "line": 1648
+      },
+      {
+        "name": "text.replace",
+        "line": 1648
+      },
+      {
+        "name": "_TH_ALIASES.get",
+        "line": 1654
+      },
+      {
+        "name": "_get_text",
+        "line": 1655
+      },
+      {
+        "name": "worksheet.row_values",
+        "line": 1673
+      },
+      {
+        "name": "_normalize_key",
+        "line": 1674
+      },
+      {
+        "name": "enumerate",
+        "line": 1674
+      },
+      {
+        "name": "_CT_ALIASES.items",
+        "line": 1676
+      },
+      {
+        "name": "normalized_headers.get",
+        "line": 1678
+      },
+      {
+        "name": "_normalize_key",
+        "line": 1678
+      },
+      {
+        "name": "_get_text",
+        "line": 1686
+      },
+      {
+        "name": "_CT_ALIASES.items",
+        "line": 1686
+      },
+      {
+        "name": "_CT_ALIASES.get",
+        "line": 1690
+      },
+      {
+        "name": "_get_text",
+        "line": 1691
+      },
+      {
+        "name": "isinstance",
+        "line": 1694
+      },
+      {
+        "name": "lower",
+        "line": 1696
+      },
+      {
+        "name": "strip",
+        "line": 1696
+      },
+      {
+        "name": "str",
+        "line": 1696
+      }
+    ]
+  },
+  "app/services/account_service.py": {
+    "module": "app.services.account_service",
+    "functions": [
+      {
+        "name": "normalize_missing_password_hashes",
+        "line": 35
+      },
+      {
+        "name": "_apply_default_password_hashes",
+        "line": 44
+      },
+      {
+        "name": "_default_password_for_user",
+        "line": 107
+      },
+      {
+        "name": "_hash_password",
+        "line": 114
+      },
+      {
+        "name": "_get_header_map",
+        "line": 118
+      },
+      {
+        "name": "_get_text",
+        "line": 131
+      },
+      {
+        "name": "_parse_bool",
+        "line": 143
+      },
+      {
+        "name": "_normalize_key",
+        "line": 149
+      },
+      {
+        "name": "_a1",
+        "line": 162
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.services.audit_service",
+        "name": "write_audit_log",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "clear_sheet_records_cache",
+        "alias": null,
+        "line": 14
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "get_worksheet",
+        "alias": null,
+        "line": 14
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "read_sheet_records",
+        "alias": null,
+        "line": 14
+      }
+    ],
+    "calls": [
+      {
+        "name": "_apply_default_password_hashes",
+        "line": 41
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 47
+      },
+      {
+        "name": "get_worksheet",
+        "line": 48
+      },
+      {
+        "name": "_get_header_map",
+        "line": 49
+      },
+      {
+        "name": "ValueError",
+        "line": 52
+      },
+      {
+        "name": "join",
+        "line": 52
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 54
+      },
+      {
+        "name": "enumerate",
+        "line": 63
+      },
+      {
+        "name": "_get_text",
+        "line": 65
+      },
+      {
+        "name": "_get_text",
+        "line": 66
+      },
+      {
+        "name": "_get_text",
+        "line": 67
+      },
+      {
+        "name": "_parse_bool",
+        "line": 68
+      },
+      {
+        "name": "_get_text",
+        "line": 68
+      },
+      {
+        "name": "_get_text",
+        "line": 69
+      },
+      {
+        "name": "_default_password_for_user",
+        "line": 81
+      },
+      {
+        "name": "_hash_password",
+        "line": 82
+      },
+      {
+        "name": "pending_updates.append",
+        "line": 83
+      },
+      {
+        "name": "_a1",
+        "line": 83
+      },
+      {
+        "name": "updated_users.append",
+        "line": 84
+      },
+      {
+        "name": "worksheet.batch_update",
+        "line": 87
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 88
+      },
+      {
+        "name": "len",
+        "line": 92
+      },
+      {
+        "name": "write_audit_log",
+        "line": 96
+      },
+      {
+        "name": "len",
+        "line": 99
+      },
+      {
+        "name": "_normalize_key",
+        "line": 108
+      },
+      {
+        "name": "strip",
+        "line": 111
+      },
+      {
+        "name": "str",
+        "line": 111
+      },
+      {
+        "name": "decode",
+        "line": 115
+      },
+      {
+        "name": "bcrypt.hashpw",
+        "line": 115
+      },
+      {
+        "name": "encode",
+        "line": 115
+      },
+      {
+        "name": "str",
+        "line": 115
+      },
+      {
+        "name": "bcrypt.gensalt",
+        "line": 115
+      },
+      {
+        "name": "worksheet.row_values",
+        "line": 119
+      },
+      {
+        "name": "_normalize_key",
+        "line": 120
+      },
+      {
+        "name": "enumerate",
+        "line": 120
+      },
+      {
+        "name": "_HEADER_ALIASES.items",
+        "line": 122
+      },
+      {
+        "name": "normalized_headers.get",
+        "line": 124
+      },
+      {
+        "name": "_normalize_key",
+        "line": 124
+      },
+      {
+        "name": "_normalize_key",
+        "line": 132
+      },
+      {
+        "name": "record.items",
+        "line": 132
+      },
+      {
+        "name": "record.get",
+        "line": 134
+      },
+      {
+        "name": "strip",
+        "line": 135
+      },
+      {
+        "name": "str",
+        "line": 135
+      },
+      {
+        "name": "strip",
+        "line": 136
+      },
+      {
+        "name": "str",
+        "line": 136
+      },
+      {
+        "name": "normalized.get",
+        "line": 137
+      },
+      {
+        "name": "_normalize_key",
+        "line": 137
+      },
+      {
+        "name": "strip",
+        "line": 138
+      },
+      {
+        "name": "str",
+        "line": 138
+      },
+      {
+        "name": "strip",
+        "line": 139
+      },
+      {
+        "name": "str",
+        "line": 139
+      },
+      {
+        "name": "isinstance",
+        "line": 144
+      },
+      {
+        "name": "lower",
+        "line": 146
+      },
+      {
+        "name": "strip",
+        "line": 146
+      },
+      {
+        "name": "str",
+        "line": 146
+      },
+      {
+        "name": "lower",
+        "line": 150
+      },
+      {
+        "name": "strip",
+        "line": 150
+      },
+      {
+        "name": "str",
+        "line": 150
+      },
+      {
+        "name": "replacements.items",
+        "line": 157
+      },
+      {
+        "name": "text.replace",
+        "line": 158
+      },
+      {
+        "name": "join",
+        "line": 159
+      },
+      {
+        "name": "split",
+        "line": 159
+      },
+      {
+        "name": "replace",
+        "line": 159
+      },
+      {
+        "name": "replace",
+        "line": 159
+      },
+      {
+        "name": "text.replace",
+        "line": 159
+      },
+      {
+        "name": "int",
+        "line": 164
+      },
+      {
+        "name": "divmod",
+        "line": 166
+      },
+      {
+        "name": "chr",
+        "line": 167
+      },
+      {
+        "name": "int",
+        "line": 168
+      }
+    ]
+  },
+  "app/services/config_service.py": {
+    "module": "app.services.config_service",
+    "functions": [
+      {
+        "name": "get_teacher_scoring_deadline_day",
+        "line": 36
+      },
+      {
+        "name": "set_teacher_scoring_deadline_day",
+        "line": 56
+      },
+      {
+        "name": "_get_or_create_system_config_worksheet",
+        "line": 108
+      },
+      {
+        "name": "_ensure_system_config_headers",
+        "line": 119
+      },
+      {
+        "name": "_parse_deadline_day",
+        "line": 143
+      },
+      {
+        "name": "_get_header_map",
+        "line": 153
+      },
+      {
+        "name": "_get_text",
+        "line": 166
+      },
+      {
+        "name": "_normalize_key",
+        "line": 178
+      },
+      {
+        "name": "_column_letter",
+        "line": 191
+      },
+      {
+        "name": "_a1",
+        "line": 200
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.services.audit_service",
+        "name": "write_audit_log",
+        "alias": null,
+        "line": 12
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "clear_sheet_records_cache",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "get_worksheet",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "open_spreadsheet",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.services.google_sheets_service",
+        "name": "read_sheet_records",
+        "alias": null,
+        "line": 13
+      },
+      {
+        "module": "app.utils.date_utils",
+        "name": "now_iso",
+        "alias": null,
+        "line": 19
+      }
+    ],
+    "calls": [
+      {
+        "name": "read_sheet_records",
+        "line": 42
+      },
+      {
+        "name": "_get_text",
+        "line": 47
+      },
+      {
+        "name": "strip",
+        "line": 48
+      },
+      {
+        "name": "str",
+        "line": 48
+      },
+      {
+        "name": "_get_text",
+        "line": 50
+      },
+      {
+        "name": "_parse_deadline_day",
+        "line": 51
+      },
+      {
+        "name": "_parse_deadline_day",
+        "line": 58
+      },
+      {
+        "name": "strip",
+        "line": 59
+      },
+      {
+        "name": "str",
+        "line": 59
+      },
+      {
+        "name": "_get_or_create_system_config_worksheet",
+        "line": 60
+      },
+      {
+        "name": "_ensure_system_config_headers",
+        "line": 61
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 63
+      },
+      {
+        "name": "read_sheet_records",
+        "line": 64
+      },
+      {
+        "name": "enumerate",
+        "line": 66
+      },
+      {
+        "name": "_get_text",
+        "line": 67
+      },
+      {
+        "name": "strip",
+        "line": 68
+      },
+      {
+        "name": "str",
+        "line": 68
+      },
+      {
+        "name": "now_iso",
+        "line": 72
+      },
+      {
+        "name": "max",
+        "line": 82
+      },
+      {
+        "name": "header_map.values",
+        "line": 82
+      },
+      {
+        "name": "len",
+        "line": 82
+      },
+      {
+        "name": "row_values.items",
+        "line": 84
+      },
+      {
+        "name": "header_map.get",
+        "line": 85
+      },
+      {
+        "name": "worksheet.append_row",
+        "line": 88
+      },
+      {
+        "name": "row_values.items",
+        "line": 91
+      },
+      {
+        "name": "header_map.get",
+        "line": 92
+      },
+      {
+        "name": "pending_updates.append",
+        "line": 94
+      },
+      {
+        "name": "_a1",
+        "line": 94
+      },
+      {
+        "name": "worksheet.batch_update",
+        "line": 96
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 98
+      },
+      {
+        "name": "write_audit_log",
+        "line": 99
+      },
+      {
+        "name": "get_worksheet",
+        "line": 110
+      },
+      {
+        "name": "open_spreadsheet",
+        "line": 112
+      },
+      {
+        "name": "spreadsheet.add_worksheet",
+        "line": 113
+      },
+      {
+        "name": "len",
+        "line": 113
+      },
+      {
+        "name": "worksheet.update",
+        "line": 114
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 115
+      },
+      {
+        "name": "get_worksheet",
+        "line": 116
+      },
+      {
+        "name": "_get_header_map",
+        "line": 126
+      },
+      {
+        "name": "strip",
+        "line": 131
+      },
+      {
+        "name": "str",
+        "line": 131
+      },
+      {
+        "name": "worksheet.row_values",
+        "line": 131
+      },
+      {
+        "name": "any",
+        "line": 132
+      },
+      {
+        "name": "worksheet.update",
+        "line": 133
+      },
+      {
+        "name": "headers.extend",
+        "line": 135
+      },
+      {
+        "name": "_column_letter",
+        "line": 136
+      },
+      {
+        "name": "len",
+        "line": 136
+      },
+      {
+        "name": "worksheet.update",
+        "line": 137
+      },
+      {
+        "name": "clear_sheet_records_cache",
+        "line": 139
+      },
+      {
+        "name": "_get_header_map",
+        "line": 140
+      },
+      {
+        "name": "int",
+        "line": 145
+      },
+      {
+        "name": "float",
+        "line": 145
+      },
+      {
+        "name": "replace",
+        "line": 145
+      },
+      {
+        "name": "strip",
+        "line": 145
+      },
+      {
+        "name": "str",
+        "line": 145
+      },
+      {
+        "name": "ValueError",
+        "line": 147
+      },
+      {
+        "name": "ValueError",
+        "line": 149
+      },
+      {
+        "name": "worksheet.row_values",
+        "line": 154
+      },
+      {
+        "name": "_normalize_key",
+        "line": 155
+      },
+      {
+        "name": "enumerate",
+        "line": 155
+      },
+      {
+        "name": "_HEADER_ALIASES.items",
+        "line": 157
+      },
+      {
+        "name": "normalized_headers.get",
+        "line": 159
+      },
+      {
+        "name": "_normalize_key",
+        "line": 159
+      },
+      {
+        "name": "_normalize_key",
+        "line": 167
+      },
+      {
+        "name": "record.items",
+        "line": 167
+      },
+      {
+        "name": "record.get",
+        "line": 169
+      },
+      {
+        "name": "strip",
+        "line": 170
+      },
+      {
+        "name": "str",
+        "line": 170
+      },
+      {
+        "name": "strip",
+        "line": 171
+      },
+      {
+        "name": "str",
+        "line": 171
+      },
+      {
+        "name": "normalized.get",
+        "line": 172
+      },
+      {
+        "name": "_normalize_key",
+        "line": 172
+      },
+      {
+        "name": "strip",
+        "line": 173
+      },
+      {
+        "name": "str",
+        "line": 173
+      },
+      {
+        "name": "strip",
+        "line": 174
+      },
+      {
+        "name": "str",
+        "line": 174
+      },
+      {
+        "name": "lower",
+        "line": 179
+      },
+      {
+        "name": "strip",
+        "line": 179
+      },
+      {
+        "name": "str",
+        "line": 179
+      },
+      {
+        "name": "replacements.items",
+        "line": 186
+      },
+      {
+        "name": "text.replace",
+        "line": 187
+      },
+      {
+        "name": "join",
+        "line": 188
+      },
+      {
+        "name": "split",
+        "line": 188
+      },
+      {
+        "name": "replace",
+        "line": 188
+      },
+      {
+        "name": "replace",
+        "line": 188
+      },
+      {
+        "name": "text.replace",
+        "line": 188
+      },
+      {
+        "name": "int",
+        "line": 193
+      },
+      {
+        "name": "divmod",
+        "line": 195
+      },
+      {
+        "name": "chr",
+        "line": 196
+      },
+      {
+        "name": "int",
+        "line": 202
+      },
+      {
+        "name": "divmod",
+        "line": 204
+      },
+      {
+        "name": "chr",
+        "line": 205
+      },
+      {
+        "name": "int",
+        "line": 206
+      }
+    ]
+  },
+  "app/utils/__init__.py": {
+    "module": "app.utils.__init__",
+    "functions": [],
+    "imports": [],
+    "calls": []
+  },
+  "app/utils/date_utils.py": {
+    "module": "app.utils.date_utils",
+    "functions": [
+      {
+        "name": "now_vn",
+        "line": 13
+      },
+      {
+        "name": "now_iso",
+        "line": 18
+      },
+      {
+        "name": "get_previous_month",
+        "line": 23
+      },
+      {
+        "name": "get_school_year_from_month",
+        "line": 36
+      },
+      {
+        "name": "is_scoring_window_open",
+        "line": 51
+      }
+    ],
+    "imports": [],
+    "calls": [
+      {
+        "name": "datetime.now",
+        "line": 15
+      },
+      {
+        "name": "ZoneInfo",
+        "line": 15
+      },
+      {
+        "name": "isoformat",
+        "line": 20
+      },
+      {
+        "name": "replace",
+        "line": 20
+      },
+      {
+        "name": "now_vn",
+        "line": 20
+      },
+      {
+        "name": "date",
+        "line": 25
+      },
+      {
+        "name": "now_vn",
+        "line": 25
+      },
+      {
+        "name": "split",
+        "line": 42
+      },
+      {
+        "name": "strip",
+        "line": 42
+      },
+      {
+        "name": "str",
+        "line": 42
+      },
+      {
+        "name": "int",
+        "line": 43
+      },
+      {
+        "name": "int",
+        "line": 44
+      },
+      {
+        "name": "date",
+        "line": 53
+      },
+      {
+        "name": "now_vn",
+        "line": 53
+      }
+    ]
+  },
+  "app/models/__init__.py": {
+    "module": "app.models.__init__",
+    "functions": [],
+    "imports": [],
+    "calls": []
+  },
+  "app/models/thi_dua_header.py": {
+    "module": "app.models.thi_dua_header",
+    "functions": [
+      {
+        "name": "to_row",
+        "line": 28
+      },
+      {
+        "name": "from_record",
+        "line": 33
+      },
+      {
+        "name": "_parse_bool",
+        "line": 55
+      }
+    ],
+    "imports": [],
+    "calls": [
+      {
+        "name": "asdict",
+        "line": 30
+      },
+      {
+        "name": "cls",
+        "line": 35
+      },
+      {
+        "name": "strip",
+        "line": 36
+      },
+      {
+        "name": "str",
+        "line": 36
+      },
+      {
+        "name": "record.get",
+        "line": 36
+      },
+      {
+        "name": "strip",
+        "line": 37
+      },
+      {
+        "name": "str",
+        "line": 37
+      },
+      {
+        "name": "record.get",
+        "line": 37
+      },
+      {
+        "name": "strip",
+        "line": 38
+      },
+      {
+        "name": "str",
+        "line": 38
+      },
+      {
+        "name": "record.get",
+        "line": 38
+      },
+      {
+        "name": "strip",
+        "line": 39
+      },
+      {
+        "name": "str",
+        "line": 39
+      },
+      {
+        "name": "record.get",
+        "line": 39
+      },
+      {
+        "name": "int",
+        "line": 40
+      },
+      {
+        "name": "record.get",
+        "line": 40
+      },
+      {
+        "name": "float",
+        "line": 41
+      },
+      {
+        "name": "record.get",
+        "line": 41
+      },
+      {
+        "name": "_parse_bool",
+        "line": 42
+      },
+      {
+        "name": "record.get",
+        "line": 42
+      },
+      {
+        "name": "_parse_bool",
+        "line": 43
+      },
+      {
+        "name": "record.get",
+        "line": 43
+      },
+      {
+        "name": "strip",
+        "line": 44
+      },
+      {
+        "name": "str",
+        "line": 44
+      },
+      {
+        "name": "record.get",
+        "line": 44
+      },
+      {
+        "name": "strip",
+        "line": 45
+      },
+      {
+        "name": "str",
+        "line": 45
+      },
+      {
+        "name": "record.get",
+        "line": 45
+      },
+      {
+        "name": "strip",
+        "line": 46
+      },
+      {
+        "name": "str",
+        "line": 46
+      },
+      {
+        "name": "record.get",
+        "line": 46
+      },
+      {
+        "name": "strip",
+        "line": 47
+      },
+      {
+        "name": "str",
+        "line": 47
+      },
+      {
+        "name": "record.get",
+        "line": 47
+      },
+      {
+        "name": "strip",
+        "line": 48
+      },
+      {
+        "name": "str",
+        "line": 48
+      },
+      {
+        "name": "record.get",
+        "line": 48
+      },
+      {
+        "name": "strip",
+        "line": 49
+      },
+      {
+        "name": "str",
+        "line": 49
+      },
+      {
+        "name": "record.get",
+        "line": 49
+      },
+      {
+        "name": "int",
+        "line": 50
+      },
+      {
+        "name": "record.get",
+        "line": 50
+      },
+      {
+        "name": "int",
+        "line": 51
+      },
+      {
+        "name": "record.get",
+        "line": 51
+      },
+      {
+        "name": "dataclass",
+        "line": 9
+      },
+      {
+        "name": "isinstance",
+        "line": 56
+      },
+      {
+        "name": "lower",
+        "line": 58
+      },
+      {
+        "name": "strip",
+        "line": 58
+      },
+      {
+        "name": "str",
+        "line": 58
+      }
+    ]
+  },
+  "app/models/thi_dua_detail.py": {
+    "module": "app.models.thi_dua_detail",
+    "functions": [
+      {
+        "name": "to_row",
+        "line": 22
+      },
+      {
+        "name": "from_record",
+        "line": 27
+      }
+    ],
+    "imports": [],
+    "calls": [
+      {
+        "name": "asdict",
+        "line": 24
+      },
+      {
+        "name": "cls",
+        "line": 29
+      },
+      {
+        "name": "strip",
+        "line": 30
+      },
+      {
+        "name": "str",
+        "line": 30
+      },
+      {
+        "name": "record.get",
+        "line": 30
+      },
+      {
+        "name": "strip",
+        "line": 31
+      },
+      {
+        "name": "str",
+        "line": 31
+      },
+      {
+        "name": "record.get",
+        "line": 31
+      },
+      {
+        "name": "strip",
+        "line": 32
+      },
+      {
+        "name": "str",
+        "line": 32
+      },
+      {
+        "name": "record.get",
+        "line": 32
+      },
+      {
+        "name": "float",
+        "line": 33
+      },
+      {
+        "name": "record.get",
+        "line": 33
+      },
+      {
+        "name": "float",
+        "line": 34
+      },
+      {
+        "name": "record.get",
+        "line": 34
+      },
+      {
+        "name": "strip",
+        "line": 35
+      },
+      {
+        "name": "str",
+        "line": 35
+      },
+      {
+        "name": "record.get",
+        "line": 35
+      },
+      {
+        "name": "strip",
+        "line": 36
+      },
+      {
+        "name": "str",
+        "line": 36
+      },
+      {
+        "name": "record.get",
+        "line": 36
+      },
+      {
+        "name": "strip",
+        "line": 37
+      },
+      {
+        "name": "str",
+        "line": 37
+      },
+      {
+        "name": "record.get",
+        "line": 37
+      },
+      {
+        "name": "strip",
+        "line": 38
+      },
+      {
+        "name": "str",
+        "line": 38
+      },
+      {
+        "name": "record.get",
+        "line": 38
+      },
+      {
+        "name": "strip",
+        "line": 39
+      },
+      {
+        "name": "str",
+        "line": 39
+      },
+      {
+        "name": "record.get",
+        "line": 39
+      },
+      {
+        "name": "dataclass",
+        "line": 9
+      }
+    ]
+  },
+  "app/auth/login_page.py": {
+    "module": "app.auth.login_page",
+    "functions": [
+      {
+        "name": "render_login_page",
+        "line": 53
+      }
+    ],
+    "imports": [
+      {
+        "module": "app.services.auth_service",
+        "name": "authenticate",
+        "alias": null,
+        "line": 7
+      }
+    ],
+    "calls": [
+      {
+        "name": "st.markdown",
+        "line": 60
+      },
+      {
+        "name": "st.markdown",
+        "line": 61
+      },
+      {
+        "name": "st.markdown",
+        "line": 62
+      },
+      {
+        "name": "st.columns",
+        "line": 64
+      },
+      {
+        "name": "st.form",
+        "line": 66
+      },
+      {
+        "name": "st.selectbox",
+        "line": 67
+      },
+      {
+        "name": "list",
+        "line": 69
+      },
+      {
+        "name": "LOGIN_ROLE_TO_USERNAME.keys",
+        "line": 69
+      },
+      {
+        "name": "st.markdown",
+        "line": 73
+      },
+      {
+        "name": "st.text_input",
+        "line": 83
+      },
+      {
+        "name": "st.form_submit_button",
+        "line": 84
+      },
+      {
+        "name": "authenticate",
+        "line": 87
+      },
+      {
+        "name": "st.error",
+        "line": 89
+      },
+      {
+        "name": "st.rerun",
+        "line": 94
+      }
+    ]
+  },
+  "config/settings.py": {
+    "module": "config.settings",
+    "functions": [],
+    "imports": [],
+    "calls": []
+  },
+  "config/constants.py": {
+    "module": "config.constants",
+    "functions": [],
+    "imports": [],
+    "calls": []
+  }
+}
